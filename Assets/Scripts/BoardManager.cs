@@ -5,6 +5,7 @@ public class BoardManager : MonoBehaviour
 {
     [SerializeField] public List<Transform> tiles;
     [SerializeField] public float tileSpacing = 1.1f;
+ 
     private Dictionary<Vector3, Transform> tileMap = new Dictionary<Vector3, Transform>();
 
     private void Awake()

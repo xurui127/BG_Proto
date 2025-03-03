@@ -20,21 +20,22 @@ public class PlayerBehaviour : MonoBehaviour
         {
             if (currentTileIndex + 1 >= GameManager.Instance.pathTile.Count)
             {
-                currentTileIndex = 0;
+                currentTileIndex = -1;
                 yield return null;
             }
             currentTileIndex++;
             Vector3 targetPos = GameManager.Instance.pathTile[currentTileIndex].position;
-            var targetRotation = Quaternion.LookRotation(targetPos - transform.position);
+            var newTargetPos = new Vector3(targetPos.x, targetPos.y + 0.05f, targetPos.z);
+            var targetRotation = Quaternion.LookRotation(newTargetPos - transform.position);
 
             while (Quaternion.Angle(transform.rotation, targetRotation) > 1f)
             {
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
                 yield return null;
             }
-            while (Vector3.Distance(transform.position,targetPos) > 0.1f)
+            while (Vector3.Distance(transform.position, newTargetPos) > 0.1f)
             {
-                transform.position = Vector3.MoveTowards(transform.position,targetPos,moveSpeed * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, newTargetPos, moveSpeed * Time.deltaTime);
                 anim.SetBool("isWalk", true);
                 yield return null;
             }
