@@ -3,22 +3,22 @@ using UnityEngine;
 
 public class BoardManager : MonoBehaviour
 {
-    [SerializeField] public List<Transform> tiles;
-    [SerializeField] public float tileSpacing = 1.1f;
- 
-    private Dictionary<Vector3, Transform> tileMap = new Dictionary<Vector3, Transform>();
+    public List<Transform> tiles;
+    public float tileSpacing = 1.1f;
+
+    readonly Dictionary<Vector3, Transform> tileMap = new();
 
     private void Awake()
     {
         RegisterTiles();
     }
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         foreach (var tile in tiles)
         {
-            List<Transform> neighbors = GetNeighbors(tile);
-            foreach (var neighbor in neighbors)
+            foreach (var neighbor in GetNeighbors(tile))
             {
                 Gizmos.DrawLine(tile.position, neighbor.position);
             }
@@ -40,7 +40,7 @@ public class BoardManager : MonoBehaviour
 
     private List<Transform> GetNeighbors(Transform tile)
     {
-        List<Transform> neighbors = new List<Transform>();
+        List<Transform> neighbors = new();
         Vector3 pos = tile.position;
 
         Vector3[] directions =
@@ -62,15 +62,11 @@ public class BoardManager : MonoBehaviour
         return neighbors;
     }
 
-    private Vector3 RoundPosition(Vector3 pos)
-    {
-        return new Vector3(
-            Mathf.Round(pos.x * 100f) / 100f,
+    private Vector3 RoundPosition(Vector3 pos) =>
+        new (Mathf.Round(pos.x * 100f) / 100f,
             Mathf.Round(pos.y * 100f) / 100f,
             Mathf.Round(pos.z * 100f) / 100f
         );
-    }
-
 }
 //if (tiles.Count < 2) return;
 

@@ -1,4 +1,3 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,9 +8,9 @@ public enum GameState
     PlayerMove,
     WaitingForDice
 }
+
 public class GameManager : MonoBehaviour
 {
-
     private static GameManager instance;
     public static GameManager Instance
     {
@@ -29,18 +28,18 @@ public class GameManager : MonoBehaviour
             return instance;
         }
     }
-    [SerializeField] private GameObject dicePrefab;
-    [SerializeField] private Transform diceSpawnPoint;
-    [SerializeField] private GameObject rollPanel;
-    [SerializeField] private BoardManager boardManager;
-    [SerializeField] private PlayerBehaviour player;
+    [SerializeField] GameObject dicePrefab;
+    [SerializeField] Transform diceSpawnPoint;
+    [SerializeField] GameObject rollPanel;
+    [SerializeField] BoardManager boardManager;
+    [SerializeField] PlayerBehaviour player;
     public List<Transform> pathTile;
 
-    private GameObject currentDice;
-    private float rollForce = 5f;
-    private float torqueForce = 10f;
+    GameObject currentDice;
+    readonly float rollForce = 5f;
+    readonly float torqueForce = 10f;
 
-    [SerializeField] public GameState state;
+    public GameState state;
 
     public int diceNumber = 0;
 
@@ -55,6 +54,7 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -69,12 +69,13 @@ public class GameManager : MonoBehaviour
         {
             rollPanel.SetActive(true);
         }
+
         if (state == GameState.PlayerMove)
         {
             diceNumber = 0;
-
         }
     }
+
     public void RollDice()
     {
         rollPanel.SetActive(false);
@@ -86,9 +87,8 @@ public class GameManager : MonoBehaviour
         currentDice = dice;
         state = GameState.WaitingForDice;
         rollPanel.SetActive(false);
-       
-
     }
+
     private void MovePlayer()
     {
         if (player != null)
@@ -97,14 +97,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public IEnumerator WaitForDiceResult()
+    internal void WaitForDiceResult()
     {
-        yield return new WaitForSeconds(1f);
-        Destroy(currentDice);
-        MovePlayer();
-
-        yield return new WaitForSeconds(1f);
-       
+        StartCoroutine(WaitForDiceResultCoroutine());
+        IEnumerator WaitForDiceResultCoroutine()
+        {
+            yield return new WaitForSeconds(1f);
+            Destroy(currentDice);
+            MovePlayer();
+        }
     }
-
 }
