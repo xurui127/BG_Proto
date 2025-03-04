@@ -97,8 +97,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    internal void WaitForDiceResult()
+    internal void WaitForDiceResult(int n)
     {
+        diceNumber = n;
         StartCoroutine(WaitForDiceResultCoroutine());
         IEnumerator WaitForDiceResultCoroutine()
         {

@@ -22,8 +22,7 @@ public class DiceTrigger : MonoBehaviour
             {
                 Debug.Log("Dice face: " + faceIndex);
                 isStop = true;
-                GameManager.Instance.diceNumber = 7 - faceIndex;
-                GameManager.Instance.WaitForDiceResult();
+                GameManager.Instance.WaitForDiceResult(7 - faceIndex);
             }
         }
     }
