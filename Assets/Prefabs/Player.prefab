@@ -1224,9 +1224,8 @@ GameObject:
   - component: {fileID: 5615815007780928290}
   - component: {fileID: 4738558639147882546}
   - component: {fileID: 6409974332800077167}
-  - component: {fileID: 3908975145924191893}
   m_Layer: 8
-  m_Name: RobotKyle
+  m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1308,29 +1307,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 759f5632dd87ad44fb5d7edb9f5058c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anim: {fileID: 0}
+  anim: {fileID: 5615815007780928290}
   currentTileIndex: 0
   moveSpeed: 3
   turnSpeed: 5
-  isPlayer: 0
-  isTurnEnd: 0
---- !u!114 &3908975145924191893
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3862277631971027947}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 759f5632dd87ad44fb5d7edb9f5058c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  anim: {fileID: 0}
-  currentTileIndex: 0
-  moveSpeed: 3
-  turnSpeed: 5
-  isPlayer: 0
+  isPlayer: 1
   isTurnEnd: 0
 --- !u!1 &4072265639379859564
 GameObject:
@@ -2431,7 +2412,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: fbac41fcecd43bf44b1af645cc8f774e, type: 2}
+      objectReference: {fileID: 2100000, guid: 03ea2d256bf144dfa907b17f13aa4949, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

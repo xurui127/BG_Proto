@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -31,16 +31,23 @@ public class GameManager : MonoBehaviour
             return instance;
         }
     }
+
     [SerializeField] GameObject dicePrefab;
     [SerializeField] Transform diceSpawnPoint;
     [SerializeField] GameObject rollPanel;
     [SerializeField] BoardManager boardManager;
     [SerializeField] PlayerBehaviour player;
     [SerializeField] List<EnemyBehaviour> enemy;
+    [SerializeField] List<CharacterBehaviour> characters;
+    [SerializeField] GameObject PlayerPrefab;
+    [SerializeField] GameObject EnemyPrefab;
+
 
     GameObject currentDice;
+    CharacterBehaviour currentCharacter;
     readonly float rollForce = 5f;
     readonly float torqueForce = 10f;
+    int characterIndex = 2;
     int diceTopNumber = 0;
     bool isEnemyRoll = false;
 
@@ -66,8 +73,10 @@ public class GameManager : MonoBehaviour
         state = GameState.PlayerRoll;
         rollPanel.SetActive(true);
         pathTile = boardManager.tiles;
+        InitCharacters();
     }
 
+   
     // Update is called once per frame
     void Update()
     {
@@ -90,6 +99,33 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void InitCharacters()
+    {
+        for (int i = 0; i < characterIndex; i++)
+        {
+            int tileIndex = boardManager.GetRandomTileIndex();
+            int capturedIndex = tileIndex;
+
+            Quaternion rotation = boardManager.GetDirction(capturedIndex);
+            Vector3 spawnPosition = boardManager.tiles[capturedIndex].position;
+
+            if (i == 0)
+            {
+                currentCharacter = Instantiate(PlayerPrefab, spawnPosition, rotation)
+                                   .GetComponent<CharacterBehaviour>();
+                currentCharacter.currentTileIndex = capturedIndex;
+                characters.Add(currentCharacter);
+            }
+            else
+            {
+                var enemy = Instantiate(EnemyPrefab, spawnPosition, rotation)
+                            .GetComponent<CharacterBehaviour>();
+                enemy.currentTileIndex = capturedIndex;
+                characters.Add(enemy);
+            }
+        }
+    }
+
     public void RollDice()
     {
         rollPanel.SetActive(false);
@@ -106,7 +142,6 @@ public class GameManager : MonoBehaviour
         {
             state = GameState.EnemyMove;
         }
-       
     }
 
     private void MovePlayer()

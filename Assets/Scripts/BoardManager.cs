@@ -67,6 +67,28 @@ public class BoardManager : MonoBehaviour
             Mathf.Round(pos.y * 100f) / 100f,
             Mathf.Round(pos.z * 100f) / 100f
         );
+
+    public int GetRandomTileIndex() 
+    {
+        return Random.Range(1, tiles.Count - 1); 
+    }
+
+    public Quaternion GetDirction(int index)
+    {
+        var currentTile = tiles[index];
+        Transform nextTile;
+        if (index + 1 < tiles.Count - 1)
+        {
+            nextTile = tiles[index + 1];
+        }
+        else
+        {
+            nextTile = tiles[0];
+        }
+        Vector3 dirction = nextTile.position - currentTile.position;
+
+        return Quaternion.LookRotation(dirction);
+    }
 }
 //if (tiles.Count < 2) return;
 
