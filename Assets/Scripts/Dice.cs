@@ -49,7 +49,7 @@ public class Dice : MonoBehaviour
 
             Debug.Log("Top number: " + topNumber);
             isResultFound = true;
-            GameManager.Instance.WaitForDiceResult(topNumber);
+            GameManager.Instance.SetMoveStep(topNumber);
         }
     }
 }

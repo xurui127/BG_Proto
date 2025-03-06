@@ -1,16 +1,16 @@
 using System.Collections;
 using UnityEngine;
 
-public class PlayerBehaviour : MonoBehaviour
+public class EnemyBehaviour : MonoBehaviour
 {
     [SerializeField] Animator anim;
     public int currentTileIndex = 0;
     public float moveSpeed = 3f;
     public float turnSpeed = 5f;
     public bool isTurnEnd;
-
     public void MovePath(int steps)
     {
+        isTurnEnd = false;
         StartCoroutine(MoveCoroutine(steps));
         IEnumerator MoveCoroutine(int steps)
         {
@@ -40,7 +40,7 @@ public class PlayerBehaviour : MonoBehaviour
                 }
                 anim.SetBool("isWalk", false);
             }
-            GameManager.Instance.state = GameState.EnemyRoll;
+            GameManager.Instance.state = GameState.ResetSettings;
         }
     }
 }

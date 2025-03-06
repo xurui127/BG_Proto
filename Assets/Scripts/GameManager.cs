@@ -4,9 +4,12 @@ using UnityEngine;
 
 public enum GameState
 {
-    Roll,
+    PlayerRoll,
+    EnemyRoll,
     PlayerMove,
-    WaitingForDice
+    EnemyMove,
+    WaitingForDice,
+    ResetSettings,
 }
 
 public class GameManager : MonoBehaviour
@@ -33,14 +36,16 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject rollPanel;
     [SerializeField] BoardManager boardManager;
     [SerializeField] PlayerBehaviour player;
-    public List<Transform> pathTile;
+    [SerializeField] List<EnemyBehaviour> enemy;
 
     GameObject currentDice;
     readonly float rollForce = 5f;
     readonly float torqueForce = 10f;
+    int diceTopNumber = 0;
+    bool isEnemyRoll = false;
 
+    public List<Transform> pathTile;
     public GameState state;
-
     public int diceNumber = 0;
 
     private void Awake()
@@ -58,21 +63,30 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        state = GameState.Roll;
+        state = GameState.PlayerRoll;
+        rollPanel.SetActive(true);
         pathTile = boardManager.tiles;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (state == GameState.Roll)
+        if (state == GameState.PlayerRoll)
         {
             rollPanel.SetActive(true);
         }
-
-        if (state == GameState.PlayerMove)
+        if (state == GameState.EnemyRoll)
+        {
+            if (isEnemyRoll) return;
+            isEnemyRoll = true;
+            RollDice();
+        }
+        if (state == GameState.ResetSettings)
         {
             diceNumber = 0;
+            isEnemyRoll = false;
+            rollPanel.SetActive(true);
+            state = GameState.PlayerRoll;
         }
     }
 
@@ -83,10 +97,16 @@ public class GameManager : MonoBehaviour
         var rb = dice.GetComponent<Rigidbody>();
         rb.AddForce(Vector3.up * rollForce, ForceMode.Impulse);
         rb.AddTorque(Random.insideUnitSphere * torqueForce, ForceMode.Impulse);
-
         currentDice = dice;
-        state = GameState.WaitingForDice;
-        rollPanel.SetActive(false);
+        if (state == GameState.PlayerRoll)
+        {
+            state = GameState.PlayerMove;
+        }
+        else if (state == GameState.EnemyRoll)
+        {
+            state = GameState.EnemyMove;
+        }
+       
     }
 
     private void MovePlayer()
@@ -96,16 +116,68 @@ public class GameManager : MonoBehaviour
             player.MovePath(diceNumber);
         }
     }
-
-    internal void WaitForDiceResult(int n)
+    private void MoveEnemy()
     {
-        diceNumber = n;
+        if (enemy != null)
+        {
+            enemy[0].MovePath(diceNumber);
+        }
+    }
+    internal void PlayerWaitForDiceResult()
+    {
         StartCoroutine(WaitForDiceResultCoroutine());
         IEnumerator WaitForDiceResultCoroutine()
         {
+            rollPanel.SetActive(false);
             yield return new WaitForSeconds(1f);
             Destroy(currentDice);
             MovePlayer();
         }
     }
+    internal void EnemyWaitForDiceResult()
+    {
+        StartCoroutine(WaitForDiceResultCoroutine());
+        IEnumerator WaitForDiceResultCoroutine()
+        {
+            yield return new WaitForSeconds(2f);
+            Destroy(currentDice);
+            MoveEnemy();
+        }
+    }
+    internal void SetMoveStep(int n)
+    {
+        diceNumber = n;
+
+        switch (state)
+        {
+            case GameState.PlayerMove:
+                state = GameState.WaitingForDice;
+                PlayerWaitForDiceResult();
+                break;
+            case GameState.EnemyMove:
+                state = GameState.WaitingForDice;
+                rollPanel.SetActive(false);
+                EnemyWaitForDiceResult();
+                break;
+            default:
+                Debug.LogWarning("Not In Correct State");
+                break;
+        }
+    }
+
+    // Enemy turn 
+    //1. roll dice 
+    //2. move enemy 
+    //3. endTurn
+
+    // Character behaviour 
+    //1. roll dice 
+    //2. move Path
+    //3. end Turn 
+
+    //GameState 
+    //1. player move 
+    //2. enemy move
+
+
 }
