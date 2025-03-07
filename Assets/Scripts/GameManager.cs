@@ -219,10 +219,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void UpdateTurnText()
-    {
-        turnText.text = $"Turn: {turnNumber}";
-    }
+    private void UpdateTurnText() => turnText.text = $"Turn: {turnNumber}";
 }
 // Enemy turn 
 //1. roll dice 
