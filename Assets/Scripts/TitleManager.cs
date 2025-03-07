@@ -5,8 +5,8 @@ using UnityEngine.SceneManagement;
 public class TitleManager : MonoBehaviour
 {
     [SerializeField] GameObject startPanel;
-    [SerializeField] TMP_Text enemyCount;
     [SerializeField] GameObject errorPanel;
+    [SerializeField] TMP_Text enemyCount;
 
     const int maxCount = 2;
     private int currentCount = 0;
@@ -14,6 +14,12 @@ public class TitleManager : MonoBehaviour
     public void OpenStartPanel()
     {
         startPanel.SetActive(true);
+        UpdateEnemyCountText();
+    }
+
+    public void CloseStartPanel()
+    {
+        startPanel.SetActive(false);
     }
 
     public void StartGame()
@@ -26,7 +32,7 @@ public class TitleManager : MonoBehaviour
         GameSettings.enemyCount = currentCount; 
         SceneManager.LoadScene("Main");
     }
-
+   
     public void IncreaseValue()
     {
         if (currentCount < maxCount)

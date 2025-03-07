@@ -1,6 +1,7 @@
 ﻿using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public enum GameState
@@ -39,11 +40,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] PlayerBehaviour player;
     [SerializeField] GameObject PlayerPrefab;
     [SerializeField] GameObject EnemyPrefab;
-
+    [SerializeField] TMP_Text turnText;
+    
     readonly float rollForce = 5f;
     readonly float torqueForce = 10f;
     int characterCount = 0;
     int characterIndex = 0;
+    int turnNumber = 1;
 
     GameObject currentDice;
     CharacterBehaviour currentCharacter;
@@ -72,6 +75,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         characterCount = GameSettings.enemyCount;
+        UpdateTurnText();
         state = GameState.Roll;
         rollPanel.SetActive(true);
         pathTile = boardManager.tiles;
@@ -186,17 +190,21 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator WaitForCharacterMoveCoroutine()
     {
+        yield return new WaitForSeconds(1f);
         Destroy(currentDice);
         MoveCharacter();
-        yield return new WaitForSeconds(2f);
     }
 
     private IEnumerator EndTurnPhaseCoroutine()
     {
         characterIndex = (characterIndex + 1) % characters.Count;
         currentCharacter = characters[characterIndex];
-
         UpdateCameraTarget();
+        if (characterIndex == 0)
+        {
+            turnNumber++;
+            UpdateTurnText();
+        }
         yield return new WaitForSeconds(0.5f);
         state = GameState.Roll;
         yield return null;
@@ -210,13 +218,18 @@ public class GameManager : MonoBehaviour
             virtualCamera.LookAt = currentCharacter.transform;
         }
     }
+
+    private void UpdateTurnText()
+    {
+        turnText.text = $"Turn: {turnNumber}";
+    }
 }
 // Enemy turn 
 //1. roll dice 
 //2. move enemy 
 //3. endTurn
 
-// Character behaviour 
+// Character turn 
 //1. roll dice 
 //2. move Path
 //3. end Turn 
