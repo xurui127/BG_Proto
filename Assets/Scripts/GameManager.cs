@@ -40,12 +40,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject PlayerPrefab;
     [SerializeField] GameObject EnemyPrefab;
 
-    CharacterBehaviour currentCharacter;
-    GameObject currentDice;
     readonly float rollForce = 5f;
     readonly float torqueForce = 10f;
-    readonly int characterCount = 3;
+    int characterCount = 0;
     int characterIndex = 0;
+
+    GameObject currentDice;
+    CharacterBehaviour currentCharacter;
     List<CharacterBehaviour> characters;
     List<EnemyBehaviour> enemy;
 
@@ -70,6 +71,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        characterCount = GameSettings.enemyCount;
         state = GameState.Roll;
         rollPanel.SetActive(true);
         pathTile = boardManager.tiles;
@@ -80,7 +82,7 @@ public class GameManager : MonoBehaviour
 
     private void InitCharacters()
     {
-        for (int i = 0; i < characterCount; i++)
+        for (int i = 0; i < characterCount + 1; i++)
         {
             int tileIndex = boardManager.GetRandomTileIndex();
             int capturedIndex = tileIndex;
@@ -136,23 +138,23 @@ public class GameManager : MonoBehaviour
                 switch (state)
                 {
                     case GameState.Roll:
-                        yield return RollPhase();
+                        yield return RollPhaseCoroutine();
                         break;
                     case GameState.WaittingDice:
-                        yield return WaitForDiceResult();
+                        yield return WaitForDiceResultCoroutine();
                         break;
                     case GameState.Move:
-                        yield return MovePhase();
+                        yield return MovePhaseCoroutine();
                         break;
                     case GameState.EndTurn:
-                        yield return EndTurnPhase();
+                        yield return EndTurnPhaseCoroutine();
                         break;
                 }
             }
         }
     }
 
-    private IEnumerator RollPhase()
+    private IEnumerator RollPhaseCoroutine()
     {
         currentCharacter = characters[characterIndex];
         if (currentCharacter.isPlayer)
@@ -166,7 +168,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private IEnumerator WaitForDiceResult()
+    private IEnumerator WaitForDiceResultCoroutine()
     {
         rollPanel.SetActive(false);
         yield return new WaitForSeconds(2f);
@@ -175,21 +177,21 @@ public class GameManager : MonoBehaviour
         state = GameState.Move;
     }
 
-    private IEnumerator MovePhase()
+    private IEnumerator MovePhaseCoroutine()
     {
-        yield return WaitForCharacterMove();
+        yield return WaitForCharacterMoveCoroutine();
         yield return new WaitUntil(() => currentCharacter.isDoneMoving);
         state = GameState.EndTurn;
     }
 
-    private IEnumerator WaitForCharacterMove()
+    private IEnumerator WaitForCharacterMoveCoroutine()
     {
         Destroy(currentDice);
         MoveCharacter();
         yield return new WaitForSeconds(2f);
     }
 
-    private IEnumerator EndTurnPhase()
+    private IEnumerator EndTurnPhaseCoroutine()
     {
         characterIndex = (characterIndex + 1) % characters.Count;
         currentCharacter = characters[characterIndex];
