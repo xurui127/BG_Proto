@@ -7,7 +7,6 @@ public class TileBehaviour : MonoBehaviour
         DrawTilePosition();
     }
 
-
     private void DrawTilePosition()
     {
         Gizmos.color = Color.green;

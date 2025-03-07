@@ -1,15 +1,14 @@
-﻿using System.Collections;
+﻿using Cinemachine;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public enum GameState
 {
-    PlayerRoll,
-    EnemyRoll,
-    PlayerMove,
-    EnemyMove,
-    WaitingForDice,
-    ResetSettings,
+    Roll,
+    WaittingDice,
+    Move,
+    EndTurn,
 }
 
 public class GameManager : MonoBehaviour
@@ -32,24 +31,23 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    [SerializeField] CinemachineVirtualCamera virtualCamera;
     [SerializeField] GameObject dicePrefab;
     [SerializeField] Transform diceSpawnPoint;
     [SerializeField] GameObject rollPanel;
     [SerializeField] BoardManager boardManager;
     [SerializeField] PlayerBehaviour player;
-    [SerializeField] List<EnemyBehaviour> enemy;
-    [SerializeField] List<CharacterBehaviour> characters;
     [SerializeField] GameObject PlayerPrefab;
     [SerializeField] GameObject EnemyPrefab;
 
-
-    GameObject currentDice;
     CharacterBehaviour currentCharacter;
+    GameObject currentDice;
     readonly float rollForce = 5f;
     readonly float torqueForce = 10f;
-    int characterIndex = 2;
-    int diceTopNumber = 0;
-    bool isEnemyRoll = false;
+    readonly int characterCount = 3;
+    int characterIndex = 0;
+    List<CharacterBehaviour> characters;
+    List<EnemyBehaviour> enemy;
 
     public List<Transform> pathTile;
     public GameState state;
@@ -65,43 +63,24 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        characters = new();
+        enemy = new();
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        state = GameState.PlayerRoll;
+        state = GameState.Roll;
         rollPanel.SetActive(true);
         pathTile = boardManager.tiles;
         InitCharacters();
-    }
-
-   
-    // Update is called once per frame
-    void Update()
-    {
-        if (state == GameState.PlayerRoll)
-        {
-            rollPanel.SetActive(true);
-        }
-        if (state == GameState.EnemyRoll)
-        {
-            if (isEnemyRoll) return;
-            isEnemyRoll = true;
-            RollDice();
-        }
-        if (state == GameState.ResetSettings)
-        {
-            diceNumber = 0;
-            isEnemyRoll = false;
-            rollPanel.SetActive(true);
-            state = GameState.PlayerRoll;
-        }
+        UpdateCameraTarget();
+        GameLoop();
     }
 
     private void InitCharacters()
     {
-        for (int i = 0; i < characterIndex; i++)
+        for (int i = 0; i < characterCount; i++)
         {
             int tileIndex = boardManager.GetRandomTileIndex();
             int capturedIndex = tileIndex;
@@ -112,14 +91,14 @@ public class GameManager : MonoBehaviour
             if (i == 0)
             {
                 currentCharacter = Instantiate(PlayerPrefab, spawnPosition, rotation)
-                                   .GetComponent<CharacterBehaviour>();
+                                              .GetComponent<CharacterBehaviour>();
                 currentCharacter.currentTileIndex = capturedIndex;
                 characters.Add(currentCharacter);
             }
             else
             {
                 var enemy = Instantiate(EnemyPrefab, spawnPosition, rotation)
-                            .GetComponent<CharacterBehaviour>();
+                                       .GetComponent<CharacterBehaviour>();
                 enemy.currentTileIndex = capturedIndex;
                 characters.Add(enemy);
             }
@@ -129,90 +108,117 @@ public class GameManager : MonoBehaviour
     public void RollDice()
     {
         rollPanel.SetActive(false);
-        var dice = Instantiate(dicePrefab, diceSpawnPoint.position, Quaternion.identity);
+        var dice = Instantiate(dicePrefab,
+                               diceSpawnPoint.position,
+                               Quaternion.identity);
         var rb = dice.GetComponent<Rigidbody>();
         rb.AddForce(Vector3.up * rollForce, ForceMode.Impulse);
         rb.AddTorque(Random.insideUnitSphere * torqueForce, ForceMode.Impulse);
         currentDice = dice;
-        if (state == GameState.PlayerRoll)
+        state = GameState.WaittingDice;
+    }
+
+    private void MoveCharacter()
+    {
+        if (currentCharacter != null)
         {
-            state = GameState.PlayerMove;
-        }
-        else if (state == GameState.EnemyRoll)
-        {
-            state = GameState.EnemyMove;
+            currentCharacter.MovePath(diceNumber);
         }
     }
 
-    private void MovePlayer()
+    private void GameLoop()
     {
-        if (player != null)
+        StartCoroutine(GameLoopCoroutine());
+        IEnumerator GameLoopCoroutine()
         {
-            player.MovePath(diceNumber);
+            while (true)
+            {
+                switch (state)
+                {
+                    case GameState.Roll:
+                        yield return RollPhase();
+                        break;
+                    case GameState.WaittingDice:
+                        yield return WaitForDiceResult();
+                        break;
+                    case GameState.Move:
+                        yield return MovePhase();
+                        break;
+                    case GameState.EndTurn:
+                        yield return EndTurnPhase();
+                        break;
+                }
+            }
         }
     }
-    private void MoveEnemy()
+
+    private IEnumerator RollPhase()
     {
-        if (enemy != null)
+        currentCharacter = characters[characterIndex];
+        if (currentCharacter.isPlayer)
         {
-            enemy[0].MovePath(diceNumber);
+            rollPanel.SetActive(true);
         }
-    }
-    internal void PlayerWaitForDiceResult()
-    {
-        StartCoroutine(WaitForDiceResultCoroutine());
-        IEnumerator WaitForDiceResultCoroutine()
+        else
         {
-            rollPanel.SetActive(false);
             yield return new WaitForSeconds(1f);
-            Destroy(currentDice);
-            MovePlayer();
+            RollDice();
         }
     }
-    internal void EnemyWaitForDiceResult()
+
+    private IEnumerator WaitForDiceResult()
     {
-        StartCoroutine(WaitForDiceResultCoroutine());
-        IEnumerator WaitForDiceResultCoroutine()
-        {
-            yield return new WaitForSeconds(2f);
-            Destroy(currentDice);
-            MoveEnemy();
-        }
+        rollPanel.SetActive(false);
+        yield return new WaitForSeconds(2f);
+        var dice = currentDice.GetComponent<Dice>();
+        yield return new WaitUntil(() => dice.isResultFound);
+        state = GameState.Move;
     }
-    internal void SetMoveStep(int n)
+
+    private IEnumerator MovePhase()
     {
-        diceNumber = n;
-
-        switch (state)
-        {
-            case GameState.PlayerMove:
-                state = GameState.WaitingForDice;
-                PlayerWaitForDiceResult();
-                break;
-            case GameState.EnemyMove:
-                state = GameState.WaitingForDice;
-                rollPanel.SetActive(false);
-                EnemyWaitForDiceResult();
-                break;
-            default:
-                Debug.LogWarning("Not In Correct State");
-                break;
-        }
+        yield return WaitForCharacterMove();
+        yield return new WaitUntil(() => currentCharacter.isDoneMoving);
+        state = GameState.EndTurn;
     }
 
-    // Enemy turn 
-    //1. roll dice 
-    //2. move enemy 
-    //3. endTurn
+    private IEnumerator WaitForCharacterMove()
+    {
+        Destroy(currentDice);
+        MoveCharacter();
+        yield return new WaitForSeconds(2f);
+    }
 
-    // Character behaviour 
-    //1. roll dice 
-    //2. move Path
-    //3. end Turn 
+    private IEnumerator EndTurnPhase()
+    {
+        characterIndex = (characterIndex + 1) % characters.Count;
+        currentCharacter = characters[characterIndex];
 
-    //GameState 
-    //1. player move 
-    //2. enemy move
+        UpdateCameraTarget();
+        yield return new WaitForSeconds(0.5f);
+        state = GameState.Roll;
+        yield return null;
+    }
 
-
+    private void UpdateCameraTarget()
+    {
+        if (virtualCamera != null)
+        {
+            virtualCamera.Follow = currentCharacter.transform;
+            virtualCamera.LookAt = currentCharacter.transform;
+        }
+    }
 }
+// Enemy turn 
+//1. roll dice 
+//2. move enemy 
+//3. endTurn
+
+// Character behaviour 
+//1. roll dice 
+//2. move Path
+//3. end Turn 
+
+//GameState 
+//1. player move 
+//2. enemy move

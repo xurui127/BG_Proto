@@ -1,12 +1,13 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 public class Dice : MonoBehaviour
 {
     Rigidbody rb;
     float delayTimer = 0.5f;
-    bool isResultFound;
     Tuple<Vector3, int>[] directionToSides = new Tuple<Vector3, int>[6];
+    
+    public bool isResultFound;
 
     private void Awake()
     {
@@ -46,10 +47,10 @@ public class Dice : MonoBehaviour
                     topNumber = direction.Item2;
                 }
             }
-
             Debug.Log("Top number: " + topNumber);
+            GameManager.Instance.diceNumber = topNumber;
+            //GameManager.Instance.state = GameState.WaittingDice;
             isResultFound = true;
-            GameManager.Instance.SetMoveStep(topNumber);
         }
     }
 }

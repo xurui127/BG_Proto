@@ -4,14 +4,15 @@ using UnityEngine;
 public class CharacterBehaviour : MonoBehaviour, IMovePath
 {
     [SerializeField] Animator anim;
-    [SerializeField] bool isPlayer;
+    [SerializeField] public bool isPlayer;
     public int currentTileIndex = 0;
     public float moveSpeed = 3f;
     public float turnSpeed = 5f;
-    public bool isTurnEnd;
+    public bool isDoneMoving = false;
 
     public void MovePath(int steps)
     {
+        isDoneMoving = false;
         StartCoroutine(MoveCoroutine(steps));
         IEnumerator MoveCoroutine(int steps)
         {
@@ -39,12 +40,10 @@ public class CharacterBehaviour : MonoBehaviour, IMovePath
                     anim.SetBool("isWalk", true);
                     yield return null;
                 }
+
                 anim.SetBool("isWalk", false);
             }
+            isDoneMoving = true;
         }
-    }
-    public void SetRotation(Quaternion roation)
-    {
-        transform.rotation = roation;
     }
 }

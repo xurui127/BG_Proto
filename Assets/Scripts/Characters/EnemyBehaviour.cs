@@ -40,7 +40,6 @@ public class EnemyBehaviour : MonoBehaviour
                 }
                 anim.SetBool("isWalk", false);
             }
-            GameManager.Instance.state = GameState.ResetSettings;
         }
     }
 }

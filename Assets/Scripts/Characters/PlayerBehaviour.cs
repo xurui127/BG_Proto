@@ -40,7 +40,7 @@ public class PlayerBehaviour : MonoBehaviour
                 }
                 anim.SetBool("isWalk", false);
             }
-            GameManager.Instance.state = GameState.EnemyRoll;
+           
         }
     }
 }
