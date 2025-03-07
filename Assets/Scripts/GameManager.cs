@@ -51,7 +51,6 @@ public class GameManager : MonoBehaviour
     GameObject currentDice;
     CharacterBehaviour currentCharacter;
     List<CharacterBehaviour> characters;
-    List<EnemyBehaviour> enemy;
 
     public List<Transform> pathTile;
     public GameState state;
@@ -68,7 +67,6 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
         characters = new();
-        enemy = new();
     }
 
     // Start is called before the first frame update

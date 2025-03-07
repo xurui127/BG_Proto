@@ -51,8 +51,5 @@ public class TitleManager : MonoBehaviour
         }
     }
 
-    public void UpdateEnemyCountText()
-    {
-        enemyCount.text = currentCount.ToString();
-    }
+    public void UpdateEnemyCountText() => enemyCount.text = currentCount.ToString();
 }
