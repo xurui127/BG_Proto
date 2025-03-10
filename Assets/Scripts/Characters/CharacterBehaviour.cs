@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class CharacterBehaviour : MonoBehaviour, IMovePath
+public class CharacterBehaviour : MonoBehaviour
 {
     [SerializeField] Animator anim;
     [SerializeField] public bool isPlayer;

@@ -32,6 +32,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    FSMController stateMachine = new();
+
     [SerializeField] CinemachineVirtualCamera virtualCamera;
     [SerializeField] GameObject dicePrefab;
     [SerializeField] Transform diceSpawnPoint;
@@ -41,13 +43,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject PlayerPrefab;
     [SerializeField] GameObject EnemyPrefab;
     [SerializeField] TMP_Text turnText;
-    
+
     readonly float rollForce = 5f;
     readonly float torqueForce = 10f;
     int characterCount = 0;
     int characterIndex = 0;
     int turnNumber = 1;
-
     GameObject currentDice;
     CharacterBehaviour currentCharacter;
     List<CharacterBehaviour> characters;
@@ -72,6 +73,11 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        stateMachine.RegisterState(new RollState(this));
+        stateMachine.RegisterState(new MoveState(this));
+        stateMachine.RegisterState(new WaitForDiceResultState(this));
+        stateMachine.RegisterState(new EndTurnState(this));
+
         characterCount = GameSettings.enemyCount;
         UpdateTurnText();
         state = GameState.Roll;
@@ -79,7 +85,12 @@ public class GameManager : MonoBehaviour
         pathTile = boardManager.tiles;
         InitCharacters();
         UpdateCameraTarget();
-        GameLoop();
+        stateMachine.SetState<RollState>();
+    }
+
+    private void Update()
+    {
+        stateMachine.OnUpdate();
     }
 
     private void InitCharacters()
@@ -109,6 +120,20 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public List<CharacterBehaviour> GetCharacterList() => characters;
+
+    public Dice GetCurrentDice() => currentDice.GetComponent<Dice>();
+
+    public FSMController GetStateController() => stateMachine;
+
+    public void DestroyDice() => Destroy(currentDice);
+
+    public bool IsCharacterMovingDone() => currentCharacter.isDoneMoving;
+
+    public bool IsPlayer() => currentCharacter.isPlayer;
+
+    public void SetRollPanel(bool isOpen) => rollPanel.SetActive(isOpen);
+
     public void RollDice()
     {
         rollPanel.SetActive(false);
@@ -119,10 +144,10 @@ public class GameManager : MonoBehaviour
         rb.AddForce(Vector3.up * rollForce, ForceMode.Impulse);
         rb.AddTorque(Random.insideUnitSphere * torqueForce, ForceMode.Impulse);
         currentDice = dice;
-        state = GameState.WaittingDice;
+        stateMachine.SetState<WaitForDiceResultState>();
     }
 
-    private void MoveCharacter()
+    public void MoveCharacter()
     {
         if (currentCharacter != null)
         {
@@ -130,70 +155,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void GameLoop()
-    {
-        StartCoroutine(GameLoopCoroutine());
-        IEnumerator GameLoopCoroutine()
-        {
-            while (true)
-            {
-                switch (state)
-                {
-                    case GameState.Roll:
-                        yield return RollPhaseCoroutine();
-                        break;
-                    case GameState.WaittingDice:
-                        yield return WaitForDiceResultCoroutine();
-                        break;
-                    case GameState.Move:
-                        yield return MovePhaseCoroutine();
-                        break;
-                    case GameState.EndTurn:
-                        yield return EndTurnPhaseCoroutine();
-                        break;
-                }
-            }
-        }
-    }
-
-    private IEnumerator RollPhaseCoroutine()
-    {
-        currentCharacter = characters[characterIndex];
-        if (currentCharacter.isPlayer)
-        {
-            rollPanel.SetActive(true);
-        }
-        else
-        {
-            yield return new WaitForSeconds(1f);
-            RollDice();
-        }
-    }
-
-    private IEnumerator WaitForDiceResultCoroutine()
-    {
-        rollPanel.SetActive(false);
-        yield return new WaitForSeconds(2f);
-        var dice = currentDice.GetComponent<Dice>();
-        yield return new WaitUntil(() => dice.isResultFound);
-        state = GameState.Move;
-    }
-
-    private IEnumerator MovePhaseCoroutine()
-    {
-        yield return WaitForCharacterMoveCoroutine();
-        yield return new WaitUntil(() => currentCharacter.isDoneMoving);
-        state = GameState.EndTurn;
-    }
-
-    private IEnumerator WaitForCharacterMoveCoroutine()
-    {
-        yield return new WaitForSeconds(1f);
-        Destroy(currentDice);
-        MoveCharacter();
-    }
-
-    private IEnumerator EndTurnPhaseCoroutine()
+    public void SetNextCharacterTurn()
     {
         characterIndex = (characterIndex + 1) % characters.Count;
         currentCharacter = characters[characterIndex];
@@ -203,9 +165,6 @@ public class GameManager : MonoBehaviour
             turnNumber++;
             UpdateTurnText();
         }
-        yield return new WaitForSeconds(0.5f);
-        state = GameState.Roll;
-        yield return null;
     }
 
     private void UpdateCameraTarget()
@@ -232,3 +191,82 @@ public class GameManager : MonoBehaviour
 //GameState 
 //1. player move 
 //2. enemy move
+
+#region Game Loop Couroutine
+//private void GameLoop()
+//{
+//    StartCoroutine(GameLoopCoroutine());
+//    IEnumerator GameLoopCoroutine()
+//    {
+//        while (true)
+//        {
+//            switch (state)
+//            {
+//                case GameState.Roll:
+//                    yield return RollPhaseCoroutine();
+//                    break;
+//                case GameState.WaittingDice:
+//                    yield return WaitForDiceResultCoroutine();
+//                    break;
+//                case GameState.Move:
+//                    yield return MovePhaseCoroutine();
+//                    break;
+//                case GameState.EndTurn:
+//                    yield return EndTurnPhaseCoroutine();
+//                    break;
+//            }
+//        }
+//    }
+//}
+
+//private IEnumerator RollPhaseCoroutine()
+//{
+//    currentCharacter = characters[characterIndex];
+//    if (currentCharacter.isPlayer)
+//    {
+//        rollPanel.SetActive(true);
+//    }
+//    else
+//    {
+//        yield return new WaitForSeconds(1f);
+//        RollDice();
+//    }
+//}
+
+//private IEnumerator WaitForDiceResultCoroutine()
+//{
+//    yield return new WaitForSeconds(2f);
+//    var dice = currentDice.GetComponent<Dice>();
+//    yield return new WaitUntil(() => dice.isResultFound);
+//    state = GameState.Move;
+//}
+
+//private IEnumerator MovePhaseCoroutine()
+//{
+//    yield return WaitForCharacterMoveCoroutine();
+//    yield return new WaitUntil(() => currentCharacter.isDoneMoving);
+//    state = GameState.EndTurn;
+//}
+
+//private IEnumerator WaitForCharacterMoveCoroutine()
+//{
+//    yield return new WaitForSeconds(1f);
+//    Destroy(currentDice);
+//    MoveCharacter();
+//}
+
+//private IEnumerator EndTurnPhaseCoroutine()
+//{
+//    characterIndex = (characterIndex + 1) % characters.Count;
+//    currentCharacter = characters[characterIndex];
+//    UpdateCameraTarget();
+//    if (characterIndex == 0)
+//    {
+//        turnNumber++;
+//        UpdateTurnText();
+//    }
+//    yield return new WaitForSeconds(0.5f);
+//    state = GameState.Roll;
+//    yield return null;
+//}
+#endregion
