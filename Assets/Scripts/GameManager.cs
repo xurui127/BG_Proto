@@ -1,16 +1,9 @@
 ﻿using Cinemachine;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
-public enum GameState
-{
-    Roll,
-    WaittingDice,
-    Move,
-    EndTurn,
-}
 
 public class GameManager : MonoBehaviour
 {
@@ -32,30 +25,48 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    FSMController stateMachine = new();
-
     [SerializeField] CinemachineVirtualCamera virtualCamera;
     [SerializeField] GameObject dicePrefab;
     [SerializeField] Transform diceSpawnPoint;
-    [SerializeField] GameObject rollPanel;
     [SerializeField] BoardManager boardManager;
     [SerializeField] PlayerBehaviour player;
     [SerializeField] GameObject PlayerPrefab;
     [SerializeField] GameObject EnemyPrefab;
     [SerializeField] TMP_Text turnText;
+    [SerializeField] DeckSystem deckSystem;
+    [SerializeField] UIManager UIManager;
+    [SerializeField] GameObject rollPanel;
+    [SerializeField] GameObject cardPanel;
 
+    readonly FSMController stateMachine = new();
     readonly float rollForce = 5f;
     readonly float torqueForce = 10f;
     int characterCount = 0;
     int characterIndex = 0;
-    int turnNumber = 1;
+    int turnNumber = 0;
+
     GameObject currentDice;
     CharacterBehaviour currentCharacter;
-    List<CharacterBehaviour> characters;
+    CharacterData currentData;
+    List<CharacterBehaviour> characters = new();
+    List<CharacterData> characterDatas = new();
 
     public List<Transform> pathTile;
-    public GameState state;
     public int diceNumber = 0;
+
+    public static event UnityAction<int> OnTurnChanged;
+
+    public Dice GetCurrentDice() => currentDice.GetComponent<Dice>();
+
+    public FSMController GetStateController() => stateMachine;
+
+    public void DestroyDice() => Destroy(currentDice);
+
+    public bool IsCharacterMovingDone() => currentCharacter.isDoneMoving;
+
+    public bool IsPlayer() => currentCharacter.isPlayer;
+
+    public void SetRollPanel(bool isOpen) => rollPanel.SetActive(isOpen);
 
     private void Awake()
     {
@@ -79,11 +90,12 @@ public class GameManager : MonoBehaviour
         stateMachine.RegisterState(new EndTurnState(this));
 
         characterCount = GameSettings.enemyCount;
-        UpdateTurnText();
-        state = GameState.Roll;
+        UpdateTurnNumber();
+        //state = GameState.Roll;
         rollPanel.SetActive(true);
         pathTile = boardManager.tiles;
         InitCharacters();
+        AddCardsToCharacter();
         UpdateCameraTarget();
         stateMachine.SetState<RollState>();
     }
@@ -101,38 +113,34 @@ public class GameManager : MonoBehaviour
             int capturedIndex = tileIndex;
 
             Quaternion rotation = boardManager.GetDirction(capturedIndex);
-            Vector3 spawnPosition = boardManager.tiles[capturedIndex].position + new Vector3(0,0.4f,0);
+            Vector3 spawnPosition = boardManager.tiles[capturedIndex].position + new Vector3(0, 0.4f, 0);
+
+            var prefab = (i == 0) ? PlayerPrefab : EnemyPrefab;
+            var character = Instantiate(prefab, spawnPosition, rotation)
+                                       .GetComponent<CharacterBehaviour>();
+            var data = character.gameObject.GetComponent<CharacterData>();
+            character.currentTileIndex = capturedIndex;
+            characters.Add(character);
+            characterDatas.Add(data);
 
             if (i == 0)
             {
-                currentCharacter = Instantiate(PlayerPrefab, spawnPosition, rotation)
-                                              .GetComponent<CharacterBehaviour>();
-                currentCharacter.currentTileIndex = capturedIndex;
-                characters.Add(currentCharacter);
-            }
-            else
-            {
-                var enemy = Instantiate(EnemyPrefab, spawnPosition, rotation)
-                                       .GetComponent<CharacterBehaviour>();
-                enemy.currentTileIndex = capturedIndex;
-                characters.Add(enemy);
+                currentCharacter = character;
+                currentData = data;
             }
         }
     }
 
-    public List<CharacterBehaviour> GetCharacterList() => characters;
-
-    public Dice GetCurrentDice() => currentDice.GetComponent<Dice>();
-
-    public FSMController GetStateController() => stateMachine;
-
-    public void DestroyDice() => Destroy(currentDice);
-
-    public bool IsCharacterMovingDone() => currentCharacter.isDoneMoving;
-
-    public bool IsPlayer() => currentCharacter.isPlayer;
-
-    public void SetRollPanel(bool isOpen) => rollPanel.SetActive(isOpen);
+    private void AddCardsToCharacter()
+    {
+        foreach (var data in characterDatas)
+        {
+            foreach (var card in deckSystem.cards)
+            {
+                data.currentCards.Add(card);
+            }
+        }
+    }
 
     public void RollDice()
     {
@@ -159,11 +167,11 @@ public class GameManager : MonoBehaviour
     {
         characterIndex = (characterIndex + 1) % characters.Count;
         currentCharacter = characters[characterIndex];
+        currentData = characterDatas[characterIndex];
         UpdateCameraTarget();
         if (characterIndex == 0)
         {
-            turnNumber++;
-            UpdateTurnText();
+            UpdateTurnNumber();
         }
     }
 
@@ -176,7 +184,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void UpdateTurnText() => turnText.text = $"Turn: {turnNumber}";
+    private void UpdateTurnNumber()
+    {
+        turnNumber++;
+        OnTurnChanged?.Invoke(turnNumber);
+    }
+
+    public void InitCards()
+    {
+        cardPanel.SetActive(true);
+        deckSystem.GenerateCards(currentData);
+    }
+
 }
 // Enemy turn 
 //1. roll dice 
