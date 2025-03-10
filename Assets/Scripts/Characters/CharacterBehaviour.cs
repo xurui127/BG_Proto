@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class CharacterBehaviour : MonoBehaviour
@@ -7,9 +7,9 @@ public class CharacterBehaviour : MonoBehaviour
     [SerializeField] public bool isPlayer;
     public int currentTileIndex = 0;
     public bool isDoneMoving = false;
-    const float moveSpeed = 3f;
     const float turnSpeed = 5f;
-
+    const float jumpHeight = 0.5f;
+    const float jumpDuration = 0.3f;
     public void MovePath(int steps)
     {
         isDoneMoving = false;
@@ -23,9 +23,10 @@ public class CharacterBehaviour : MonoBehaviour
                     currentTileIndex = -1;
                     yield return null;
                 }
+
                 currentTileIndex++;
                 Vector3 targetPos = GameManager.Instance.pathTile[currentTileIndex].position;
-                var newTargetPos = new Vector3(targetPos.x, targetPos.y + 0.05f, targetPos.z);
+                var newTargetPos = new Vector3(targetPos.x, targetPos.y + 0.4f, targetPos.z);
                 var targetRotation = Quaternion.LookRotation(newTargetPos - transform.position);
 
                 while (Quaternion.Angle(transform.rotation, targetRotation) > 1f)
@@ -34,14 +35,22 @@ public class CharacterBehaviour : MonoBehaviour
                     yield return null;
                 }
 
-                while (Vector3.Distance(transform.position, newTargetPos) > 0.1f)
+
+                float elapsedTime = 0f;
+                Vector3 startPos = transform.position;
+
+                while (elapsedTime < jumpDuration)
                 {
-                    transform.position = Vector3.MoveTowards(transform.position, newTargetPos, moveSpeed * Time.deltaTime);
-                    anim.SetBool("isWalk", true);
+                    elapsedTime += Time.deltaTime;
+                    float t = elapsedTime / jumpDuration;
+                    float heightOffset = Mathf.Sin(t * Mathf.PI) * jumpHeight;
+                    transform.position = Vector3.Lerp(startPos, newTargetPos, t) + new Vector3(0, heightOffset, 0);
+                    anim.SetBool("IsJump", true);
                     yield return null;
                 }
 
-                anim.SetBool("isWalk", false);
+                transform.position = newTargetPos;
+                anim.SetBool("IsJump", false);
             }
             isDoneMoving = true;
         }
