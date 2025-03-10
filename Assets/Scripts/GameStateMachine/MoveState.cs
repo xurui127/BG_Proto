@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class MoveState : AbstractState
 {
     public MoveState(GameManager gm)
