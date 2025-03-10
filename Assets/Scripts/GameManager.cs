@@ -101,7 +101,7 @@ public class GameManager : MonoBehaviour
             int capturedIndex = tileIndex;
 
             Quaternion rotation = boardManager.GetDirction(capturedIndex);
-            Vector3 spawnPosition = boardManager.tiles[capturedIndex].position;
+            Vector3 spawnPosition = boardManager.tiles[capturedIndex].position + new Vector3(0,0.4f,0);
 
             if (i == 0)
             {
