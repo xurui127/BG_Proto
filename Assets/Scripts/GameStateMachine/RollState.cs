@@ -9,7 +9,6 @@ public class RollState : AbstractState
 
     public override void OnEnter()
     {
-        Debug.Log(" OnEnter Roll State");
         waitingTime = 1f;
         if (GM.IsPlayer())
         {
@@ -18,8 +17,6 @@ public class RollState : AbstractState
     }
     public override void OnUpdate()
     {
-        Debug.Log(" Update Roll State");
-
         if (GM.IsPlayer())
         {
             return;
@@ -33,8 +30,6 @@ public class RollState : AbstractState
 
     public override void OnExit()
     {
-        Debug.Log(" Exit Roll State");
-
         waitingTime = 1f;
     }
 

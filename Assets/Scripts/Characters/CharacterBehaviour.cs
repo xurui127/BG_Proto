@@ -6,9 +6,9 @@ public class CharacterBehaviour : MonoBehaviour
     [SerializeField] Animator anim;
     [SerializeField] public bool isPlayer;
     public int currentTileIndex = 0;
-    public float moveSpeed = 3f;
-    public float turnSpeed = 5f;
     public bool isDoneMoving = false;
+    const float moveSpeed = 3f;
+    const float turnSpeed = 5f;
 
     public void MovePath(int steps)
     {

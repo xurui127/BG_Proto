@@ -9,8 +9,6 @@ public class WaitForDiceResultState : AbstractState
     }
     public override void OnEnter()
     {
-        Debug.Log(" OnEnter WaitForDiceResult State");
-
         waitingTime = 3f;
         dice = GM.GetCurrentDice();
         stateMachine = GM.GetStateController();
@@ -18,8 +16,6 @@ public class WaitForDiceResultState : AbstractState
 
     public override void OnUpdate()
     {
-        Debug.Log(" OnUpdate WaitForDiceResult State");
-
         waitingTime -= Time.deltaTime;
         if (waitingTime <= 0 && dice.isResultFound)
         {
@@ -29,8 +25,6 @@ public class WaitForDiceResultState : AbstractState
 
     public override void OnExit()
     {
-        Debug.Log(" OnExit WaitForDiceResult State");
-
         waitingTime = 3f;
         dice = null;
     }
