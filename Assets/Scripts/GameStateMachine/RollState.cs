@@ -12,7 +12,7 @@ public class RollState : AbstractState
         waitingTime = 1f;
         if (GM.IsPlayer())
         {
-            GM.SetRollPanel(true);
+            GM.SetMovementPanel(true);
         }
     }
     public override void OnUpdate()

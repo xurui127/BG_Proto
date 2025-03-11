@@ -35,8 +35,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] TMP_Text turnText;
     [SerializeField] DeckSystem deckSystem;
     [SerializeField] UIManager UIManager;
-    [SerializeField] GameObject rollPanel;
-    [SerializeField] GameObject cardPanel;
+    //[SerializeField] GameObject rollPanel;
+    //[SerializeField] GameObject cardPanel;
 
     readonly FSMController stateMachine = new();
     readonly float rollForce = 5f;
@@ -56,6 +56,8 @@ public class GameManager : MonoBehaviour
 
     public static event UnityAction<int> OnTurnChanged;
 
+    public static event UnityAction<int> OnGoldChanged;
+
     public Dice GetCurrentDice() => currentDice.GetComponent<Dice>();
 
     public FSMController GetStateController() => stateMachine;
@@ -66,7 +68,8 @@ public class GameManager : MonoBehaviour
 
     public bool IsPlayer() => currentCharacter.isPlayer;
 
-    public void SetRollPanel(bool isOpen) => rollPanel.SetActive(isOpen);
+    public void SetMovementPanel(bool isOpen) => UIManager.movementPanel.SetActive(isOpen);
+
 
     private void Awake()
     {
@@ -92,7 +95,6 @@ public class GameManager : MonoBehaviour
         characterCount = GameSettings.enemyCount;
         UpdateTurnNumber();
         //state = GameState.Roll;
-        rollPanel.SetActive(true);
         pathTile = boardManager.tiles;
         InitCharacters();
         AddCardsToCharacter();
@@ -144,7 +146,7 @@ public class GameManager : MonoBehaviour
 
     public void RollDice()
     {
-        rollPanel.SetActive(false);
+        SetMovementPanel(false);
         var dice = Instantiate(dicePrefab,
                                diceSpawnPoint.position,
                                Quaternion.identity);
@@ -192,8 +194,14 @@ public class GameManager : MonoBehaviour
 
     public void InitCards()
     {
-        cardPanel.SetActive(true);
+        UIManager.cardPanel.SetActive(true);
         deckSystem.GenerateCards(currentData);
+        UIManager.movementPanel.SetActive(false);
+    }
+
+    public void AddGold(int amount)
+    {
+        OnGoldChanged?.Invoke(currentData.AddGold(amount));
     }
 
 }

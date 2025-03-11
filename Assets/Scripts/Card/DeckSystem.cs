@@ -6,8 +6,13 @@ public class DeckSystem : MonoBehaviour
     [SerializeField] GameObject cardPrefab;
     [SerializeField] Transform cardContainer;
 
+    bool isGenerated = false;
     public void GenerateCards(CharacterData data)
     {
+        if (isGenerated)
+        {
+            return;
+        }
         var count = data.currentCards.Count;
         for (int i = 0; i < count; i++)
         {
@@ -24,5 +29,11 @@ public class DeckSystem : MonoBehaviour
                 Debug.Log($"Card {name} has no valid command.");
             }
         }
+        isGenerated = true;
+    }
+
+    public void ResetCardsDate()
+    {
+        isGenerated = false;
     }
 }

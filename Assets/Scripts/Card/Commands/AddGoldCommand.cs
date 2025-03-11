@@ -1,6 +1,3 @@
-
-using UnityEngine;
-
 public class AddGoldCommand : ICommand
 {
     int gold = 0;
@@ -10,6 +7,6 @@ public class AddGoldCommand : ICommand
     }
     public void Execute()
     {
-        Debug.Log("Add Gold");
+        GameManager.Instance.AddGold(gold);
     }
 }
