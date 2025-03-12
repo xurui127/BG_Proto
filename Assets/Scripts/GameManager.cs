@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] CinemachineVirtualCamera virtualCamera;
     [SerializeField] GameObject dicePrefab;
-    [SerializeField] Transform diceSpawnPoint;
+    [SerializeField] Transform[] diceSpawnPoint;
     [SerializeField] BoardManager boardManager;
     [SerializeField] PlayerBehaviour player;
     [SerializeField] GameObject PlayerPrefab;
@@ -43,7 +43,6 @@ public class GameManager : MonoBehaviour
     int characterIndex = 0;
     int turnNumber = 0;
 
-    GameObject currentDice;
     CharacterBehaviour currentCharacter;
     CharacterData currentData;
     List<CharacterBehaviour> characters = new();
@@ -56,11 +55,7 @@ public class GameManager : MonoBehaviour
     public static UnityAction<int> OnGoldChangedEvent;
     public static UnityAction ClosePanelsEvent;
 
-    public Dice GetCurrentDice() => currentDice.GetComponent<Dice>();
-
     public FSMController GetStateController() => stateMachine;
-
-    public void DestroyDice() => Destroy(currentDice);
 
     public bool IsCharacterMovingDone() => currentCharacter.isDoneMoving;
 
@@ -68,6 +63,7 @@ public class GameManager : MonoBehaviour
 
     public void SetMovementPanel(bool isOpen) => UIManager.movementPanel.SetActive(isOpen);
 
+    public bool IsEmptyCard() => currentData.currentCards.Count == 0 ? false : true;
 
     private void Awake()
     {
@@ -85,7 +81,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        stateMachine.RegisterState(new RollState(this));
+        stateMachine.RegisterState(new DecisionState(this));
         stateMachine.RegisterState(new MoveState(this));
         stateMachine.RegisterState(new WaitForDiceResultState(this));
         stateMachine.RegisterState(new EndTurnState(this));
@@ -96,7 +92,7 @@ public class GameManager : MonoBehaviour
         InitCharacters();
         AddCardsToCharacter();
         UpdateCameraTarget();
-        stateMachine.SetState<RollState>();
+        stateMachine.SetState<DecisionState>();
     }
 
     private void Update()
@@ -136,7 +132,7 @@ public class GameManager : MonoBehaviour
         {
             foreach (var card in deckSystem.cards)
             {
-                data.currentCards.Add(card);
+                data.currentCards.Add(card.id, card);
             }
         }
     }
@@ -154,17 +150,34 @@ public class GameManager : MonoBehaviour
         RollDiceInternal(step);
     }
 
+    public void RollTwoDices()
+    {
+        ClosePanelsEvent?.Invoke();
+        var dice1 = Instantiate(dicePrefab,
+                           diceSpawnPoint[1].position,
+                           Quaternion.identity);
+        var dice2 = Instantiate(dicePrefab,
+                           diceSpawnPoint[2].position,
+                           Quaternion.identity);
+
+        var diceNumber1 = dice1.GetComponent<Dice>().Roll();
+        var diceNumber2 = dice2.GetComponent<Dice>().Roll();
+
+        diceNumber = diceNumber1 + diceNumber2;
+        currentData.currentCards.Remove("20003");
+        stateMachine.SetState<WaitForDiceResultState>();
+    }
+    
     private void RollDiceInternal(int? step)
     {
         ClosePanelsEvent?.Invoke();
         var dice = Instantiate(dicePrefab,
-                             diceSpawnPoint.position,
+                             diceSpawnPoint[0].position,
                              Quaternion.identity);
-        currentDice = dice;
         diceNumber = dice.GetComponent<Dice>().Roll(step);
         if (step != null)
         {
-         
+            currentData.currentCards.Remove("20002");
         }
         stateMachine.SetState<WaitForDiceResultState>();
     }
@@ -187,6 +200,7 @@ public class GameManager : MonoBehaviour
         {
             UpdateTurnNumber();
         }
+        deckSystem.ResetCardsDate();
     }
 
     private void UpdateCameraTarget()
@@ -215,8 +229,19 @@ public class GameManager : MonoBehaviour
     {
         OnGoldChangedEvent?.Invoke(currentData.AddGold(amount));
         ClosePanelsEvent?.Invoke();
+        currentData.currentCards.Remove("20001");
     }
 
+    public void UseRandomCard()
+    {
+        var cardList = deckSystem.GetCurrentCards();
+
+        if (cardList.Length != 0)
+        {
+            var index = Random.Range(0, cardList.Length);
+            cardList[index].cardButton.onClick?.Invoke();
+        }
+    }
 }
 // Enemy turn 
 //1. roll dice 

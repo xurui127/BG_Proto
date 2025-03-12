@@ -3,6 +3,6 @@ public class RollTwoDiceCommand : ICommand
 {
     public void Execute()
     {
-        Debug.Log("Roll Two Dice");
+        GameManager.Instance.RollTwoDices();
     }
 }

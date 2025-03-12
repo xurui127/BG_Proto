@@ -14,6 +14,10 @@ public class CardUI : MonoBehaviour
         cardText.text = name;
         onClickAction = action;
         cardButton.onClick.AddListener(onClickAction);
+        if (!GameManager.Instance.IsPlayer())
+        {
+            cardButton.interactable = false;
+        }
     }
 
     private void OnDestroy()

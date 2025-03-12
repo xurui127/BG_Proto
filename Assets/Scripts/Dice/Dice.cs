@@ -14,6 +14,7 @@ public class Dice : MonoBehaviour
     public int RollDice()
     {
         step = UnityEngine.Random.Range(1, 7);
+
         anim.SetInteger("Face", step);
         TossingDice();
         return step;
@@ -49,6 +50,8 @@ public class Dice : MonoBehaviour
                 transform.position = new Vector3(startPosition.x, startPosition.y + heightOffset, startPosition.z);
                 yield return null;
             }
+            yield return new WaitForSeconds(1f);
+            Destroy(gameObject);
         }
     }
 
