@@ -10,22 +10,32 @@ public class UIManager : MonoBehaviour
 
     private void OnEnable()
     {
-        GameManager.OnTurnChanged += UpdateTurnText;
-        GameManager.OnGoldChanged += UpdateGoldText;
+        GameManager.OnTurnChangedEvent += UpdateTurnText;
+        GameManager.OnGoldChangedEvent += UpdateGoldText;
+        GameManager.ClosePanelsEvent += ClosePanels;
+
     }
     private void OnDisable()
     {
-        GameManager.OnTurnChanged -= UpdateTurnText;
-        GameManager.OnGoldChanged -= UpdateGoldText;
+        GameManager.OnTurnChangedEvent -= UpdateTurnText;
+        GameManager.OnGoldChangedEvent -= UpdateGoldText;
+        GameManager.ClosePanelsEvent -= ClosePanels;
     }
 
     public void UpdateTurnText(int turnNumber) => turnText.text = $"Turn: {turnNumber}";
 
     public void UpdateGoldText(int amount) => goldText.text = $"Gold: {amount}";   
     
-    public void TiggleCardPanel()
+    public void TigglePanel()
     {
         cardPanel.SetActive(!cardPanel.activeSelf);
         movementPanel.SetActive(!movementPanel.activeSelf);
     }
+
+    private void ClosePanels()
+    {
+        movementPanel.SetActive(false);
+        cardPanel.SetActive(false);
+    }
+
 }

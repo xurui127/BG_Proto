@@ -6,15 +6,24 @@ public class Dice : MonoBehaviour
     Rigidbody rb;
     float delayTimer = 0.5f;
     Tuple<Vector3, int>[] directionToSides = new Tuple<Vector3, int>[6];
-    
+
+    [SerializeField]Animator anim;
+
+    public int step = 0;
     public bool isResultFound;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
+        //rb = GetComponent<Rigidbody>();
     }
-
-    private void Update()
+    
+    public int RollDice()
+    {
+        step = UnityEngine.Random.Range(1, 7);
+        anim.SetInteger("Face", step);
+        return step;
+    }
+    private void RBRollDice()
     {
         if (isResultFound)
         {

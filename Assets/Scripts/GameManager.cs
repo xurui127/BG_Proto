@@ -35,10 +35,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] TMP_Text turnText;
     [SerializeField] DeckSystem deckSystem;
     [SerializeField] UIManager UIManager;
-    //[SerializeField] GameObject rollPanel;
-    //[SerializeField] GameObject cardPanel;
 
-    readonly FSMController stateMachine = new();
+    public readonly FSMController stateMachine = new();
     readonly float rollForce = 5f;
     readonly float torqueForce = 10f;
     int characterCount = 0;
@@ -54,9 +52,9 @@ public class GameManager : MonoBehaviour
     public List<Transform> pathTile;
     public int diceNumber = 0;
 
-    public static event UnityAction<int> OnTurnChanged;
-
-    public static event UnityAction<int> OnGoldChanged;
+    public static UnityAction<int> OnTurnChangedEvent;
+    public static UnityAction<int> OnGoldChangedEvent;
+    public static UnityAction ClosePanelsEvent;
 
     public Dice GetCurrentDice() => currentDice.GetComponent<Dice>();
 
@@ -94,7 +92,6 @@ public class GameManager : MonoBehaviour
 
         characterCount = GameSettings.enemyCount;
         UpdateTurnNumber();
-        //state = GameState.Roll;
         pathTile = boardManager.tiles;
         InitCharacters();
         AddCardsToCharacter();
@@ -150,10 +147,12 @@ public class GameManager : MonoBehaviour
         var dice = Instantiate(dicePrefab,
                                diceSpawnPoint.position,
                                Quaternion.identity);
-        var rb = dice.GetComponent<Rigidbody>();
-        rb.AddForce(Vector3.up * rollForce, ForceMode.Impulse);
-        rb.AddTorque(Random.insideUnitSphere * torqueForce, ForceMode.Impulse);
+        //var rb = dice.GetComponent<Rigidbody>();
+        //rb.AddForce(Vector3.up * rollForce, ForceMode.Impulse);
+        //rb.AddTorque(Random.insideUnitSphere * torqueForce, ForceMode.Impulse);
+
         currentDice = dice;
+        diceNumber = dice.GetComponent<Dice>().RollDice();
         stateMachine.SetState<WaitForDiceResultState>();
     }
 
@@ -189,7 +188,7 @@ public class GameManager : MonoBehaviour
     private void UpdateTurnNumber()
     {
         turnNumber++;
-        OnTurnChanged?.Invoke(turnNumber);
+        OnTurnChangedEvent?.Invoke(turnNumber);
     }
 
     public void InitCards()
@@ -201,7 +200,8 @@ public class GameManager : MonoBehaviour
 
     public void AddGold(int amount)
     {
-        OnGoldChanged?.Invoke(currentData.AddGold(amount));
+        OnGoldChangedEvent?.Invoke(currentData.AddGold(amount));
+        ClosePanelsEvent?.Invoke();
     }
 
 }
