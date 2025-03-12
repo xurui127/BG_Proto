@@ -37,8 +37,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] UIManager UIManager;
 
     public readonly FSMController stateMachine = new();
-    readonly float rollForce = 5f;
-    readonly float torqueForce = 10f;
+    //readonly float rollForce = 5f;
+    //readonly float torqueForce = 10f;
     int characterCount = 0;
     int characterIndex = 0;
     int turnNumber = 0;
@@ -143,16 +143,29 @@ public class GameManager : MonoBehaviour
 
     public void RollDice()
     {
-        SetMovementPanel(false);
-        var dice = Instantiate(dicePrefab,
-                               diceSpawnPoint.position,
-                               Quaternion.identity);
+        RollDiceInternal(null);
         //var rb = dice.GetComponent<Rigidbody>();
         //rb.AddForce(Vector3.up * rollForce, ForceMode.Impulse);
         //rb.AddTorque(Random.insideUnitSphere * torqueForce, ForceMode.Impulse);
+    }
 
+    public void RollSpecificDice(int step)
+    {
+        RollDiceInternal(step);
+    }
+
+    private void RollDiceInternal(int? step)
+    {
+        ClosePanelsEvent?.Invoke();
+        var dice = Instantiate(dicePrefab,
+                             diceSpawnPoint.position,
+                             Quaternion.identity);
         currentDice = dice;
-        diceNumber = dice.GetComponent<Dice>().RollDice();
+        diceNumber = dice.GetComponent<Dice>().Roll(step);
+        if (step != null)
+        {
+         
+        }
         stateMachine.SetState<WaitForDiceResultState>();
     }
 

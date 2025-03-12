@@ -1,10 +1,10 @@
 
-using UnityEngine;
 
 public class RollSixCommand : ICommand
 {
+    int step = 6;
     public void Execute()
     {
-        Debug.Log("Roll Six");
+        GameManager.Instance.RollSpecificDice(step);
     }
 }

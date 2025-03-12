@@ -1,28 +1,64 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class Dice : MonoBehaviour
 {
-    Rigidbody rb;
-    float delayTimer = 0.5f;
-    Tuple<Vector3, int>[] directionToSides = new Tuple<Vector3, int>[6];
-
-    [SerializeField]Animator anim;
-
+    [SerializeField] Animator anim;
+    [SerializeField] AnimationClip rollClip;
     public int step = 0;
-    public bool isResultFound;
 
-    private void Awake()
-    {
-        //rb = GetComponent<Rigidbody>();
-    }
-    
+    float jumpDuration = 0.6f;
+    float tossingHeight = 2f;
+
     public int RollDice()
     {
         step = UnityEngine.Random.Range(1, 7);
         anim.SetInteger("Face", step);
+        TossingDice();
         return step;
     }
+
+    public int RollSpecificDice(int step)
+    {
+        anim.SetInteger("Face", step);
+        TossingDice();
+        return step;
+    }
+
+    public int Roll(int? specificStep =  null)
+    {
+        step = specificStep ?? UnityEngine.Random.Range(1, 7);
+        anim.SetInteger("Face", step);
+        TossingDice();
+        return step;
+    }
+    private void TossingDice()
+    {
+        StartCoroutine(TossingDiceCourutine());
+        IEnumerator TossingDiceCourutine()
+        {
+            var startPosition = transform.position;
+            float elapsedTime = 0f;
+
+            while (elapsedTime < jumpDuration)
+            {
+                elapsedTime += Time.deltaTime;
+                float t = elapsedTime / jumpDuration;
+                float heightOffset = Mathf.Sin(t * Mathf.PI) * tossingHeight;
+                transform.position = new Vector3(startPosition.x, startPosition.y + heightOffset, startPosition.z);
+                yield return null;
+            }
+        }
+    }
+
+
+
+    #region Rigidbody Roll
+    Rigidbody rb;
+    float delayTimer = 0.5f;
+    Tuple<Vector3, int>[] directionToSides = new Tuple<Vector3, int>[6];
+    public bool isResultFound;
     private void RBRollDice()
     {
         if (isResultFound)
@@ -62,4 +98,5 @@ public class Dice : MonoBehaviour
             isResultFound = true;
         }
     }
+    #endregion
 }
