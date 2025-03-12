@@ -200,6 +200,7 @@ public class GameManager : MonoBehaviour
         {
             UpdateTurnNumber();
         }
+        OnGoldChangedEvent?.Invoke(currentData.gold);
         deckSystem.ResetCardsDate();
     }
 

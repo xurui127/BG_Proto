@@ -4,7 +4,7 @@ using UnityEngine;
 public class CharacterData : MonoBehaviour
 {
     [SerializeField] public Dictionary<string, Card_SO> currentCards = new();
-    int gold = 0;
+   public int gold = 0;
 
     public int AddGold(int amount)
     {

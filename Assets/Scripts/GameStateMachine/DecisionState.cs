@@ -1,8 +1,9 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class DecisionState : AbstractState
 {
-    float decistionTimer;
+    float decisionTimer;
+    bool isWaitingForCardSelection;
     public DecisionState(GameManager gm)
     {
         GM = gm;
@@ -11,7 +12,7 @@ public class DecisionState : AbstractState
     public override void OnEnter()
     {
         waitingTime = 1f;
-        decistionTimer = 1f;
+        decisionTimer = 1f;
         if (GM.IsPlayer())
         {
             GM.SetMovementPanel(true);
@@ -25,11 +26,12 @@ public class DecisionState : AbstractState
         }
 
         waitingTime -= Time.deltaTime;
+
         if (waitingTime <= 0f)
         {
             if (GM.IsEmptyCard())
             {
-                var action = Random.Range(0, 2);
+                int action = Random.Range(0, 2);
                 if (action == 0)
                 {
                     GM.RollDice();
@@ -37,17 +39,23 @@ public class DecisionState : AbstractState
                 else
                 {
                     GM.InitCards();
-                    decistionTimer -= Time.deltaTime;
-                    if (decistionTimer <= 0f)
-                    {
-                        GM.UseRandomCard();
-                    }
+                    isWaitingForCardSelection = true;
+                    
                 }
-
             }
             else
             {
                 GM.RollDice();
+            }
+        }
+
+        if (isWaitingForCardSelection)
+        {
+            decisionTimer -= Time.deltaTime;
+            if (decisionTimer <= 0f)
+            {
+                isWaitingForCardSelection = false;
+                GM.UseRandomCard();
             }
         }
     }
@@ -55,6 +63,8 @@ public class DecisionState : AbstractState
     public override void OnExit()
     {
         waitingTime = 1f;
+        isWaitingForCardSelection = false;
+        decisionTimer = 1f;
     }
 
 
