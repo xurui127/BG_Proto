@@ -26,19 +26,14 @@ public class GameManager : MonoBehaviour
     }
 
     [SerializeField] CinemachineVirtualCamera virtualCamera;
-    [SerializeField] GameObject dicePrefab;
-    [SerializeField] Transform[] diceSpawnPoint;
+    [SerializeField] UIManager UIManager;
     [SerializeField] BoardManager boardManager;
-    [SerializeField] PlayerBehaviour player;
+    [SerializeField] CardSystem cardSystem;
     [SerializeField] GameObject PlayerPrefab;
     [SerializeField] GameObject EnemyPrefab;
-    [SerializeField] TMP_Text turnText;
-    [SerializeField] DeckSystem deckSystem;
-    [SerializeField] UIManager UIManager;
+    [SerializeField] GameObject dicePrefab;
+    [SerializeField] Transform[] diceSpawnPoint;
 
-    public readonly FSMController stateMachine = new();
-    //readonly float rollForce = 5f;
-    //readonly float torqueForce = 10f;
     int characterCount = 0;
     int characterIndex = 0;
     int turnNumber = 0;
@@ -48,6 +43,7 @@ public class GameManager : MonoBehaviour
     List<CharacterBehaviour> characters = new();
     List<CharacterData> characterDatas = new();
 
+    public readonly FSMController stateMachine = new();
     public List<Transform> pathTile;
     public int diceNumber = 0;
 
@@ -63,7 +59,7 @@ public class GameManager : MonoBehaviour
 
     public void SetMovementPanel(bool isOpen) => UIManager.movementPanel.SetActive(isOpen);
 
-    public bool IsEmptyCard() => currentData.currentCards.Count == 0 ? false : true;
+    public bool IsEmptyCard() => currentData.currentCards.Count == 0 ? true : false;
 
     private void Awake()
     {
@@ -130,55 +126,43 @@ public class GameManager : MonoBehaviour
     {
         foreach (var data in characterDatas)
         {
-            foreach (var card in deckSystem.cards)
+            foreach (var card in cardSystem.cards)
             {
                 data.currentCards.Add(card.id, card);
             }
         }
     }
 
-    public void RollDice()
-    {
-        RollDiceInternal(null);
-        //var rb = dice.GetComponent<Rigidbody>();
-        //rb.AddForce(Vector3.up * rollForce, ForceMode.Impulse);
-        //rb.AddTorque(Random.insideUnitSphere * torqueForce, ForceMode.Impulse);
-    }
+    public void RollDice() => RollDiceInternal(1, null);
 
-    public void RollSpecificDice(int step)
-    {
-        RollDiceInternal(step);
-    }
+    public void RollSpecificDice(int step) => RollDiceInternal(1,step);
 
-    public void RollTwoDices()
-    {
-        ClosePanelsEvent?.Invoke();
-        var dice1 = Instantiate(dicePrefab,
-                           diceSpawnPoint[1].position,
-                           Quaternion.identity);
-        var dice2 = Instantiate(dicePrefab,
-                           diceSpawnPoint[2].position,
-                           Quaternion.identity);
-
-        var diceNumber1 = dice1.GetComponent<Dice>().Roll();
-        var diceNumber2 = dice2.GetComponent<Dice>().Roll();
-
-        diceNumber = diceNumber1 + diceNumber2;
-        currentData.currentCards.Remove("20003");
-        stateMachine.SetState<WaitForDiceResultState>();
-    }
+    public void RollTwoDices() => RollDiceInternal(2,null);
     
-    private void RollDiceInternal(int? step)
+    private void RollDiceInternal(int diceCount,int? step)
     {
         ClosePanelsEvent?.Invoke();
-        var dice = Instantiate(dicePrefab,
-                             diceSpawnPoint[0].position,
-                             Quaternion.identity);
-        diceNumber = dice.GetComponent<Dice>().Roll(step);
+        diceNumber = 0;
+
+        for (int i = 0; i < diceCount; i++)
+        {
+            var spawnPosition = diceCount == 1 ? diceSpawnPoint[i] : diceSpawnPoint[i + 1]; 
+            var dice = Instantiate(dicePrefab,
+                                   spawnPosition.position,
+                                   Quaternion.identity);
+            var rolledValue = dice.GetComponent<Dice>().Roll(step);
+            diceNumber += rolledValue;
+        }
+
         if (step != null)
         {
             currentData.currentCards.Remove("20002");
         }
+        if (diceCount == 2)
+        {
+            currentData.currentCards.Remove("20003");
+        }
+
         stateMachine.SetState<WaitForDiceResultState>();
     }
 
@@ -201,7 +185,7 @@ public class GameManager : MonoBehaviour
             UpdateTurnNumber();
         }
         OnGoldChangedEvent?.Invoke(currentData.gold);
-        deckSystem.ResetCardsDate();
+        cardSystem.ResetCardsDate();
     }
 
     private void UpdateCameraTarget()
@@ -222,7 +206,7 @@ public class GameManager : MonoBehaviour
     public void InitCards()
     {
         UIManager.cardPanel.SetActive(true);
-        deckSystem.GenerateCards(currentData);
+        cardSystem.GenerateCards(currentData);
         UIManager.movementPanel.SetActive(false);
     }
 
@@ -235,7 +219,7 @@ public class GameManager : MonoBehaviour
 
     public void UseRandomCard()
     {
-        var cardList = deckSystem.GetCurrentCards();
+        var cardList = cardSystem.GetCurrentCards();
 
         if (cardList.Length != 0)
         {
@@ -259,6 +243,12 @@ public class GameManager : MonoBehaviour
 //2. enemy move
 
 #region Game Loop Couroutine
+// [SerializeField] PlayerBehaviour player;
+//readonly float rollForce = 5f;
+//readonly float torqueForce = 10f;
+//var rb = dice.GetComponent<Rigidbody>();
+//rb.AddForce(Vector3.up * rollForce, ForceMode.Impulse);
+//rb.AddTorque(Random.insideUnitSphere * torqueForce, ForceMode.Impulse);
 //private void GameLoop()
 //{
 //    StartCoroutine(GameLoopCoroutine());

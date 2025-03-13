@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DeckSystem : MonoBehaviour
+public class CardSystem : MonoBehaviour
 {
     [SerializeField] public Card_SO[] cards;
     [SerializeField] GameObject cardPrefab;

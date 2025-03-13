@@ -1918,7 +1918,7 @@ GameObject:
   - component: {fileID: 1018584945}
   - component: {fileID: 1018584946}
   m_Layer: 0
-  m_Name: DeckSystem
+  m_Name: CardSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2512,7 +2512,7 @@ MonoBehaviour:
   EnemyPrefab: {fileID: 3862277631971027947, guid: a2788e997a34e194a846a61b5188146a,
     type: 3}
   turnText: {fileID: 1273974683}
-  deckSystem: {fileID: 1018584946}
+  cardSystem: {fileID: 1018584946}
   UIManager: {fileID: 1684565023}
   pathTile: []
   diceNumber: 0

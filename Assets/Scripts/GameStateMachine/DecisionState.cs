@@ -63,8 +63,8 @@ public class DecisionState : AbstractState
     public override void OnExit()
     {
         waitingTime = 1f;
-        isWaitingForCardSelection = false;
         decisionTimer = 1f;
+        isWaitingForCardSelection = false;
     }
 
 

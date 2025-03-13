@@ -13,8 +13,8 @@ public class UIManager : MonoBehaviour
         GameManager.OnTurnChangedEvent += UpdateTurnText;
         GameManager.OnGoldChangedEvent += UpdateGoldText;
         GameManager.ClosePanelsEvent += ClosePanels;
-
     }
+
     private void OnDisable()
     {
         GameManager.OnTurnChangedEvent -= UpdateTurnText;

@@ -8,7 +8,6 @@ public class MoveState : AbstractState
 
     public override void OnEnter()
     {
-        //GM.DestroyDice();
         GM.MoveCharacter();
     }
 
