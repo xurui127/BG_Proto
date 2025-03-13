@@ -11,8 +11,9 @@ public class DecisionState : AbstractState
 
     public override void OnEnter()
     {
+        isWaitingForCardSelection = false;
         waitingTime = 1f;
-        decisionTimer = 1f;
+        decisionTimer = 2f;
         if (GM.IsPlayer())
         {
             GM.SetMovementPanel(true);
@@ -29,18 +30,23 @@ public class DecisionState : AbstractState
 
         if (waitingTime <= 0f)
         {
-            if (GM.IsEmptyCard())
+            if (!GM.IsEmptyCard())
             {
                 int action = Random.Range(0, 2);
-                if (action == 0)
+                if (action == 0 && !isWaitingForCardSelection)
                 {
+
                     GM.RollDice();
                 }
                 else
                 {
                     GM.InitCards();
+                    decisionTimer -= Time.deltaTime;
                     isWaitingForCardSelection = true;
-                    
+                    if (decisionTimer <= 0)
+                    {
+                        GM.UseRandomCard();
+                    }
                 }
             }
             else
@@ -48,22 +54,12 @@ public class DecisionState : AbstractState
                 GM.RollDice();
             }
         }
-
-        if (isWaitingForCardSelection)
-        {
-            decisionTimer -= Time.deltaTime;
-            if (decisionTimer <= 0f)
-            {
-                isWaitingForCardSelection = false;
-                GM.UseRandomCard();
-            }
-        }
     }
 
     public override void OnExit()
     {
         waitingTime = 1f;
-        decisionTimer = 1f;
+        decisionTimer = 2f;
         isWaitingForCardSelection = false;
     }
 

@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-public class UIManager : MonoBehaviour
+public class UIManager : MonoSingleton<UIManager>
 {
     [SerializeField] TMP_Text turnText;
     [SerializeField] TMP_Text goldText;

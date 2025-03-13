@@ -1,32 +1,12 @@
 ﻿using Cinemachine;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoSingleton<GameManager>
 {
-    private static GameManager instance;
-    public static GameManager Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                instance = FindAnyObjectByType<GameManager>();
-            }
-            if (instance == null)
-            {
-                GameObject obj = new("GameManager");
-                instance = obj.AddComponent<GameManager>();
-            }
-            return instance;
-        }
-    }
-
     [SerializeField] CinemachineVirtualCamera virtualCamera;
-    [SerializeField] UIManager UIManager;
     [SerializeField] BoardManager boardManager;
     [SerializeField] CardSystem cardSystem;
     [SerializeField] GameObject PlayerPrefab;
@@ -34,9 +14,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject dicePrefab;
     [SerializeField] Transform[] diceSpawnPoint;
 
+    [HideInInspector] public List<Transform> pathTile;
+
     int characterCount = 0;
     int characterIndex = 0;
     int turnNumber = 0;
+    int diceNumber = 0;
 
     CharacterBehaviour currentCharacter;
     CharacterData currentData;
@@ -44,9 +27,6 @@ public class GameManager : MonoBehaviour
     List<CharacterData> characterDatas = new();
 
     public readonly FSMController stateMachine = new();
-    public List<Transform> pathTile;
-    public int diceNumber = 0;
-
     public static UnityAction<int> OnTurnChangedEvent;
     public static UnityAction<int> OnGoldChangedEvent;
     public static UnityAction ClosePanelsEvent;
@@ -57,20 +37,13 @@ public class GameManager : MonoBehaviour
 
     public bool IsPlayer() => currentCharacter.isPlayer;
 
-    public void SetMovementPanel(bool isOpen) => UIManager.movementPanel.SetActive(isOpen);
+    public void SetMovementPanel(bool isOpen) => UIManager.Instance.movementPanel.SetActive(isOpen);
 
     public bool IsEmptyCard() => currentData.currentCards.Count == 0 ? true : false;
 
-    private void Awake()
+    protected override void Awake()
     {
-        if (instance == null)
-        {
-            instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        base.Awake();
         characters = new();
     }
 
@@ -135,18 +108,18 @@ public class GameManager : MonoBehaviour
 
     public void RollDice() => RollDiceInternal(1, null);
 
-    public void RollSpecificDice(int step) => RollDiceInternal(1,step);
+    public void RollSpecificDice(int step) => RollDiceInternal(1, step);
 
-    public void RollTwoDices() => RollDiceInternal(2,null);
-    
-    private void RollDiceInternal(int diceCount,int? step)
+    public void RollTwoDices() => RollDiceInternal(2, null);
+
+    private void RollDiceInternal(int diceCount, int? step)
     {
         ClosePanelsEvent?.Invoke();
         diceNumber = 0;
 
         for (int i = 0; i < diceCount; i++)
         {
-            var spawnPosition = diceCount == 1 ? diceSpawnPoint[i] : diceSpawnPoint[i + 1]; 
+            var spawnPosition = diceCount == 1 ? diceSpawnPoint[i] : diceSpawnPoint[i + 1];
             var dice = Instantiate(dicePrefab,
                                    spawnPosition.position,
                                    Quaternion.identity);
@@ -205,9 +178,9 @@ public class GameManager : MonoBehaviour
 
     public void InitCards()
     {
-        UIManager.cardPanel.SetActive(true);
+        UIManager.Instance.cardPanel.SetActive(true);
         cardSystem.GenerateCards(currentData);
-        UIManager.movementPanel.SetActive(false);
+        UIManager.Instance.movementPanel.SetActive(false);
     }
 
     public void AddGold(int amount)
