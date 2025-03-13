@@ -10,6 +10,18 @@ public class CardSystem : MonoBehaviour
 
     public void GenerateCards(CharacterData data)
     {
+
+        UIManager.Instance.IsHideBackButton(GameManager.Instance.IsPlayer());
+
+        if (data.currentCards.Count == 0)
+        {
+            UIManager.Instance.OpenNoCardsPanel(true);
+        }
+        else
+        {
+            UIManager.Instance.OpenNoCardsPanel(false);
+        }
+
         if (isGenerated)
         {
             return;

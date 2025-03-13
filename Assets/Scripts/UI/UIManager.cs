@@ -7,6 +7,8 @@ public class UIManager : MonoSingleton<UIManager>
     [SerializeField] TMP_Text goldText;
     [SerializeField] public GameObject movementPanel;
     [SerializeField] public GameObject cardPanel;
+    [SerializeField] public GameObject noCardPanel;
+    [SerializeField] public GameObject backButton;
 
     private void OnEnable()
     {
@@ -32,6 +34,13 @@ public class UIManager : MonoSingleton<UIManager>
         movementPanel.SetActive(!movementPanel.activeSelf);
     }
 
+    public void OpenNoCardsPanel(bool isOpen) => noCardPanel.SetActive(isOpen);
+  
+
+    public void IsHideBackButton(bool hide)
+    {
+        backButton.SetActive(hide);
+    }
     private void ClosePanels()
     {
         movementPanel.SetActive(false);
