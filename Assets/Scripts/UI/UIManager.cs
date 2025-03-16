@@ -37,9 +37,9 @@ public class UIManager : MonoSingleton<UIManager>
     public void OpenNoCardsPanel(bool isOpen) => noCardPanel.SetActive(isOpen);
   
 
-    public void IsHideBackButton(bool hide)
+    public void IsHideBackButton(bool isHide)
     {
-        backButton.SetActive(hide);
+        backButton.SetActive(isHide);
     }
     private void ClosePanels()
     {

@@ -1,3 +1,4 @@
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 
 public class CardSystem : MonoBehaviour
@@ -5,6 +6,7 @@ public class CardSystem : MonoBehaviour
     [SerializeField] public Card_SO[] cards;
     [SerializeField] GameObject cardPrefab;
     [SerializeField] Transform cardContainer;
+    [SerializeField] CardUI[] cardUIs;
 
     bool isGenerated = false;
 
@@ -13,37 +15,31 @@ public class CardSystem : MonoBehaviour
 
         UIManager.Instance.IsHideBackButton(GameManager.Instance.IsPlayer());
 
-        if (data.currentCards.Count == 0)
-        {
-            UIManager.Instance.OpenNoCardsPanel(true);
-        }
-        else
-        {
-            UIManager.Instance.OpenNoCardsPanel(false);
-        }
+        UIManager.Instance.OpenNoCardsPanel(data.currentCards.Count == 0);
 
         if (isGenerated)
         {
             return;
         }
 
-        var cards = cardContainer.GetComponentsInChildren<CardUI>();
+        //var cards = cardContainer.GetComponentsInChildren<CardUI>();
 
-        foreach (var card in cards)
+        foreach (var card in cardUIs)
         {
             if (card != null)
             {
-                Destroy(card.gameObject);
+              card.gameObject.SetActive(false);
             }
         }
 
+        int index = 0;
         foreach (var card in data.currentCards.Values)
         {
-            var ob = Instantiate(cardPrefab, cardContainer);
-            var ui = ob.GetComponent<CardUI>();
+            cardUIs[index].gameObject.SetActive(true);
+            var ui = cardUIs[index];
             var name = card.cardName;
             var command = card.GetCommands();
-
+            index++;
             if (command != null)
             {
                 ui.SetupCard(name, () => command.Execute());

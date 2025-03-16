@@ -7,6 +7,7 @@ using UnityEngine.Events;
 public class GameManager : MonoSingleton<GameManager>
 {
     [SerializeField] CinemachineVirtualCamera virtualCamera;
+    [SerializeField] UIManager uiManager;
     [SerializeField] BoardManager boardManager;
     [SerializeField] CardSystem cardSystem;
     [SerializeField] GameObject PlayerPrefab;
@@ -37,9 +38,9 @@ public class GameManager : MonoSingleton<GameManager>
 
     public bool IsPlayer() => currentCharacter.isPlayer;
 
-    public void SetMovementPanel(bool isOpen) => UIManager.Instance.movementPanel.SetActive(isOpen);
+    public void SetMovementPanel(bool isOpen) => uiManager.movementPanel.SetActive(isOpen);
 
-    public bool IsEmptyCard() => currentData.currentCards.Count == 0 ? true : false;
+    public bool IsEmptyCard() => currentData.currentCards.Count == 0;
 
     protected override void Awake()
     {
@@ -119,7 +120,7 @@ public class GameManager : MonoSingleton<GameManager>
 
         for (int i = 0; i < diceCount; i++)
         {
-            var spawnPosition = diceCount == 1 ? diceSpawnPoint[i] : diceSpawnPoint[i + 1];
+            var spawnPosition = diceSpawnPoint[i + (diceCount - 1)];
             var dice = Instantiate(dicePrefab,
                                    spawnPosition.position,
                                    Quaternion.identity);
@@ -178,9 +179,9 @@ public class GameManager : MonoSingleton<GameManager>
 
     public void InitCards()
     {
-        UIManager.Instance.cardPanel.SetActive(true);
+        uiManager.cardPanel.SetActive(true);
         cardSystem.GenerateCards(currentData);
-        UIManager.Instance.movementPanel.SetActive(false);
+        uiManager.movementPanel.SetActive(false);
     }
 
     public void AddGold(int amount)
