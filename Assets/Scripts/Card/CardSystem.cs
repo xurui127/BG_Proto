@@ -7,6 +7,7 @@ public class CardSystem : MonoBehaviour
     [SerializeField] Transform cardContainer;
     [SerializeField] CardUI[] cardUIS;
     [SerializeField] ScreenCard[] screenCards;
+    [SerializeField] UIManager uiManager;
 
     bool isGenerated = false;
 
@@ -37,6 +38,8 @@ public class CardSystem : MonoBehaviour
         {
             cardUIS[index].gameObject.SetActive(true);
             screenCards[index].gameObject.SetActive(true);
+            cardUIS[index].name = card.name;
+            screenCards[index].name = card.name;
             var ui = cardUIS[index];
             var name = card.cardName;
             var command = card.GetCommands();

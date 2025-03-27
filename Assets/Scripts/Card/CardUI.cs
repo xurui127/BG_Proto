@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IDragHandler, IEndDragHandler
+public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IDragHandler, IEndDragHandler, IPointerUpHandler
 {
     [SerializeField] Camera cardCam;
     public Button cardButton;
@@ -19,6 +19,8 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
     bool isDragging = false;
     bool isHoverOver = false;
+
+    const float yOffset = 300f;
 
     private void Awake()
     {
@@ -68,7 +70,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
     private void Update()
     {
-        UpdateScreenCardPosition();
+        //UpdateScreenCardPosition();
     }
     private Vector3 UIToWorldPos(Vector3? UIoffset = null)
     {
@@ -100,6 +102,11 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
       
     }
 
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        isDragging = false;
+    }
+
     public void OnDrag(PointerEventData eventData)
     {
         var mousePos = Input.mousePosition;
@@ -109,6 +116,11 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (!isDragging && transform.position.y > yOffset)
+        {
+            Debug.Log("Upper");
+            return;
+        }
         CardSmoothReturn();
     }
 
@@ -148,8 +160,5 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         }
     }
 
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        throw new System.NotImplementedException();
-    }
+   
 }
