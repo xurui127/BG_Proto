@@ -1,4 +1,3 @@
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 
 public class CardSystem : MonoBehaviour
@@ -6,7 +5,8 @@ public class CardSystem : MonoBehaviour
     [SerializeField] public Card_SO[] cards;
     [SerializeField] GameObject cardPrefab;
     [SerializeField] Transform cardContainer;
-    [SerializeField] CardUI[] cardUIs;
+    [SerializeField] CardUI[] cardUIS;
+    [SerializeField] ScreenCard[] screenCards;
 
     bool isGenerated = false;
 
@@ -24,30 +24,33 @@ public class CardSystem : MonoBehaviour
 
         //var cards = cardContainer.GetComponentsInChildren<CardUI>();
 
-        foreach (var card in cardUIs)
+        foreach (var card in cardUIS)
         {
             if (card != null)
             {
-              card.gameObject.SetActive(false);
+                card.gameObject.SetActive(false);
             }
         }
 
         int index = 0;
         foreach (var card in data.currentCards.Values)
         {
-            cardUIs[index].gameObject.SetActive(true);
-            var ui = cardUIs[index];
+            cardUIS[index].gameObject.SetActive(true);
+            screenCards[index].gameObject.SetActive(true);
+            var ui = cardUIS[index];
             var name = card.cardName;
             var command = card.GetCommands();
-            index++;
+            
             if (command != null)
             {
-                ui.SetupCard(name, () => command.Execute());
+                ui.Init(name,screenCards[index], () => command.Execute());
             }
             else
             {
                 Debug.Log($"Card {name} has no valid command.");
             }
+            cardUIS[index].UpdateScreenCardPosition();
+            index++;
         }
 
         isGenerated = true;
