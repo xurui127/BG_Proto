@@ -1,26 +1,42 @@
+﻿using System.Collections;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class CardUI : MonoBehaviour,IPointerEnterHandler,IPointerExitHandler,IPointerDownHandler
+public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IDragHandler, IEndDragHandler
 {
     [SerializeField] Camera cardCam;
     public Button cardButton;
     public TMP_Text cardText;
 
     ScreenCard screenCard;
-    RectTransform RectTransform;
+    RectTransform currentPosition;
+    Vector3 originePosition;
     UnityAction onClickAction;
 
     bool isDragging = false;
 
     private void Awake()
     {
-        RectTransform = GetComponent<RectTransform>();
+        currentPosition = GetComponent<RectTransform>();
     }
+
+    private void Start()
+    {
+        originePosition = currentPosition.position;
+    }
+    public void Init(string name, ScreenCard screenCard)
+    {
+        cardText.text = name;
+        this.screenCard = screenCard;
+        if (!GameManager.Instance.IsPlayer())
+        {
+            cardButton.interactable = false;
+        }
+    }
+
     public void Init(string name, ScreenCard screenCard, UnityAction action)
     {
         cardText.text = name;
@@ -49,14 +65,7 @@ public class CardUI : MonoBehaviour,IPointerEnterHandler,IPointerExitHandler,IPo
 
     private void Update()
     {
-        Debug.Log(isDragging);
-        if (isDragging)
-        {
-            var mousePos = Input.mousePosition;
-            this.RectTransform.position = mousePos;
-            Debug.Log("in");
-            UpdateScreenCardPosition();
-        }
+
     }
     private Vector3 UIToWorldPos(Vector3? UIoffset = null)
     {
@@ -65,7 +74,7 @@ public class CardUI : MonoBehaviour,IPointerEnterHandler,IPointerExitHandler,IPo
             UIoffset = Vector3.zero;
         }
 
-        Vector3 result = RectTransformUtility.WorldToScreenPoint(null, RectTransform.position + UIoffset.Value);
+        Vector3 result = RectTransformUtility.WorldToScreenPoint(null, currentPosition.position + UIoffset.Value);
         result.z = -cardCam.transform.position.z;
         var candidatePos = cardCam.ScreenToWorldPoint(result);
         return candidatePos;
@@ -83,8 +92,44 @@ public class CardUI : MonoBehaviour,IPointerEnterHandler,IPointerExitHandler,IPo
 
     public void OnPointerDown(PointerEventData eventData)
     {
-     
         isDragging = true;
-       
+        originePosition = currentPosition.position;
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        var mousePos = Input.mousePosition;
+        this.currentPosition.position = mousePos;
+        UpdateScreenCardPosition();
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        CardSmoothReturn();
+    }
+
+    private void CardSmoothReturn()
+    {
+        StopAllCoroutines();
+        StartCoroutine(CardSmoothReturnCoroutine());
+        IEnumerator CardSmoothReturnCoroutine()
+        {
+            var start = currentPosition.position;
+            var end = originePosition;
+            var duration = 0.2f;
+            var time = 0f;
+
+            while (time < duration)
+            {
+                time += Time.deltaTime;
+                var t = time / duration;
+                currentPosition.position = Vector3.Lerp(start, end, t);
+                UpdateScreenCardPosition();
+                yield return null;
+            }
+
+            currentPosition.position = end;
+            UpdateScreenCardPosition();
+        }
     }
 }

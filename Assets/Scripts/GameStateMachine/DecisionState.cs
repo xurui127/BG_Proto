@@ -18,6 +18,7 @@ public class DecisionState : AbstractState
         {
             GM.SetMovementPanel(true);
         }
+        GM.InitCards();
     }
     public override void OnUpdate()
     {
