@@ -11,6 +11,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     public Button cardButton;
     public TMP_Text cardText;
 
+    Vector2 lastScreenSize;
     ScreenCard screenCard;
     RectTransform currentTransform;
     Vector3 originePosition;
@@ -20,7 +21,8 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     bool isDragging = false;
     bool isHoverOver = false;
 
-    const float yOffset = 300f;
+
+    const float yOffset = 280f;
 
     private void Awake()
     {
@@ -32,6 +34,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         originePosition = currentTransform.position;
         origineScale = screenCard.transform.localScale;
     }
+
     public void Init(string name, ScreenCard screenCard)
     {
         cardText.text = name;
@@ -70,7 +73,13 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
     private void Update()
     {
-        //UpdateScreenCardPosition();
+        if(Screen.width != lastScreenSize.x || Screen.height != lastScreenSize.y)
+        {
+            lastScreenSize = new Vector2 (Screen.width, Screen.height);
+            originePosition = currentTransform.position;
+        }
+
+        UpdateScreenCardPosition();
     }
     private Vector3 UIToWorldPos(Vector3? UIoffset = null)
     {
@@ -79,9 +88,11 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
             UIoffset = Vector3.zero;
         }
 
-        Vector3 result = RectTransformUtility.WorldToScreenPoint(null, currentTransform.position + UIoffset.Value);
-        result.z = -cardCam.transform.position.z;
-        var candidatePos = cardCam.ScreenToWorldPoint(result);
+        Vector3 screenPoint = RectTransformUtility.WorldToScreenPoint(null, currentTransform.position + UIoffset.Value);
+        screenPoint.z = -cardCam.transform.position.z;
+        //Vector3 worldPos;
+        //RectTransformUtility.ScreenPointToWorldPointInRectangle(currentTransform, screenPoint, cardCam, out worldPos);
+        var candidatePos = cardCam.ScreenToWorldPoint(screenPoint);
         return candidatePos;
     }
 
@@ -111,7 +122,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     {
         var mousePos = Input.mousePosition;
         this.currentTransform.position = mousePos;
-        UpdateScreenCardPosition();
+        //UpdateScreenCardPosition();
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -140,12 +151,12 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
                 time += Time.deltaTime;
                 var t = time / duration;
                 currentTransform.position = Vector3.Lerp(start, end, t);
-                UpdateScreenCardPosition();
+                //UpdateScreenCardPosition();
                 yield return null;
             }
 
             currentTransform.position = end;
-            UpdateScreenCardPosition();
+            //UpdateScreenCardPosition();
         }
     }
     private void CardOnPointEnter()

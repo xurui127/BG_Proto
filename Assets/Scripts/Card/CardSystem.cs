@@ -54,7 +54,7 @@ public class CardSystem : MonoBehaviour
             {
                 Debug.Log($"Card {name} has no valid command.");
             }
-            cardUIS[index].UpdateScreenCardPosition();
+            //cardUIS[index].UpdateScreenCardPosition();
             index++;
         }
 
