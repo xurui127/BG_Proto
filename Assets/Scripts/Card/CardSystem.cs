@@ -1,13 +1,17 @@
+using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class CardSystem : MonoBehaviour
 {
     [SerializeField] public Card_SO[] cards;
     [SerializeField] GameObject cardPrefab;
     [SerializeField] Transform cardContainer;
+    [SerializeField] CardVisualHandler cardVisualHandler;
     [SerializeField] CardUI[] cardUIS;
     [SerializeField] ScreenCard[] screenCards;
-    [SerializeField] UIManager uiManager;
+
+    CardUI selectCard;
 
     bool isGenerated = false;
 
@@ -23,8 +27,6 @@ public class CardSystem : MonoBehaviour
             return;
         }
 
-        //var cards = cardContainer.GetComponentsInChildren<CardUI>();
-
         foreach (var card in cardUIS)
         {
             if (card != null)
@@ -38,8 +40,11 @@ public class CardSystem : MonoBehaviour
         {
             cardUIS[index].gameObject.SetActive(true);
             screenCards[index].gameObject.SetActive(true);
+
             cardUIS[index].name = card.name;
             screenCards[index].name = card.name;
+
+
             var ui = cardUIS[index];
             var name = card.cardName;
             var command = card.GetCommands();
@@ -47,12 +52,16 @@ public class CardSystem : MonoBehaviour
             if (command != null)
             {
                // ui.Init(name,screenCards[index], () => command.Execute());
-                ui.Init(name,screenCards[index]);
-               
+                ui.Init(name);
             }
             else
             {
                 Debug.Log($"Card {name} has no valid command.");
+            }
+
+            if(cardVisualHandler != null)
+            {
+                cardVisualHandler.CardRegister(cardUIS[index], screenCards[index]);
             }
             //cardUIS[index].UpdateScreenCardPosition();
             index++;
@@ -66,8 +75,6 @@ public class CardSystem : MonoBehaviour
         isGenerated = false;
     }
 
-    public CardUI[] GetCurrentCards()
-    {
-        return cardContainer.GetComponentsInChildren<CardUI>();
-    }
+    public CardUI[] GetCurrentCards() => cardUIS;
+
 }

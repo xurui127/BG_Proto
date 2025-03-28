@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IDragHandler, IEndDragHandler, IPointerUpHandler
@@ -10,46 +11,44 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     [SerializeField] Camera cardCam;
     public Button cardButton;
     public TMP_Text cardText;
+    public RectTransform currentTransform;
 
-    Vector2 lastScreenSize;
-    ScreenCard screenCard;
-    RectTransform currentTransform;
     Vector3 originePosition;
-    Vector3 origineScale;
     UnityAction onClickAction;
 
     bool isDragging = false;
     bool isHoverOver = false;
-
-
     const float yOffset = 280f;
+
+    [HideInInspector] internal UnityEvent<CardUI> OnCardPointEnterEvent = new();
+    [HideInInspector] internal UnityEvent<CardUI> OnCardPointExitEvent = new();
+    [HideInInspector] internal UnityEvent<CardUI> OnCardPointDownEvent = new();
+    [HideInInspector] internal UnityEvent<CardUI> OnCardPointUpEvent = new();
 
     private void Awake()
     {
         currentTransform = GetComponent<RectTransform>();
     }
 
+
     private void Start()
     {
         originePosition = currentTransform.position;
-        origineScale = screenCard.transform.localScale;
     }
 
-    public void Init(string name, ScreenCard screenCard)
+    public void Init(string name)
     {
         cardText.text = name;
-        this.screenCard = screenCard;
+      
         if (!GameManager.Instance.IsPlayer())
         {
             cardButton.interactable = false;
         }
     }
-
-    public void Init(string name, ScreenCard screenCard, UnityAction action)
+    internal void Init(string name, UnityAction action)
     {
         cardText.text = name;
         onClickAction = action;
-        this.screenCard = screenCard;
         cardButton.onClick.AddListener(onClickAction);
         if (!GameManager.Instance.IsPlayer())
         {
@@ -57,31 +56,64 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         }
     }
 
+    internal void EventRegister(UnityAction<CardUI> onEnter, UnityAction<CardUI> onExit, UnityAction<CardUI> onClickDown, UnityAction<CardUI>  onClickUp)
+    {
+        OnCardPointEnterEvent.AddListener(onEnter);
+        OnCardPointExitEvent.AddListener(onExit);
+
+        OnCardPointDownEvent.AddListener(onClickDown);
+        OnCardPointUpEvent.AddListener(onClickUp);
+    }
+
+ 
+
     private void OnDestroy()
     {
         cardButton.onClick.RemoveAllListeners();
     }
 
-    internal void UpdateScreenCardPosition()
+    public void OnPointerEnter(PointerEventData eventData)
     {
-        Vector3 cadidatePos = UIToWorldPos();
-        if (screenCard != null)
+        if (!isHoverOver)
         {
-            screenCard.gameObject.transform.position = cadidatePos;
+            isHoverOver = true;
+            OnCardPointEnterEvent?.Invoke(this);
         }
     }
 
-    private void Update()
+    public void OnPointerExit(PointerEventData eventData)
     {
-        if(Screen.width != lastScreenSize.x || Screen.height != lastScreenSize.y)
-        {
-            lastScreenSize = new Vector2 (Screen.width, Screen.height);
-            originePosition = currentTransform.position;
-        }
-
-        UpdateScreenCardPosition();
+        isHoverOver = false;
+        OnCardPointExitEvent?.Invoke(this);
     }
-    private Vector3 UIToWorldPos(Vector3? UIoffset = null)
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        isDragging = false;
+        OnCardPointUpEvent?.Invoke(this);
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        isDragging = true;
+        OnCardPointDownEvent?.Invoke(this);
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        var mousePos = Input.mousePosition;
+        this.currentTransform.position = mousePos;
+        
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        if (!isDragging && transform.position.y > yOffset) return;
+
+        CardSmoothReturn();
+    }
+
+    internal Vector3 GetUICardWordPos(Vector3? UIoffset = null)
     {
         if (UIoffset == null)
         {
@@ -90,49 +122,14 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
         Vector3 screenPoint = RectTransformUtility.WorldToScreenPoint(null, currentTransform.position + UIoffset.Value);
         screenPoint.z = -cardCam.transform.position.z;
-        //Vector3 worldPos;
-        //RectTransformUtility.ScreenPointToWorldPointInRectangle(currentTransform, screenPoint, cardCam, out worldPos);
+
         var candidatePos = cardCam.ScreenToWorldPoint(screenPoint);
         return candidatePos;
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
+    internal void ResetCurrentPostion()
     {
-        CardOnPointEnter();
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        isHoverOver = false;
-        screenCard.transform.localScale = origineScale;
-    }
-
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        isDragging = true;
-      
-    }
-
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        isDragging = false;
-    }
-
-    public void OnDrag(PointerEventData eventData)
-    {
-        var mousePos = Input.mousePosition;
-        this.currentTransform.position = mousePos;
-        //UpdateScreenCardPosition();
-    }
-
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        if (!isDragging && transform.position.y > yOffset)
-        {
-            Debug.Log("Upper");
-            return;
-        }
-        CardSmoothReturn();
+        originePosition = currentTransform.position;
     }
 
     private void CardSmoothReturn()
@@ -151,25 +148,10 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
                 time += Time.deltaTime;
                 var t = time / duration;
                 currentTransform.position = Vector3.Lerp(start, end, t);
-                //UpdateScreenCardPosition();
                 yield return null;
             }
 
             currentTransform.position = end;
-            //UpdateScreenCardPosition();
         }
     }
-    private void CardOnPointEnter()
-    {
-      
-        if (!isHoverOver)
-        {
-            isHoverOver = true;
-            screenCard.transform.localScale = new Vector3(origineScale.x + 0.2f,
-                                                          origineScale.y + 0.2f,
-                                                          origineScale.z + 0.2f);
-        }
-    }
-
-   
 }

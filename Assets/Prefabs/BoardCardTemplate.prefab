@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8954073092961988466}
   - component: {fileID: 2807022825888340340}
   - component: {fileID: 3119175780594248124}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7258653602650878044}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 2413609571507455503}
   - component: {fileID: 3086023504823384577}
   - component: {fileID: 2175264086067925200}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BoardCardTemplate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -181,6 +181,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57f1407a133458741b0b9c63b7692f8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shakeDuration: 0.5
+  shakeSpeed: 30
+  shakeAngle: 6
+  shakeTimer: 1
+  cooldownTimer: 0
+  cooldownDuration: 0.4
 --- !u!1 &4790596679605774254
 GameObject:
   m_ObjectHideFlags: 0
@@ -190,7 +196,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9139717755087532605}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ModelContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
