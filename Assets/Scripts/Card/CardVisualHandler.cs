@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
+
 public class CardVisualHandler : MonoBehaviour
 {
     [SerializeField] Camera cardCam;
-    Dictionary<CardUI, ScreenCard> cardPairs = new();
+    readonly Dictionary<CardUI, ScreenCard> cardPairs = new();
 
     Vector2 lastScreenSize;
 
@@ -26,7 +27,9 @@ public class CardVisualHandler : MonoBehaviour
             uiCard.EventRegister(OnCardPointEnterEvent,
                                  OnCardPointerExitEvent,
                                  OnCardPointerDownEvent,
-                                 OnCardPointerUpEvent);
+                                 OnCardPointerUpEvent,
+                                 OnCardOnDragEvent,
+                                 OnCardEndDragEvent);
         }
     }
 
@@ -52,12 +55,12 @@ public class CardVisualHandler : MonoBehaviour
 
     private void OnCardOnDragEvent(CardUI card)
     {
-        
+        cardPairs[card].CardOnDragging();
     }
 
     private void OnCardEndDragEvent(CardUI card)
     {
-        Debug.Log("Call Drag end Event");
+        cardPairs[card].CardOnDraggEnd();
     }
 
     private void UpdateCardsVisualPostion()

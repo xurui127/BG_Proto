@@ -3,7 +3,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IDragHandler, IEndDragHandler, IPointerUpHandler
@@ -24,6 +23,9 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     [HideInInspector] internal UnityEvent<CardUI> OnCardPointExitEvent = new();
     [HideInInspector] internal UnityEvent<CardUI> OnCardPointDownEvent = new();
     [HideInInspector] internal UnityEvent<CardUI> OnCardPointUpEvent = new();
+    [HideInInspector] internal UnityEvent<CardUI> OnCardDraggingEvent = new();
+    [HideInInspector] internal UnityEvent<CardUI> OnCardDraggingEndEvent = new();
+   
 
     private void Awake()
     {
@@ -39,7 +41,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     public void Init(string name)
     {
         cardText.text = name;
-      
+
         if (!GameManager.Instance.IsPlayer())
         {
             cardButton.interactable = false;
@@ -56,16 +58,19 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         }
     }
 
-    internal void EventRegister(UnityAction<CardUI> onEnter, UnityAction<CardUI> onExit, UnityAction<CardUI> onClickDown, UnityAction<CardUI>  onClickUp)
+    internal void EventRegister(UnityAction<CardUI> onEnter, UnityAction<CardUI> onExit, UnityAction<CardUI> onClickDown, UnityAction<CardUI> onClickUp, UnityAction<CardUI> onDragging, UnityAction<CardUI> onDraggingEnd)
     {
         OnCardPointEnterEvent.AddListener(onEnter);
         OnCardPointExitEvent.AddListener(onExit);
 
         OnCardPointDownEvent.AddListener(onClickDown);
         OnCardPointUpEvent.AddListener(onClickUp);
+
+        OnCardDraggingEvent.AddListener(onDragging);
+        OnCardDraggingEndEvent.AddListener(onDraggingEnd);
     }
 
- 
+
 
     private void OnDestroy()
     {
@@ -103,14 +108,20 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     {
         var mousePos = Input.mousePosition;
         this.currentTransform.position = mousePos;
-        
+        OnCardDraggingEvent?.Invoke(this);
     }
-
+    
     public void OnEndDrag(PointerEventData eventData)
     {
         if (!isDragging && transform.position.y > yOffset) return;
 
+        OnCardDraggingEndEvent?.Invoke(this);
         CardSmoothReturn();
+    }
+
+    private void SwapCard()
+    {
+
     }
 
     internal Vector3 GetUICardWordPos(Vector3? UIoffset = null)

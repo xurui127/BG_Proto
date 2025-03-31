@@ -582,31 +582,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1650153838}
     m_Modifications:
-    - target: {fileID: 2175264086067925200, guid: b5598149d41157f4bb6a1aaae513b945,
-        type: 3}
-      propertyPath: shakeAngle
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 2175264086067925200, guid: b5598149d41157f4bb6a1aaae513b945,
-        type: 3}
-      propertyPath: shakeSpeed
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 2175264086067925200, guid: b5598149d41157f4bb6a1aaae513b945,
-        type: 3}
-      propertyPath: cooldownTimer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2175264086067925200, guid: b5598149d41157f4bb6a1aaae513b945,
-        type: 3}
-      propertyPath: cooldownDuration
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 2413609571507455503, guid: b5598149d41157f4bb6a1aaae513b945,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2413609571507455503, guid: b5598149d41157f4bb6a1aaae513b945,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -657,35 +632,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2504387880964881131, guid: b5598149d41157f4bb6a1aaae513b945,
-        type: 3}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 2938456924218958868, guid: b5598149d41157f4bb6a1aaae513b945,
-        type: 3}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
     - target: {fileID: 4557819622560612732, guid: b5598149d41157f4bb6a1aaae513b945,
         type: 3}
       propertyPath: m_Name
       value: BoardCardTemplate (2)
-      objectReference: {fileID: 0}
-    - target: {fileID: 4557819622560612732, guid: b5598149d41157f4bb6a1aaae513b945,
-        type: 3}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 4557819622560612732, guid: b5598149d41157f4bb6a1aaae513b945,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4790596679605774254, guid: b5598149d41157f4bb6a1aaae513b945,
-        type: 3}
-      propertyPath: m_Layer
-      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -1,17 +1,21 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class ScreenCard : MonoBehaviour
 {
     Vector3 origineScale;
     Quaternion origineRotation;
-    [SerializeField]float shakeDuration = 0.5f;
+    [SerializeField] float shakeDuration = 0.5f;
     [SerializeField] float shakeSpeed = 30f;
     [SerializeField] float shakeAngle = 5f;
     [SerializeField] float shakeTimer = 1f;
     [SerializeField] float cooldownTimer = 0f;
     [SerializeField] float cooldownDuration = 1f;
+
+
     bool isDragging = false;
     bool isShaking = false;
+    bool isStartDragging = false;
     private void Start()
     {
         origineScale = transform.localScale;
@@ -20,16 +24,17 @@ public class ScreenCard : MonoBehaviour
 
     private void Update()
     {
-        CardOnDragging();
-    }
-    internal void ScreenCardOnPointEnter()
-    {
-        transform.localScale = new Vector3(origineScale.x + 0.2f,
-                                           origineScale.y + 0.2f,
-                                           origineScale.z + 0.2f);
+        // CardOnDragging();
     }
 
-    internal void ScreenCardOnPointExit() 
+    internal void ScreenCardOnPointEnter()
+    {
+        transform.localScale = new Vector3(origineScale.x + 0.1f,
+                                           origineScale.y + 0.1f,
+                                           origineScale.z + 0.1f);
+    }
+
+    internal void ScreenCardOnPointExit()
     {
         transform.localScale = origineScale;
     }
@@ -47,32 +52,49 @@ public class ScreenCard : MonoBehaviour
         cooldownTimer = 0f;
     }
 
-    private void CardOnDragging()
+    internal void CardOnDragging()
     {
-        if (isDragging)
-        {
-            if (isShaking)
-            {
-                shakeTimer -= Time.deltaTime;
-                float angle = Mathf.Sin(shakeTimer * shakeSpeed) * shakeAngle;
-                transform.rotation = origineRotation * Quaternion.Euler(0f, angle, angle);
+        if (isStartDragging) return;
+        isStartDragging = true;
 
-                if (shakeTimer <= 0f)
-                {
-                    isShaking = false;
-                    transform.rotation = origineRotation;
-                    cooldownTimer = cooldownDuration;
-                }
-            }
-            else
+        StartCoroutine(OnCardDraggingCoroutine());
+        IEnumerator OnCardDraggingCoroutine()
+        {
+            float elapsed = 0f;
+
+            while (isDragging)
             {
-                cooldownTimer -= Time.deltaTime;
-                if (cooldownTimer <= 0f)
+                if (isShaking)
+                {
+                    if (elapsed < shakeDuration)
+                    {
+                        float angle = Mathf.Sin(elapsed * shakeSpeed) * shakeAngle;
+                        transform.rotation = origineRotation * Quaternion.Euler(0f, angle, angle);
+                        elapsed += Time.deltaTime;
+                        yield return null;
+                    }
+                    else
+                    {
+                        isShaking = false;
+                        transform.rotation = origineRotation;
+                        elapsed = 0f;
+                        yield return new WaitForSeconds(cooldownDuration);
+                    }
+                }
+                else
                 {
                     isShaking = true;
-                    shakeTimer = shakeDuration;
+                    elapsed = 0f;
+                    yield return null;
                 }
             }
+            transform.rotation = origineRotation;
         }
     }
+
+    internal void CardOnDraggEnd()
+    {
+        isStartDragging = false;
+    }
 }
+
