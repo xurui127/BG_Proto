@@ -1436,6 +1436,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardCam: {fileID: 1189113438}
   canvas: {fileID: 1107383906}
+  UICardContainer: {fileID: 244501450}
+  screenCardContainer: {fileID: 1650153837}
+  ySwapOffset: 380
 --- !u!1 &1056948211
 GameObject:
   m_ObjectHideFlags: 0
