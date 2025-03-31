@@ -8,23 +8,17 @@ public class ScreenCard : MonoBehaviour
     [SerializeField] float shakeDuration = 0.5f;
     [SerializeField] float shakeSpeed = 30f;
     [SerializeField] float shakeAngle = 5f;
-    [SerializeField] float shakeTimer = 1f;
-    [SerializeField] float cooldownTimer = 0f;
     [SerializeField] float cooldownDuration = 1f;
 
 
     bool isDragging = false;
     bool isShaking = false;
     bool isStartDragging = false;
+
     private void Start()
     {
         origineScale = transform.localScale;
         origineRotation = transform.rotation;
-    }
-
-    private void Update()
-    {
-        // CardOnDragging();
     }
 
     internal void ScreenCardOnPointEnter()
@@ -42,14 +36,12 @@ public class ScreenCard : MonoBehaviour
     internal void ScreenCardPointDown()
     {
         isDragging = true;
-        shakeTimer = shakeDuration;
     }
 
     internal void ScreenCardPointUp()
     {
         isDragging = false;
         transform.rotation = origineRotation;
-        cooldownTimer = 0f;
     }
 
     internal void CardOnDragging()
@@ -95,6 +87,7 @@ public class ScreenCard : MonoBehaviour
     internal void CardOnDraggEnd()
     {
         isStartDragging = false;
+
     }
 }
 

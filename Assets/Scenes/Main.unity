@@ -1434,7 +1434,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 741155eb8ff740d46a204c4a4b2a0612, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardCam: {fileID: 0}
+  cardCam: {fileID: 1189113438}
+  canvas: {fileID: 1107383906}
 --- !u!1 &1056948211
 GameObject:
   m_ObjectHideFlags: 0
@@ -1950,6 +1951,7 @@ MonoBehaviour:
   canvasRect: {fileID: 1107383910}
   xOffset: 25
   yOffset: -280
+  ySwapOffset: -302.9
 --- !u!1001 &1117442947
 PrefabInstance:
   m_ObjectHideFlags: 0

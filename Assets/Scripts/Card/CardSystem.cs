@@ -1,6 +1,4 @@
-using System;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class CardSystem : MonoBehaviour
 {
@@ -48,10 +46,10 @@ public class CardSystem : MonoBehaviour
             var ui = cardUIS[index];
             var name = card.cardName;
             var command = card.GetCommands();
-            
+
             if (command != null)
             {
-               // ui.Init(name,screenCards[index], () => command.Execute());
+                // ui.Init(name,screenCards[index], () => command.Execute());
                 ui.Init(name);
             }
             else
@@ -59,11 +57,10 @@ public class CardSystem : MonoBehaviour
                 Debug.Log($"Card {name} has no valid command.");
             }
 
-            if(cardVisualHandler != null)
+            if (cardVisualHandler != null)
             {
                 cardVisualHandler.CardRegister(cardUIS[index], screenCards[index]);
             }
-            //cardUIS[index].UpdateScreenCardPosition();
             index++;
         }
 

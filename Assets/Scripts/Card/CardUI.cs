@@ -7,18 +7,18 @@ using UnityEngine.UI;
 
 public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IDragHandler, IEndDragHandler, IPointerUpHandler
 {
-    [SerializeField] Camera cardCam;
     public Button cardButton;
     public TMP_Text cardText;
     public RectTransform currentTransform;
+    public GameObject container;
 
-    Vector3 originePosition;
+    public Vector3 originePosition;
     UnityAction onClickAction;
 
     bool isDragging = false;
     bool isHoverOver = false;
     const float yOffset = 280f;
-
+    const float ySwapOffset = 340f;
     [HideInInspector] internal UnityEvent<CardUI> OnCardPointEnterEvent = new();
     [HideInInspector] internal UnityEvent<CardUI> OnCardPointExitEvent = new();
     [HideInInspector] internal UnityEvent<CardUI> OnCardPointDownEvent = new();
@@ -38,10 +38,9 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         originePosition = currentTransform.position;
     }
 
-    public void Init(string name)
+    public void Init(string name )
     {
         cardText.text = name;
-
         if (!GameManager.Instance.IsPlayer())
         {
             cardButton.interactable = false;
@@ -116,26 +115,8 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         if (!isDragging && transform.position.y > yOffset) return;
 
         OnCardDraggingEndEvent?.Invoke(this);
-        CardSmoothReturn();
-    }
 
-    private void SwapCard()
-    {
-
-    }
-
-    internal Vector3 GetUICardWordPos(Vector3? UIoffset = null)
-    {
-        if (UIoffset == null)
-        {
-            UIoffset = Vector3.zero;
-        }
-
-        Vector3 screenPoint = RectTransformUtility.WorldToScreenPoint(null, currentTransform.position + UIoffset.Value);
-        screenPoint.z = -cardCam.transform.position.z;
-
-        var candidatePos = cardCam.ScreenToWorldPoint(screenPoint);
-        return candidatePos;
+        //CardSmoothReturn();
     }
 
     internal void ResetCurrentPostion()
@@ -165,4 +146,5 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
             currentTransform.position = end;
         }
     }
+
 }
