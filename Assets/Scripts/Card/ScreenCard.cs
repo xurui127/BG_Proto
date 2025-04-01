@@ -49,7 +49,6 @@ public class ScreenCard : MonoBehaviour
         DragEffect();
     }
 
-  
     private void DragEffect()
     {
         if (isStartDragging) return;
@@ -94,6 +93,11 @@ public class ScreenCard : MonoBehaviour
     {
         isStartDragging = false;
 
+    }
+
+    internal void HideScreenCard()
+    {
+        gameObject.SetActive(false);
     }
 }
 

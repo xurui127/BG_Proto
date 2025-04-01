@@ -50,7 +50,7 @@ public class CardSystem : MonoBehaviour
             if (command != null)
             {
                 // ui.Init(name,screenCards[index], () => command.Execute());
-                ui.Init(name);
+                ui.Init(name,() => command.Execute());
             }
             else
             {

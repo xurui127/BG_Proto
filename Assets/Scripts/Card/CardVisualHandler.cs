@@ -39,7 +39,8 @@ public class CardVisualHandler : MonoBehaviour
                                  OnCardPointerDownEvent,
                                  OnCardPointerUpEvent,
                                  OnCardOnDragEvent,
-                                 OnCardEndDragEvent);
+                                 OnCardEndDragEvent,
+                                 OnCardExecute);
         }
     }
 
@@ -76,6 +77,11 @@ public class CardVisualHandler : MonoBehaviour
         cardPairs[card].CardOnDraggEnd();
     }
 
+    private void OnCardExecute(CardUI card)
+    {
+        cardPairs[card].HideScreenCard(); 
+    }
+
     private void UpdateCardsVisualPostion()
     {
         foreach (var cardPair in cardPairs)
@@ -84,9 +90,10 @@ public class CardVisualHandler : MonoBehaviour
             cardPair.Value.transform.position = cadidatePos;
         }
     }
+
     private void CardOnDrag(CardUI card)
     {
-        if (card.transform.position.y < yCardPlayOffset)
+        if (card.transform.position.y < card.yOffset)
         {
             if (card.transform.parent != UICardContainer.transform)
             {
@@ -123,10 +130,9 @@ public class CardVisualHandler : MonoBehaviour
                 insertIndex = i;
                 break;
             }
-
         }
 
-        if (card.transform.position.y > yCardPlayOffset) return;
+        if (card.transform.position.y > card.yOffset) return;
 
         if (insertIndex < currentIndex)
         {
@@ -237,8 +243,11 @@ public class CardVisualHandler : MonoBehaviour
            ResetCurrentPostion(cardPair.Key);
         }
     }
+
     private void ResetCurrentPostion(CardUI card)
     {
         card.originePosition = card.currentTransform.position;
     }
+
+    
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -13,51 +12,47 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     public GameObject container;
 
     public Vector3 originePosition;
-    UnityAction onClickAction;
-
     public bool isDragging = false;
+    public readonly float yOffset = 280f;
+
     bool isHoverOver = false;
-    const float yOffset = 280f;
-    const float ySwapOffset = 340f;
+
+    UnityEvent OnCardPlay = new();
     [HideInInspector] internal UnityEvent<CardUI> OnCardPointEnterEvent = new();
     [HideInInspector] internal UnityEvent<CardUI> OnCardPointExitEvent = new();
     [HideInInspector] internal UnityEvent<CardUI> OnCardPointDownEvent = new();
     [HideInInspector] internal UnityEvent<CardUI> OnCardPointUpEvent = new();
     [HideInInspector] internal UnityEvent<CardUI> OnCardDraggingEvent = new();
     [HideInInspector] internal UnityEvent<CardUI> OnCardDraggingEndEvent = new();
-   
+    [HideInInspector] internal UnityEvent<CardUI> OnCardExecuteEvent = new();
+
 
     private void Awake()
     {
         currentTransform = GetComponent<RectTransform>();
     }
 
-
     private void Start()
     {
         originePosition = currentTransform.position;
     }
 
-    public void Init(string name )
+    public void Init(string name)
     {
         cardText.text = name;
-        if (!GameManager.Instance.IsPlayer())
-        {
-            cardButton.interactable = false;
-        }
-    }
-    internal void Init(string name, UnityAction action)
-    {
-        cardText.text = name;
-        onClickAction = action;
-        cardButton.onClick.AddListener(onClickAction);
         if (!GameManager.Instance.IsPlayer())
         {
             cardButton.interactable = false;
         }
     }
 
-    internal void EventRegister(UnityAction<CardUI> onEnter, UnityAction<CardUI> onExit, UnityAction<CardUI> onClickDown, UnityAction<CardUI> onClickUp, UnityAction<CardUI> onDragging, UnityAction<CardUI> onDraggingEnd)
+    internal void Init(string name, UnityAction execute)
+    {
+        cardText.text = name;
+        OnCardPlay.AddListener(execute);
+    }
+
+    internal void EventRegister(UnityAction<CardUI> onEnter, UnityAction<CardUI> onExit, UnityAction<CardUI> onClickDown, UnityAction<CardUI> onClickUp, UnityAction<CardUI> onDragging, UnityAction<CardUI> onDraggingEnd, UnityAction<CardUI> onExecute)
     {
         OnCardPointEnterEvent.AddListener(onEnter);
         OnCardPointExitEvent.AddListener(onExit);
@@ -67,9 +62,11 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
         OnCardDraggingEvent.AddListener(onDragging);
         OnCardDraggingEndEvent.AddListener(onDraggingEnd);
+
+        OnCardExecuteEvent.AddListener(onExecute);
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         cardButton.onClick.RemoveAllListeners();
     }
@@ -92,7 +89,16 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     public void OnPointerUp(PointerEventData eventData)
     {
         isDragging = false;
-        OnCardPointUpEvent?.Invoke(this);
+        if (transform.position.y > yOffset)
+        {
+            OnCardPlay?.Invoke();
+            OnCardExecuteEvent?.Invoke(this);
+            transform.gameObject.SetActive(false);
+        }
+        else
+        {
+            OnCardPointUpEvent?.Invoke(this);
+        }
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -107,12 +113,12 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         this.currentTransform.position = mousePos;
         OnCardDraggingEvent?.Invoke(this);
     }
-    
+
     public void OnEndDrag(PointerEventData eventData)
     {
         if (!isDragging && transform.position.y > yOffset) return;
 
         OnCardDraggingEndEvent?.Invoke(this);
     }
-   
+
 }
