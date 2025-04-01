@@ -46,6 +46,12 @@ public class ScreenCard : MonoBehaviour
 
     internal void CardOnDragging()
     {
+        DragEffect();
+    }
+
+  
+    private void DragEffect()
+    {
         if (isStartDragging) return;
         isStartDragging = true;
 

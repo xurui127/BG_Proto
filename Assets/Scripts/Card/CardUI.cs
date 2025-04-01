@@ -15,7 +15,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     public Vector3 originePosition;
     UnityAction onClickAction;
 
-    bool isDragging = false;
+    public bool isDragging = false;
     bool isHoverOver = false;
     const float yOffset = 280f;
     const float ySwapOffset = 340f;
@@ -69,8 +69,6 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         OnCardDraggingEndEvent.AddListener(onDraggingEnd);
     }
 
-
-
     private void OnDestroy()
     {
         cardButton.onClick.RemoveAllListeners();
@@ -115,36 +113,6 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         if (!isDragging && transform.position.y > yOffset) return;
 
         OnCardDraggingEndEvent?.Invoke(this);
-
-        //CardSmoothReturn();
     }
-
-    internal void ResetCurrentPostion()
-    {
-        originePosition = currentTransform.position;
-    }
-
-    private void CardSmoothReturn()
-    {
-        StopAllCoroutines();
-        StartCoroutine(CardSmoothReturnCoroutine());
-        IEnumerator CardSmoothReturnCoroutine()
-        {
-            var start = currentTransform.position;
-            var end = originePosition;
-            var duration = 0.2f;
-            var time = 0f;
-
-            while (time < duration)
-            {
-                time += Time.deltaTime;
-                var t = time / duration;
-                currentTransform.position = Vector3.Lerp(start, end, t);
-                yield return null;
-            }
-
-            currentTransform.position = end;
-        }
-    }
-
+   
 }

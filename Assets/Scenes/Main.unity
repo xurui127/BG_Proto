@@ -637,6 +637,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BoardCardTemplate (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 4557819622560612732, guid: b5598149d41157f4bb6a1aaae513b945,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1438,7 +1443,9 @@ MonoBehaviour:
   canvas: {fileID: 1107383906}
   UICardContainer: {fileID: 244501450}
   screenCardContainer: {fileID: 1650153837}
-  ySwapOffset: 380
+  cards: []
+  xCardOffset: 0
+  ySwapOffset: 370
 --- !u!1 &1056948211
 GameObject:
   m_ObjectHideFlags: 0
