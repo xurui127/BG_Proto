@@ -11,11 +11,9 @@ public class CardVisualHandler : MonoBehaviour
     [SerializeField] GameObject screenCardContainer;
 
     Vector2 lastScreenSize;
-    int insertIndex = 0;
 
     List<CardUI> uiCards = new();
     List<WorldCard> worldCards = new();
-    private bool isWorldCardPastOffset;
     readonly Dictionary<CardUI, WorldCard> cardPairs = new();
 
     private void Update()
@@ -92,7 +90,6 @@ public class CardVisualHandler : MonoBehaviour
                 continue;
             }
 
-
             Vector3 cadidatePos;
             if (uiCards[i].isDragging)
             {
@@ -120,127 +117,12 @@ public class CardVisualHandler : MonoBehaviour
         // Swap the position of world cards in the list
     }
 
-    private void CardOnDrag(CardUI card)
-    {
-        if (card.transform.position.y < CardUI.yOffset)
-        {
-            if (card.transform.parent != UICardContainer.transform)
-            {
-                card.transform.SetParent(UICardContainer.transform, true);
-            }
-        }
-        else
-        {
-            if (card.transform.parent != canvas.transform)
-            {
-                card.transform.SetParent(canvas.transform, true);
-            }
-        }
-        //CheckCardSwap(card);
-    }
-
-    private void CheckCardSwap(CardUI card)
-    {
-        var currentX = card.transform.position.x;
-        var currentIndex = card.transform.GetSiblingIndex();
-
-
-        var siblingCount = UICardContainer.transform.childCount;
-        insertIndex = siblingCount;
-
-        for (int i = 0; i < siblingCount; i++)
-        {
-            Transform child = UICardContainer.transform.GetChild(i);
-            if (child == card.transform) continue;
-
-            float otherX = child.position.x;
-            if (currentX < otherX)
-            {
-                insertIndex = i;
-                break;
-            }
-        }
-
-        if (card.transform.position.y > CardUI.yOffset) return;
-
-        if (insertIndex < currentIndex)
-        {
-            for (int i = currentIndex - 1; i >= insertIndex; i--)
-            {
-                Transform toShift = UICardContainer.transform.GetChild(i);
-                if (toShift == card.transform)
-                    continue;
-                toShift.SetSiblingIndex(i + 1);
-            }
-        }
-        else if (insertIndex > currentIndex)
-        {
-            for (int i = currentIndex + 1; i < insertIndex; i++)
-            {
-                Transform toShift = UICardContainer.transform.GetChild(i);
-                if (toShift == card.transform)
-                    continue;
-                toShift.SetSiblingIndex(i - 1);
-            }
-        }
-
-        int index = uiCards.IndexOf(card);
-        if (index != insertIndex)
-        {
-            uiCards.RemoveAt(index);
-
-            if (insertIndex > index)
-                insertIndex--;
-
-            insertIndex = Mathf.Clamp(insertIndex, 0, worldCards.Count);
-            uiCards.Insert(insertIndex, card);
-
-            RefreshAllCardOriginPositions();
-        }
-    }
-
     private void PlaceCardLayout()
     {
         for (int i = 0; i < worldCards.Count; i++)
         {
             worldCards[i].transform.SetSiblingIndex(i);
         }
-    }
-
-    private void CardSmoothReturn(CardUI card)
-    {
-        StopAllCoroutines();
-        if (card.transform.position.y > CardUI.yOffset) return;
-
-        StartCoroutine(CardSmoothReturnCoroutine(card));
-    }
-    private IEnumerator CardSmoothReturnCoroutine(CardUI card)
-    {
-        yield return new WaitForEndOfFrame();
-
-        var rect = card.currentTransform;
-        Vector2 start = rect.anchoredPosition;
-
-        LayoutRebuilder.ForceRebuildLayoutImmediate(UICardContainer.GetComponent<RectTransform>());
-
-        int siblingIndex = Mathf.Clamp(card.transform.GetSiblingIndex(), 0, UICardContainer.transform.childCount - 1);
-
-        Vector2 target = siblingIndex < UICardContainer.transform.childCount
-                       ? ((RectTransform)UICardContainer.transform.GetChild(siblingIndex)).anchoredPosition
-                       : start;
-
-        float duration = 0.2f;
-        float time = 0f;
-
-        while (time < duration)
-        {
-            time += Time.deltaTime;
-            float t = time / duration;
-            rect.anchoredPosition = Vector2.Lerp(start, target, t);
-            yield return null;
-        }
-
-        rect.anchoredPosition = target;
     }
 
     private Vector3 GetUICardWordPos(CardUI card)
@@ -262,14 +144,6 @@ public class CardVisualHandler : MonoBehaviour
         return candidatePos;
     }
 
-    public void RefreshAllCardOriginPositions()
-    {
-        foreach (var card in uiCards)
-        {
-            card.originePosition = card.transform.position;
-        }
-    }
-
     private void AdjustCardsPostion()
     {
         foreach (var cardPair in cardPairs)
@@ -283,30 +157,4 @@ public class CardVisualHandler : MonoBehaviour
         card.originePosition = card.currentTransform.position;
     }
 
-    internal void LicensingCards(CardUI card)
-    {
-        StartCoroutine(ScreenCardLicensingCoroutine(card));
-
-        IEnumerator ScreenCardLicensingCoroutine(CardUI card)
-        {
-            var screenCard = cardPairs[card];
-            var screenTransform = screenCard.transform;
-
-            Vector3 start = screenTransform.position;
-            Vector3 target = GetUICardWordPos(card);
-
-            float duration = 1f;
-            float time = 0f;
-
-            while (time < duration)
-            {
-                time += Time.deltaTime;
-                float t = time / duration;
-                screenTransform.position = Vector3.Lerp(start, target, t);
-                yield return null;
-            }
-
-            screenTransform.position = target;
-        }
-    }
 }

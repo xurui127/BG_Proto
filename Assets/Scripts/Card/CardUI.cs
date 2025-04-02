@@ -36,14 +36,6 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         originePosition = currentTransform.position;
     }
 
-    public void Init(string name)
-    {
-        if (!GameManager.Instance.IsPlayer())
-        {
-            cardButton.interactable = false;
-        }
-    }
-
     internal void Init(UnityAction execute)
     {
         OnCardPlay.RemoveAllListeners();
