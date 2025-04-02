@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class CardVisualHandler : MonoBehaviour
 {
@@ -9,8 +8,10 @@ public class CardVisualHandler : MonoBehaviour
     [SerializeField] GameObject canvas;
     [SerializeField] GameObject UICardContainer;
     [SerializeField] GameObject screenCardContainer;
-
+    [SerializeField] GameObject worldCardFlyOutPosition;
     Vector2 lastScreenSize;
+
+    bool isFlyout = false;
 
     List<CardUI> uiCards = new();
     List<WorldCard> worldCards = new();
@@ -83,6 +84,8 @@ public class CardVisualHandler : MonoBehaviour
 
     private void UpdateCardsVisualPostion()
     {
+        if (isFlyout) return;
+
         for (var i = 0; i < uiCards.Count; i++)
         {
             if (uiCards[i] == null || i >= worldCards.Count || worldCards[i] == null)
@@ -157,4 +160,47 @@ public class CardVisualHandler : MonoBehaviour
         card.originePosition = card.currentTransform.position;
     }
 
+    internal void WorldCardFlyOut()
+    {
+        StartCoroutine(WorldCardFlyOutCoroutine());
+        IEnumerator WorldCardFlyOutCoroutine()
+        {
+            isFlyout = true;
+
+            List<Transform> activeCards = new List<Transform>();
+            foreach (var card in worldCards)
+            {
+                if (card.gameObject.activeSelf)
+                {
+                    activeCards.Add(card.transform);
+                }
+            }
+
+            bool allCardsReached = false;
+            while (!allCardsReached)
+            {
+                allCardsReached = true;
+
+                foreach (var cardTransform in activeCards)
+                {
+                    cardTransform.position = Vector3.Lerp(cardTransform.position,
+                                                          worldCardFlyOutPosition.transform.position,
+                                                          2f * Time.deltaTime);
+
+                    if (Vector3.Distance(cardTransform.position, worldCardFlyOutPosition.transform.position) <= 0.5f)
+                    {
+                        cardTransform.gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        allCardsReached = false;
+                    }
+                }
+
+                yield return null;
+            }
+
+            isFlyout = false;
+        }
+    }
 }

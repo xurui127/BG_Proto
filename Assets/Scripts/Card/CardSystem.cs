@@ -66,6 +66,9 @@ public class CardSystem : MonoBehaviour
         isGenerated = false;
     }
 
+    internal void PlayWorldCardFlyoutAnimation() => cardVisualHandler.WorldCardFlyOut();
+
+
     public CardUI[] GetCurrentCards() => cardUIS;
 
 }

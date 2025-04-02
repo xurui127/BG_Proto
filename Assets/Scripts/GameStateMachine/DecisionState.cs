@@ -19,7 +19,6 @@ public class DecisionState : AbstractState
         {
             GM.SetMovementPanel(true);
         }
-       
     }
     public override void OnUpdate()
     {
@@ -42,7 +41,7 @@ public class DecisionState : AbstractState
                 }
                 else
                 {
-                    GM.InitCards();
+                    //GM.InitCards();
                     decisionTimer -= Time.deltaTime;
                     isWaitingForCardSelection = true;
                     if (decisionTimer <= 0)

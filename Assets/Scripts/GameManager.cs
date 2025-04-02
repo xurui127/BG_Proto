@@ -55,6 +55,7 @@ public class GameManager : MonoSingleton<GameManager>
         stateMachine.RegisterState(new DecisionState(this));
         stateMachine.RegisterState(new MoveState(this));
         stateMachine.RegisterState(new WaitForDiceResultState(this));
+        stateMachine.RegisterState(new RetrieveCardState(this));
         stateMachine.RegisterState(new EndTurnState(this));
 
 
@@ -216,6 +217,9 @@ public class GameManager : MonoSingleton<GameManager>
     {
         currentCharacterData.currentCards.Remove(id);
     }
+
+    internal void PlayWorldCardFlyoutAnimation() => cardSystem.PlayWorldCardFlyoutAnimation();
+    
 }
 // Enemy turn 
 //1. roll dice 

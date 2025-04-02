@@ -15,7 +15,7 @@ public class MoveState : AbstractState
     {
         if (GM.IsCharacterMovingDone())
         {
-            stateMachine.SetState<EndTurnState>();
+            stateMachine.SetState<RetrieveCardState>();
         }
     }
 
