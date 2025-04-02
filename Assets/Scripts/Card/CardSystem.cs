@@ -1,4 +1,17 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
+
+public class CardInstance
+{
+    internal Card_SO sourceData;
+    internal int deckIndex;
+
+    public CardInstance(Card_SO sourceData, int deckIndex)
+    {
+        this.sourceData = sourceData;
+        this.deckIndex = deckIndex;
+    }
+}
 
 public class CardSystem : MonoBehaviour
 {
@@ -7,60 +20,45 @@ public class CardSystem : MonoBehaviour
     [SerializeField] Transform cardContainer;
     [SerializeField] CardVisualHandler cardVisualHandler;
     [SerializeField] CardUI[] cardUIS;
-    [SerializeField] ScreenCard[] screenCards;
+
+    [FormerlySerializedAs("screenCards")]
+    [SerializeField] WorldCard[] worldCards;
 
     bool isGenerated = false;
 
-    public void GenerateCards(CharacterData data)
+    // Generate the deck once, at the start of the match
+    internal void GenerateDeck(CharacterData characterData)
     {
+        characterData.GenerateDeck(cards);
+    }
 
+    // Draw cards at the start of your turn
+    public void DrawCards(CharacterData characterData)
+    {
         if (isGenerated)
         {
             return;
         }
 
-        foreach (var card in cardUIS)
-        {
-            if (card != null)
-            {
-                card.gameObject.SetActive(false);
-            }
-        }
+        characterData.DrawHand();
 
-        cardVisualHandler.StartGeneratingCards();
-
-        int index = 0;
-        foreach (var card in data.currentCards.Values)
+        for (int index = 0; index < characterData.hand.Count; index++)
         {
+            cardUIS[index].handIndex = index;
             cardUIS[index].gameObject.SetActive(true);
-            screenCards[index].gameObject.SetActive(true);
-            screenCards[index].transform.position = new(-18f, 0.1f, 0f);
+            worldCards[index].handIndex = index;
+            worldCards[index].gameObject.SetActive(true);
+            worldCards[index].transform.position = new(-18f, 0.1f, 0f);
 
+            var card = characterData.hand[index].sourceData;
             cardUIS[index].name = card.name;
-            screenCards[index].name = card.name;
-
-            var ui = cardUIS[index];
-            var name = card.cardName;
-            var command = card.GetCommands();
-
-            if (command != null)
-            {
-                ui.Init(name, () => command.Execute());
-            }
-            else
-            {
-                Debug.Log($"Card {name} has no valid command.");
-            }
+            worldCards[index].Init(characterData.hand[index]);
 
             if (cardVisualHandler != null)
             {
-                cardVisualHandler.CardRegister(cardUIS[index], screenCards[index]);
+                cardVisualHandler.CardRegister(cardUIS[index], worldCards[index]);
             }
-            cardVisualHandler.LicensingCards(cardUIS[index]);
-            index++;
         }
-        cardVisualHandler.FinishGeneratingCards();
-        isGenerated = true;
     }
 
     public void ResetCardsDate()

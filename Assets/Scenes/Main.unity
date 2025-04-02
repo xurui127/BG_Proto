@@ -262,8 +262,8 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: 0
-  m_ChildForceExpandWidth: 1
+  m_Spacing: 50
+  m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
@@ -1288,7 +1288,7 @@ MonoBehaviour:
   - {fileID: 2114853380}
   - {fileID: 1058679082}
   - {fileID: 1572437898}
-  screenCards:
+  worldCards:
   - {fileID: 427108039}
   - {fileID: 1117442949}
   - {fileID: 6031007558714456002}

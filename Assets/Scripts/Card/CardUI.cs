@@ -1,30 +1,29 @@
-﻿using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IDragHandler, IEndDragHandler, IPointerUpHandler
 {
+    internal int handIndex;
     public Button cardButton;
-    public TMP_Text cardText;
     public RectTransform currentTransform;
     public GameObject container;
 
     public Vector3 originePosition;
     public bool isDragging = false;
-    public readonly float yOffset = 280f;
+    public const float yOffset = 280f;
 
     bool isHoverOver = false;
 
     UnityEvent OnCardPlay = new();
-    [HideInInspector] internal UnityEvent<CardUI> OnCardPointEnterEvent = new();
-    [HideInInspector] internal UnityEvent<CardUI> OnCardPointExitEvent = new();
-    [HideInInspector] internal UnityEvent<CardUI> OnCardPointDownEvent = new();
-    [HideInInspector] internal UnityEvent<CardUI> OnCardPointUpEvent = new();
-    [HideInInspector] internal UnityEvent<CardUI> OnCardDraggingEvent = new();
-    [HideInInspector] internal UnityEvent<CardUI> OnCardDraggingEndEvent = new();
-    [HideInInspector] internal UnityEvent<CardUI> OnCardExecuteEvent = new();
+    internal UnityEvent<CardUI> OnCardPointEnterEvent = new();
+    internal UnityEvent<CardUI> OnCardPointExitEvent = new();
+    internal UnityEvent<CardUI> OnCardPointDownEvent = new();
+    internal UnityEvent<CardUI> OnCardPointUpEvent = new();
+    internal UnityEvent<CardUI> OnCardDraggingEvent = new();
+    internal UnityEvent<CardUI> OnCardDraggingEndEvent = new();
+    internal UnityEvent<CardUI> OnCardExecuteEvent = new();
 
 
     private void Awake()
@@ -39,35 +38,39 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
     public void Init(string name)
     {
-        cardText.text = name;
         if (!GameManager.Instance.IsPlayer())
         {
             cardButton.interactable = false;
         }
     }
 
-    internal void Init(string name, UnityAction execute)
+    internal void Init(UnityAction execute)
     {
-        cardText.text = name;
+        OnCardPlay.RemoveAllListeners();
         OnCardPlay.AddListener(execute);
     }
 
     internal void Init(Vector3 start)
     {
-        currentTransform.position = start;  
+        currentTransform.position = start;
     }
 
     internal void EventRegister(UnityAction<CardUI> onEnter, UnityAction<CardUI> onExit, UnityAction<CardUI> onClickDown, UnityAction<CardUI> onClickUp, UnityAction<CardUI> onDragging, UnityAction<CardUI> onDraggingEnd, UnityAction<CardUI> onExecute)
     {
+        OnCardPointEnterEvent.RemoveAllListeners();
+        OnCardPointExitEvent.RemoveAllListeners();
+        OnCardPointDownEvent.RemoveAllListeners();
+        OnCardPointUpEvent.RemoveAllListeners();
+        OnCardDraggingEvent.RemoveAllListeners();
+        OnCardDraggingEndEvent.RemoveAllListeners();
+        OnCardExecuteEvent.RemoveAllListeners();
+
         OnCardPointEnterEvent.AddListener(onEnter);
         OnCardPointExitEvent.AddListener(onExit);
-
         OnCardPointDownEvent.AddListener(onClickDown);
         OnCardPointUpEvent.AddListener(onClickUp);
-
         OnCardDraggingEvent.AddListener(onDragging);
         OnCardDraggingEndEvent.AddListener(onDraggingEnd);
-
         OnCardExecuteEvent.AddListener(onExecute);
     }
 
@@ -94,7 +97,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     public void OnPointerUp(PointerEventData eventData)
     {
         isDragging = false;
-        if (transform.position.y > yOffset)
+        if (Input.mousePosition.y > yOffset)
         {
             OnCardPlay?.Invoke();
             OnCardExecuteEvent?.Invoke(this);
@@ -114,13 +117,15 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
     public void OnDrag(PointerEventData eventData)
     {
-        var mousePos = Input.mousePosition;
-        this.currentTransform.position = mousePos;
+        //Debug.Log("OnDrag");
+        //var mousePos = Input.mousePosition;
+        //this.currentTransform.position = mousePos;
         OnCardDraggingEvent?.Invoke(this);
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        //Debug.Log("OnEndDrag");
         if (!isDragging && transform.position.y > yOffset) return;
 
         OnCardDraggingEndEvent?.Invoke(this);

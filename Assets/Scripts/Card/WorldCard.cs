@@ -1,19 +1,23 @@
 ﻿using System.Collections;
+using TMPro;
 using UnityEngine;
 
-public class ScreenCard : MonoBehaviour
+public class WorldCard : MonoBehaviour
 {
+    internal int handIndex;
     Vector3 origineScale;
     Quaternion origineRotation;
     [SerializeField] float shakeDuration = 0.5f;
     [SerializeField] float shakeSpeed = 30f;
     [SerializeField] float shakeAngle = 5f;
     [SerializeField] float cooldownDuration = 1f;
-
+    [SerializeField] TextMeshPro cardText;
+    [SerializeField] TextMeshPro deckIndexText;
 
     bool isDragging = false;
     bool isShaking = false;
     bool isStartDragging = false;
+    private CardInstance cardInstance;
 
     private void Start()
     {
@@ -99,5 +103,17 @@ public class ScreenCard : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
-}
 
+    internal void Init(CardInstance cardInstance)
+    {
+        this.cardInstance = cardInstance;
+        gameObject.name = cardInstance.sourceData.name;
+        cardText.text = cardInstance.sourceData.cardName;
+        deckIndexText.text = "i" + cardInstance.deckIndex;
+    }
+
+    internal void Execute()
+    {
+        cardInstance.sourceData.GetCommands().Execute();
+    }
+}

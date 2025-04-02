@@ -22,10 +22,10 @@ public class GameManager : MonoSingleton<GameManager>
     int turnNumber = 0;
     int diceNumber = 0;
 
-    CharacterBehaviour currentCharacter;
-    CharacterData currentData;
-    List<CharacterBehaviour> characters = new();
-    List<CharacterData> characterDatas = new();
+    CharacterBehaviour currentCharacterBehaviour;
+    CharacterData currentCharacterData;
+    List<CharacterBehaviour> characterBehaviours = new();
+    List<CharacterData> allCharacterData = new();
 
     public readonly FSMController stateMachine = new();
     public static UnityAction<int> OnTurnChangedEvent;
@@ -34,18 +34,18 @@ public class GameManager : MonoSingleton<GameManager>
 
     public FSMController GetStateController() => stateMachine;
 
-    public bool IsCharacterMovingDone() => currentCharacter.isDoneMoving;
+    public bool IsCharacterMovingDone() => currentCharacterBehaviour.isDoneMoving;
 
-    public bool IsPlayer() => currentCharacter.isPlayer;
+    public bool IsPlayer() => currentCharacterBehaviour.isPlayer;
 
     public void SetMovementPanel(bool isOpen) => uiManager.movementPanel.SetActive(isOpen);
 
-    public bool IsEmptyCard() => currentData.currentCards.Count == 0;
+    public bool IsEmptyCard() => currentCharacterData.currentCards.Count == 0;
 
     protected override void Awake()
     {
         base.Awake();
-        characters = new();
+        characterBehaviours = new();
     }
 
     // Start is called before the first frame update
@@ -82,25 +82,27 @@ public class GameManager : MonoSingleton<GameManager>
             Quaternion rotation = boardManager.GetDirction(capturedIndex);
             Vector3 spawnPosition = boardManager.tiles[capturedIndex].position + new Vector3(0, 0.4f, 0);
 
-            var prefab = (i == 0) ? PlayerPrefab : EnemyPrefab;
+            bool isPlayer = i == 0;
+            var prefab = isPlayer ? PlayerPrefab : EnemyPrefab;
             var character = Instantiate(prefab, spawnPosition, rotation)
                                        .GetComponent<CharacterBehaviour>();
             var data = character.gameObject.GetComponent<CharacterData>();
+            cardSystem.GenerateDeck(data);
             character.currentTileIndex = capturedIndex;
-            characters.Add(character);
-            characterDatas.Add(data);
+            characterBehaviours.Add(character);
+            allCharacterData.Add(data);
 
-            if (i == 0)
+            if (isPlayer)
             {
-                currentCharacter = character;
-                currentData = data;
+                currentCharacterBehaviour = character;
+                currentCharacterData = data;
             }
         }
     }
 
     private void AddCardsToCharacter()
     {
-        foreach (var data in characterDatas)
+        foreach (var data in allCharacterData)
         {
             foreach (var card in cardSystem.cards)
             {
@@ -144,23 +146,24 @@ public class GameManager : MonoSingleton<GameManager>
 
     public void MoveCharacter()
     {
-        if (currentCharacter != null)
+        if (currentCharacterBehaviour != null)
         {
-            currentCharacter.MovePath(diceNumber);
+            currentCharacterBehaviour.MovePath(diceNumber);
         }
     }
 
     public void SetNextCharacterTurn()
     {
-        characterIndex = (characterIndex + 1) % characters.Count;
-        currentCharacter = characters[characterIndex];
-        currentData = characterDatas[characterIndex];
+        currentCharacterData.DiscardHand();
+        characterIndex = (characterIndex + 1) % characterBehaviours.Count;
+        currentCharacterBehaviour = characterBehaviours[characterIndex];
+        currentCharacterData = allCharacterData[characterIndex];
         UpdateCameraTarget();
         if (characterIndex == 0)
         {
             UpdateTurnNumber();
         }
-        OnGoldChangedEvent?.Invoke(currentData.gold);
+        OnGoldChangedEvent?.Invoke(currentCharacterData.gold);
         cardSystem.ResetCardsDate();
     }
 
@@ -168,8 +171,8 @@ public class GameManager : MonoSingleton<GameManager>
     {
         if (virtualCamera != null)
         {
-            virtualCamera.Follow = currentCharacter.transform;
-            virtualCamera.LookAt = currentCharacter.transform;
+            virtualCamera.Follow = currentCharacterBehaviour.transform;
+            virtualCamera.LookAt = currentCharacterBehaviour.transform;
         }
     }
 
@@ -182,13 +185,13 @@ public class GameManager : MonoSingleton<GameManager>
     public void InitCards()
     {
         uiManager.cardPanel.SetActive(true);
-        cardSystem.GenerateCards(currentData);
+        cardSystem.DrawCards(currentCharacterData);
         uiManager.movementPanel.SetActive(true);
     }
 
     public void AddGold(int amount)
     {
-        OnGoldChangedEvent?.Invoke(currentData.AddGold(amount));
+        OnGoldChangedEvent?.Invoke(currentCharacterData.AddGold(amount));
         ClosePanelsEvent?.Invoke();
         RemoveCards("20001");
     }
@@ -206,7 +209,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     private void RemoveCards(string id)
     {
-        currentData.currentCards.Remove(id);
+        currentCharacterData.currentCards.Remove(id);
     }
 }
 // Enemy turn 

@@ -12,12 +12,11 @@ public class CardVisualHandler : MonoBehaviour
 
     Vector2 lastScreenSize;
     int insertIndex = 0;
-    private bool isGenerating = false;
-    const float yCardPlayOffset = 280;
 
-
-    List<CardUI> cards = new();
-    readonly Dictionary<CardUI, ScreenCard> cardPairs = new();
+    List<CardUI> uiCards = new();
+    List<WorldCard> worldCards = new();
+    private bool isWorldCardPastOffset;
+    readonly Dictionary<CardUI, WorldCard> cardPairs = new();
 
     private void Update()
     {
@@ -30,78 +29,100 @@ public class CardVisualHandler : MonoBehaviour
         UpdateCardsVisualPostion();
     }
 
-    internal void StartGeneratingCards() => isGenerating = true;
-
-    internal void FinishGeneratingCards() => isGenerating = false;
-
-    internal void CardRegister(CardUI uiCard, ScreenCard screenCard)
+    internal void CardRegister(CardUI uiCard, WorldCard worldCard)
     {
-        cards.Add(uiCard);
-        if (!cardPairs.ContainsKey(uiCard))
-        {
-            cardPairs[uiCard] = screenCard;
-            uiCard.EventRegister(OnCardPointEnterEvent,
-                                 OnCardPointerExitEvent,
-                                 OnCardPointerDownEvent,
-                                 OnCardPointerUpEvent,
-                                 OnCardOnDragEvent,
-                                 OnCardEndDragEvent,
-                                 OnCardExecute);
-        }
+        uiCards.Add(uiCard);
+        worldCards.Add(worldCard);
+        uiCard.EventRegister(OnCardPointEnterEvent,
+                             OnCardPointerExitEvent,
+                             OnCardPointerDownEvent,
+                             OnCardPointerUpEvent,
+                             OnCardOnDragEvent,
+                             OnCardEndDragEvent,
+                             OnCardExecute);
     }
+
+    WorldCard UICardToWorldCard(CardUI uiCard) => worldCards[uiCard.handIndex];
 
     private void OnCardPointEnterEvent(CardUI card)
     {
-        cardPairs[card].ScreenCardOnPointEnter();
+        UICardToWorldCard(card).ScreenCardOnPointEnter();
     }
 
     private void OnCardPointerExitEvent(CardUI card)
     {
-        cardPairs[card].ScreenCardOnPointExit();
+        UICardToWorldCard(card).ScreenCardOnPointExit();
     }
 
     private void OnCardPointerUpEvent(CardUI card)
     {
-        CardSmoothReturn(card);
-        cardPairs[card].ScreenCardPointUp();
+        //CardSmoothReturn(card);
+        worldCards[card.handIndex].ScreenCardPointUp();
     }
 
     private void OnCardPointerDownEvent(CardUI card)
     {
-        cardPairs[card].ScreenCardPointDown();
+        worldCards[card.handIndex].ScreenCardPointDown();
     }
 
     private void OnCardOnDragEvent(CardUI card)
     {
-        cardPairs[card].CardOnDragging();
-        CardOnDrag(card);
+        worldCards[card.handIndex].CardOnDragging();
+        //CardOnDrag(card);
     }
 
     private void OnCardEndDragEvent(CardUI card)
     {
         PlaceCardLayout();
-        cardPairs[card].CardOnDraggEnd();
+        worldCards[card.handIndex].CardOnDraggEnd();
     }
 
     private void OnCardExecute(CardUI card)
     {
-        cardPairs[card].HideScreenCard();
+        worldCards[card.handIndex].Execute();
+        worldCards[card.handIndex].HideScreenCard();
     }
 
     private void UpdateCardsVisualPostion()
     {
-        if (isGenerating) return;
- 
-        foreach (var cardPair in cardPairs)
+        for (var i = 0; i < uiCards.Count; i++)
         {
-            var cadidatePos = GetUICardWordPos(cardPair.Key);
-            cardPair.Value.transform.position = cadidatePos;
+            if (uiCards[i] == null || i >= worldCards.Count || worldCards[i] == null)
+            {
+                continue;
+            }
+
+
+            Vector3 cadidatePos;
+            if (uiCards[i].isDragging)
+            {
+                bool isCardPastYOffset = Input.mousePosition.y > CardUI.yOffset;
+
+                // Disabling the card UI disables the event so the card doesn't play
+                //uiCards[i].gameObject.SetActive(!isCardPastYOffset);
+                cadidatePos = GetWorldMousePos();
+
+                if (!isCardPastYOffset)
+                {
+                    VerifyCardSwaps(uiCards[i]);
+                }
+            }
+            else
+            {
+                cadidatePos = GetUICardWordPos(uiCards[i]);
+            }
+            worldCards[i].transform.position = Vector3.Lerp(worldCards[i].transform.position, cadidatePos, 20f * Time.deltaTime);
         }
+    }
+
+    private void VerifyCardSwaps(CardUI cardBeingDragged)
+    {
+        // Swap the position of world cards in the list
     }
 
     private void CardOnDrag(CardUI card)
     {
-        if (card.transform.position.y < card.yOffset)
+        if (card.transform.position.y < CardUI.yOffset)
         {
             if (card.transform.parent != UICardContainer.transform)
             {
@@ -115,7 +136,7 @@ public class CardVisualHandler : MonoBehaviour
                 card.transform.SetParent(canvas.transform, true);
             }
         }
-        CheckCardSwap(card);
+        //CheckCardSwap(card);
     }
 
     private void CheckCardSwap(CardUI card)
@@ -140,14 +161,15 @@ public class CardVisualHandler : MonoBehaviour
             }
         }
 
-        if (card.transform.position.y > card.yOffset) return;
+        if (card.transform.position.y > CardUI.yOffset) return;
 
         if (insertIndex < currentIndex)
         {
             for (int i = currentIndex - 1; i >= insertIndex; i--)
             {
                 Transform toShift = UICardContainer.transform.GetChild(i);
-                if (toShift == card.transform) continue;
+                if (toShift == card.transform)
+                    continue;
                 toShift.SetSiblingIndex(i + 1);
             }
         }
@@ -156,21 +178,22 @@ public class CardVisualHandler : MonoBehaviour
             for (int i = currentIndex + 1; i < insertIndex; i++)
             {
                 Transform toShift = UICardContainer.transform.GetChild(i);
-                if (toShift == card.transform) continue;
+                if (toShift == card.transform)
+                    continue;
                 toShift.SetSiblingIndex(i - 1);
             }
         }
 
-        int index = cards.IndexOf(card);
+        int index = uiCards.IndexOf(card);
         if (index != insertIndex)
         {
-            cards.RemoveAt(index);
+            uiCards.RemoveAt(index);
 
             if (insertIndex > index)
                 insertIndex--;
 
-            insertIndex = Mathf.Clamp(insertIndex, 0, cards.Count);
-            cards.Insert(insertIndex, card);
+            insertIndex = Mathf.Clamp(insertIndex, 0, worldCards.Count);
+            uiCards.Insert(insertIndex, card);
 
             RefreshAllCardOriginPositions();
         }
@@ -178,20 +201,18 @@ public class CardVisualHandler : MonoBehaviour
 
     private void PlaceCardLayout()
     {
-        for (int i = 0; i < cards.Count; i++)
+        for (int i = 0; i < worldCards.Count; i++)
         {
-            cards[i].transform.SetSiblingIndex(i);
+            worldCards[i].transform.SetSiblingIndex(i);
         }
     }
 
     private void CardSmoothReturn(CardUI card)
     {
         StopAllCoroutines();
-
-        if (card.transform.position.y > yCardPlayOffset) return;
+        if (card.transform.position.y > CardUI.yOffset) return;
 
         StartCoroutine(CardSmoothReturnCoroutine(card));
-
     }
     private IEnumerator CardSmoothReturnCoroutine(CardUI card)
     {
@@ -221,14 +242,10 @@ public class CardVisualHandler : MonoBehaviour
 
         rect.anchoredPosition = target;
     }
-    private Vector3 GetUICardWordPos(CardUI card, Vector3? UIoffset = null)
-    {
-        if (UIoffset == null)
-        {
-            UIoffset = Vector3.zero;
-        }
 
-        Vector3 screenPoint = RectTransformUtility.WorldToScreenPoint(null, card.transform.position + UIoffset.Value);
+    private Vector3 GetUICardWordPos(CardUI card)
+    {
+        Vector3 screenPoint = RectTransformUtility.WorldToScreenPoint(null, card.transform.position);
         screenPoint.z = -cardCam.transform.position.z;
 
         var candidatePos = cardCam.ScreenToWorldPoint(screenPoint);
@@ -236,9 +253,18 @@ public class CardVisualHandler : MonoBehaviour
         return candidatePos;
     }
 
+    private Vector3 GetWorldMousePos()
+    {
+        Vector3 screenPoint = Input.mousePosition;
+        screenPoint.z = -cardCam.transform.position.z;
+        var candidatePos = cardCam.ScreenToWorldPoint(screenPoint);
+        candidatePos.z -= 0.1f;
+        return candidatePos;
+    }
+
     public void RefreshAllCardOriginPositions()
     {
-        foreach (var card in cards)
+        foreach (var card in uiCards)
         {
             card.originePosition = card.transform.position;
         }
