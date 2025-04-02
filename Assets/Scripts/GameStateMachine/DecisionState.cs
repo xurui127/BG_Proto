@@ -4,6 +4,7 @@ public class DecisionState : AbstractState
 {
     float decisionTimer;
     bool isWaitingForCardSelection;
+
     public DecisionState(GameManager gm)
     {
         GM = gm;

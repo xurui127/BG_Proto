@@ -52,6 +52,11 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         OnCardPlay.AddListener(execute);
     }
 
+    internal void Init(Vector3 start)
+    {
+        currentTransform.position = start;  
+    }
+
     internal void EventRegister(UnityAction<CardUI> onEnter, UnityAction<CardUI> onExit, UnityAction<CardUI> onClickDown, UnityAction<CardUI> onClickUp, UnityAction<CardUI> onDragging, UnityAction<CardUI> onDraggingEnd, UnityAction<CardUI> onExecute)
     {
         OnCardPointEnterEvent.AddListener(onEnter);
@@ -120,5 +125,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
         OnCardDraggingEndEvent?.Invoke(this);
     }
+
+
 
 }

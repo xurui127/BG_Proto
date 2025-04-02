@@ -12,7 +12,9 @@ public class CardVisualHandler : MonoBehaviour
 
     Vector2 lastScreenSize;
     int insertIndex = 0;
+    private bool isGenerating = false;
     const float yCardPlayOffset = 280;
+
 
     List<CardUI> cards = new();
     readonly Dictionary<CardUI, ScreenCard> cardPairs = new();
@@ -27,6 +29,10 @@ public class CardVisualHandler : MonoBehaviour
 
         UpdateCardsVisualPostion();
     }
+
+    internal void StartGeneratingCards() => isGenerating = true;
+
+    internal void FinishGeneratingCards() => isGenerating = false;
 
     internal void CardRegister(CardUI uiCard, ScreenCard screenCard)
     {
@@ -79,11 +85,13 @@ public class CardVisualHandler : MonoBehaviour
 
     private void OnCardExecute(CardUI card)
     {
-        cardPairs[card].HideScreenCard(); 
+        cardPairs[card].HideScreenCard();
     }
 
     private void UpdateCardsVisualPostion()
     {
+        if (isGenerating) return;
+ 
         foreach (var cardPair in cardPairs)
         {
             var cadidatePos = GetUICardWordPos(cardPair.Key);
@@ -183,36 +191,36 @@ public class CardVisualHandler : MonoBehaviour
         if (card.transform.position.y > yCardPlayOffset) return;
 
         StartCoroutine(CardSmoothReturnCoroutine(card));
-        IEnumerator CardSmoothReturnCoroutine(CardUI card)
-        {
-            yield return null;
 
-            var rect = card.currentTransform;
-            Vector2 start = rect.anchoredPosition;
-
-            LayoutRebuilder.ForceRebuildLayoutImmediate(UICardContainer.GetComponent<RectTransform>());
-
-            int siblingIndex = Mathf.Clamp(card.transform.GetSiblingIndex(), 0, UICardContainer.transform.childCount - 1);
-
-            Vector2 target = siblingIndex < UICardContainer.transform.childCount
-                           ? ((RectTransform)UICardContainer.transform.GetChild(siblingIndex)).anchoredPosition
-                           : start;
-
-            float duration = 0.2f;
-            float time = 0f;
-
-            while (time < duration)
-            {
-                time += Time.deltaTime;
-                float t = time / duration;
-                rect.anchoredPosition = Vector2.Lerp(start, target, t);
-                yield return null;
-            }
-
-            rect.anchoredPosition = target;
-        }
     }
+    private IEnumerator CardSmoothReturnCoroutine(CardUI card)
+    {
+        yield return new WaitForEndOfFrame();
 
+        var rect = card.currentTransform;
+        Vector2 start = rect.anchoredPosition;
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(UICardContainer.GetComponent<RectTransform>());
+
+        int siblingIndex = Mathf.Clamp(card.transform.GetSiblingIndex(), 0, UICardContainer.transform.childCount - 1);
+
+        Vector2 target = siblingIndex < UICardContainer.transform.childCount
+                       ? ((RectTransform)UICardContainer.transform.GetChild(siblingIndex)).anchoredPosition
+                       : start;
+
+        float duration = 0.2f;
+        float time = 0f;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float t = time / duration;
+            rect.anchoredPosition = Vector2.Lerp(start, target, t);
+            yield return null;
+        }
+
+        rect.anchoredPosition = target;
+    }
     private Vector3 GetUICardWordPos(CardUI card, Vector3? UIoffset = null)
     {
         if (UIoffset == null)
@@ -240,7 +248,7 @@ public class CardVisualHandler : MonoBehaviour
     {
         foreach (var cardPair in cardPairs)
         {
-           ResetCurrentPostion(cardPair.Key);
+            ResetCurrentPostion(cardPair.Key);
         }
     }
 
@@ -249,5 +257,30 @@ public class CardVisualHandler : MonoBehaviour
         card.originePosition = card.currentTransform.position;
     }
 
-    
+    internal void LicensingCards(CardUI card)
+    {
+        StartCoroutine(ScreenCardLicensingCoroutine(card));
+
+        IEnumerator ScreenCardLicensingCoroutine(CardUI card)
+        {
+            var screenCard = cardPairs[card];
+            var screenTransform = screenCard.transform;
+
+            Vector3 start = screenTransform.position;
+            Vector3 target = GetUICardWordPos(card);
+
+            float duration = 1f;
+            float time = 0f;
+
+            while (time < duration)
+            {
+                time += Time.deltaTime;
+                float t = time / duration;
+                screenTransform.position = Vector3.Lerp(start, target, t);
+                yield return null;
+            }
+
+            screenTransform.position = target;
+        }
+    }
 }

@@ -51,10 +51,12 @@ public class GameManager : MonoSingleton<GameManager>
     // Start is called before the first frame update
     void Start()
     {
+        stateMachine.RegisterState(new LicensingState(this));
         stateMachine.RegisterState(new DecisionState(this));
         stateMachine.RegisterState(new MoveState(this));
         stateMachine.RegisterState(new WaitForDiceResultState(this));
         stateMachine.RegisterState(new EndTurnState(this));
+
 
         characterCount = GameSettings.enemyCount;
         UpdateTurnNumber();
@@ -130,11 +132,11 @@ public class GameManager : MonoSingleton<GameManager>
 
         if (step != null)
         {
-            currentData.currentCards.Remove("20002");
+            RemoveCards("20002");
         }
         if (diceCount == 2)
         {
-            currentData.currentCards.Remove("20003");
+            RemoveCards("20003");
         }
 
         stateMachine.SetState<WaitForDiceResultState>();
@@ -181,14 +183,14 @@ public class GameManager : MonoSingleton<GameManager>
     {
         uiManager.cardPanel.SetActive(true);
         cardSystem.GenerateCards(currentData);
-        uiManager.movementPanel.SetActive(false);
+        uiManager.movementPanel.SetActive(true);
     }
 
     public void AddGold(int amount)
     {
         OnGoldChangedEvent?.Invoke(currentData.AddGold(amount));
         ClosePanelsEvent?.Invoke();
-        currentData.currentCards.Remove("20001");
+        RemoveCards("20001");
     }
 
     public void UseRandomCard()
@@ -200,6 +202,11 @@ public class GameManager : MonoSingleton<GameManager>
             var index = Random.Range(0, cardList.Length);
             cardList[index].cardButton.onClick?.Invoke();
         }
+    }
+
+    private void RemoveCards(string id)
+    {
+        currentData.currentCards.Remove(id);
     }
 }
 // Enemy turn 

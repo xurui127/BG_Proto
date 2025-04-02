@@ -44,7 +44,6 @@ public class UIManager : MonoSingleton<UIManager>
     private void ClosePanels()
     {
         movementPanel.SetActive(false);
-        cardPanel.SetActive(false);
     }
 
 }

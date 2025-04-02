@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CardSystem : MonoBehaviour
 {
@@ -9,16 +9,10 @@ public class CardSystem : MonoBehaviour
     [SerializeField] CardUI[] cardUIS;
     [SerializeField] ScreenCard[] screenCards;
 
-    CardUI selectCard;
-
     bool isGenerated = false;
 
     public void GenerateCards(CharacterData data)
     {
-
-        UIManager.Instance.IsHideBackButton(GameManager.Instance.IsPlayer());
-
-        UIManager.Instance.OpenNoCardsPanel(data.currentCards.Count == 0);
 
         if (isGenerated)
         {
@@ -33,15 +27,17 @@ public class CardSystem : MonoBehaviour
             }
         }
 
+        cardVisualHandler.StartGeneratingCards();
+
         int index = 0;
         foreach (var card in data.currentCards.Values)
         {
             cardUIS[index].gameObject.SetActive(true);
             screenCards[index].gameObject.SetActive(true);
+            screenCards[index].transform.position = new(-18f, 0.1f, 0f);
 
             cardUIS[index].name = card.name;
             screenCards[index].name = card.name;
-
 
             var ui = cardUIS[index];
             var name = card.cardName;
@@ -49,8 +45,7 @@ public class CardSystem : MonoBehaviour
 
             if (command != null)
             {
-                // ui.Init(name,screenCards[index], () => command.Execute());
-                ui.Init(name,() => command.Execute());
+                ui.Init(name, () => command.Execute());
             }
             else
             {
@@ -61,9 +56,10 @@ public class CardSystem : MonoBehaviour
             {
                 cardVisualHandler.CardRegister(cardUIS[index], screenCards[index]);
             }
+            cardVisualHandler.LicensingCards(cardUIS[index]);
             index++;
         }
-
+        cardVisualHandler.FinishGeneratingCards();
         isGenerated = true;
     }
 
