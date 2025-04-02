@@ -24,7 +24,7 @@ public class EndTurnState : AbstractState
         waitingTime -= Time.deltaTime;
         if (waitingTime <= 0)
         {
-            stateMachine.SetState<DecisionState>();
+            stateMachine.SetState<DrawCardState>();
         }
     }
 }

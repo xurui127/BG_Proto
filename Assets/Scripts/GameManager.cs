@@ -51,7 +51,7 @@ public class GameManager : MonoSingleton<GameManager>
     // Start is called before the first frame update
     void Start()
     {
-        stateMachine.RegisterState(new LicensingState(this));
+        stateMachine.RegisterState(new DrawCardState(this));
         stateMachine.RegisterState(new DecisionState(this));
         stateMachine.RegisterState(new MoveState(this));
         stateMachine.RegisterState(new WaitForDiceResultState(this));
@@ -64,7 +64,7 @@ public class GameManager : MonoSingleton<GameManager>
         InitCharacters();
         AddCardsToCharacter();
         UpdateCameraTarget();
-        stateMachine.SetState<DecisionState>();
+        stateMachine.SetState<DrawCardState>();
     }
 
     private void Update()
@@ -184,10 +184,15 @@ public class GameManager : MonoSingleton<GameManager>
 
     public void InitCards()
     {
-        uiManager.cardPanel.SetActive(true);
         cardSystem.DrawCards(currentCharacterData);
+    }
+
+    internal void OpenPanels()
+    {
+        uiManager.cardPanel.SetActive(true);
         uiManager.movementPanel.SetActive(true);
     }
+
 
     public void AddGold(int amount)
     {
