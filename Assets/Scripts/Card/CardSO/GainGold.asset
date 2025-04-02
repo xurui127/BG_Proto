@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 20001
   cardName: Gain 6 gold
+  image: {fileID: 21300000, guid: fa2a49309c92f3b4a8b8af6641056fc3, type: 3}
   cardType: 0
   value: 6

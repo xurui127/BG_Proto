@@ -12,6 +12,7 @@ public class Card_SO : ScriptableObject
 {
     public string id;
     public string cardName;
+    public Sprite image;
     public CardType cardType;
     public int value;
 

@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 20002
   cardName: Roll Dice To 6
+  image: {fileID: 21300000, guid: 963a812a872709a4887c6772eb88dc0a, type: 3}
   cardType: 2
   value: 6

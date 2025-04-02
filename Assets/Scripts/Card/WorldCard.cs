@@ -13,6 +13,7 @@ public class WorldCard : MonoBehaviour
     [SerializeField] float cooldownDuration = 1f;
     [SerializeField] TextMeshPro cardText;
     [SerializeField] TextMeshPro deckIndexText;
+    [SerializeField] SpriteRenderer spriteRenderer;
 
     bool isDragging = false;
     bool isShaking = false;
@@ -108,6 +109,7 @@ public class WorldCard : MonoBehaviour
         gameObject.name = cardInstance.sourceData.name;
         cardText.text = cardInstance.sourceData.cardName;
         deckIndexText.text = "i" + cardInstance.deckIndex;
+        spriteRenderer.sprite = cardInstance.sourceData.image;
     }
 
     internal void Execute()
