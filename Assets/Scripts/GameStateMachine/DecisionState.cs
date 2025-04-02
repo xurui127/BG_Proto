@@ -4,6 +4,7 @@ public class DecisionState : AbstractState
 {
     float decisionTimer;
     bool isWaitingForCardSelection;
+    bool isAIplayCard = false;
 
     public DecisionState(GameManager gm)
     {
@@ -44,8 +45,9 @@ public class DecisionState : AbstractState
                     //GM.InitCards();
                     decisionTimer -= Time.deltaTime;
                     isWaitingForCardSelection = true;
-                    if (decisionTimer <= 0)
+                    if (decisionTimer <= 0 && !isAIplayCard)
                     {
+                        isAIplayCard = true;
                         GM.UseRandomCard();
                     }
                 }
@@ -62,6 +64,7 @@ public class DecisionState : AbstractState
         waitingTime = 1f;
         decisionTimer = 2f;
         isWaitingForCardSelection = false;
+        isAIplayCard = false;
     }
 
 

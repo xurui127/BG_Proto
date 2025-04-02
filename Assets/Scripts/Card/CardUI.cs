@@ -91,9 +91,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         isDragging = false;
         if (Input.mousePosition.y > yOffset)
         {
-            OnCardPlay?.Invoke();
-            OnCardExecuteEvent?.Invoke(this);
-            transform.gameObject.SetActive(false);
+            CardExecuted();
         }
         else
         {
@@ -123,6 +121,16 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         OnCardDraggingEndEvent?.Invoke(this);
     }
 
+    internal void AIPlayCard()
+    {
+        CardExecuted();
+    }
 
+    private void CardExecuted()
+    {
+        OnCardPlay?.Invoke();
+        OnCardExecuteEvent?.Invoke(this);
+        transform.gameObject.SetActive(false);
+    }
 
 }

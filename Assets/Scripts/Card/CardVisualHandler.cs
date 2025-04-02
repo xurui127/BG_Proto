@@ -11,7 +11,7 @@ public class CardVisualHandler : MonoBehaviour
     [SerializeField] GameObject worldCardFlyOutPosition;
     Vector2 lastScreenSize;
 
-    bool isFlyout = false;
+    bool isConectUIcard = false;
 
     List<CardUI> uiCards = new();
     List<WorldCard> worldCards = new();
@@ -84,7 +84,7 @@ public class CardVisualHandler : MonoBehaviour
 
     private void UpdateCardsVisualPostion()
     {
-        if (isFlyout) return;
+        if (isConectUIcard) return;
 
         for (var i = 0; i < uiCards.Count; i++)
         {
@@ -165,7 +165,7 @@ public class CardVisualHandler : MonoBehaviour
         StartCoroutine(WorldCardFlyOutCoroutine());
         IEnumerator WorldCardFlyOutCoroutine()
         {
-            isFlyout = true;
+            isConectUIcard = true;
 
             List<Transform> activeCards = new List<Transform>();
             foreach (var card in worldCards)
@@ -200,7 +200,51 @@ public class CardVisualHandler : MonoBehaviour
                 yield return null;
             }
 
-            isFlyout = false;
+            isConectUIcard = false;
         }
+    }
+
+    internal void AIPlayCard()
+    {
+        StartCoroutine (AIPlayCardCoroutine());
+        IEnumerator AIPlayCardCoroutine()
+        {
+            isConectUIcard = true;
+
+            List<Transform> activeCards = new List<Transform>();
+            foreach (var card in worldCards)
+            {
+                if (card.gameObject.activeSelf)
+                {
+                    activeCards.Add(card.transform);
+                }
+            }
+
+            if (activeCards.Count == 0) yield break;
+
+            var randomIndex = Random.Range(0, activeCards.Count);
+            var playCard = activeCards[randomIndex];
+
+            var screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, Camera.main.nearClipPlane);
+            var targetWorldPosition = cardCam.ScreenToWorldPoint(screenCenter);
+            targetWorldPosition.z = playCard.position.z;
+
+            worldCards[randomIndex].OnPointerHovering();
+
+            while (Vector3.Distance(playCard.position, targetWorldPosition) > 0.1f)
+            {
+                playCard.position = Vector3.Lerp(playCard.position, targetWorldPosition, 10f * Time.deltaTime);
+                yield return null;
+            }
+
+            yield return new WaitForSeconds(1f);
+
+            playCard.gameObject.SetActive(false);
+
+            uiCards[randomIndex].AIPlayCard();
+
+            isConectUIcard = false;
+        }
+      
     }
 }

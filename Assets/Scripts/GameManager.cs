@@ -204,13 +204,14 @@ public class GameManager : MonoSingleton<GameManager>
 
     public void UseRandomCard()
     {
-        var cardList = cardSystem.GetCurrentCards();
+        //var cardList = cardSystem.GetCurrentCards();
 
-        if (cardList.Length != 0)
-        {
-            var index = Random.Range(0, cardList.Length);
-            cardList[index].cardButton.onClick?.Invoke();
-        }
+        //if (cardList.Length != 0)
+        //{
+        //    var index = Random.Range(0, cardList.Length);
+        //    cardList[index].cardButton.onClick?.Invoke();
+        //}
+        cardSystem.AIPlayCard();
     }
 
     private void RemoveCards(string id)

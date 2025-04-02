@@ -68,6 +68,7 @@ public class CardSystem : MonoBehaviour
 
     internal void PlayWorldCardFlyoutAnimation() => cardVisualHandler.WorldCardFlyOut();
 
+    internal void AIPlayCard()=> cardVisualHandler.AIPlayCard();
 
     public CardUI[] GetCurrentCards() => cardUIS;
 

@@ -27,9 +27,7 @@ public class WorldCard : MonoBehaviour
 
     internal void ScreenCardOnPointEnter()
     {
-        transform.localScale = new Vector3(origineScale.x + 0.1f,
-                                           origineScale.y + 0.1f,
-                                           origineScale.z + 0.1f);
+        OnPointerHovering();
     }
 
     internal void ScreenCardOnPointExit()
@@ -115,5 +113,12 @@ public class WorldCard : MonoBehaviour
     internal void Execute()
     {
         cardInstance.sourceData.GetCommands().Execute();
+    }
+
+    internal void OnPointerHovering()
+    {
+        transform.localScale = new Vector3(origineScale.x + 0.1f,
+                                           origineScale.y + 0.1f,
+                                           origineScale.z + 0.1f);
     }
 }
