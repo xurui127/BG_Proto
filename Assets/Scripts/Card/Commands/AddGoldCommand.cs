@@ -8,6 +8,6 @@ public class AddGoldCommand : ICommand
     public void Execute()
     {
         GameManager.Instance.AddGold(gold);
-        GameManager.Instance.stateMachine.SetState<EndTurnState>();
+        GameManager.Instance.stateMachine.SetState<DecisionState>();
     }
 }
