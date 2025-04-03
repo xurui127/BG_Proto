@@ -8,10 +8,15 @@ public class AddGoldCommand : CardBehaviour
     //{
     //    gold = amount;
     //}
-
+    internal override void OnGameStart(int amount)
+    {
+        gold = amount;
+    }
     internal override void OnExecute()
     {
         GM.AddGold(gold);
         GameManager.Instance.stateMachine.SetState<DecisionState>();
     }
+
+   
 }

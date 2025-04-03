@@ -5,4 +5,9 @@ public class RollTwoDiceCommand : CardBehaviour
     {
         GM.RollTwoDices();
     }
+
+    internal override void OnGameStart(int amount)
+    {
+        
+    }
 }

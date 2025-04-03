@@ -1298,6 +1298,7 @@ GameObject:
   - component: {fileID: 1018584945}
   - component: {fileID: 1018584946}
   - component: {fileID: 1018584947}
+  - component: {fileID: 1018584948}
   m_Layer: 0
   m_Name: CardSystem
   m_TagString: Untagged
@@ -1341,6 +1342,7 @@ MonoBehaviour:
     type: 3}
   cardContainer: {fileID: 244501451}
   cardVisualHandler: {fileID: 1018584947}
+  cardBehaviourHandler: {fileID: 1018584948}
   cardUIS:
   - {fileID: 2114853380}
   - {fileID: 1058679082}
@@ -1366,6 +1368,22 @@ MonoBehaviour:
   UICardContainer: {fileID: 244501450}
   screenCardContainer: {fileID: 1650153837}
   worldCardFlyOutPosition: {fileID: 438129428}
+--- !u!114 &1018584948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1018584944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d23523556bf18b449c1d0bf52b20ec2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardData:
+  - {fileID: 11400000, guid: 6e20da7849c12464b82fcf55eb15ab1a, type: 2}
+  - {fileID: 11400000, guid: b7fd2eb5bfd176b4daca6023b8eea79f, type: 2}
+  - {fileID: 11400000, guid: 61f3ee83c396b464b904a01da661b400, type: 2}
 --- !u!1 &1056948211
 GameObject:
   m_ObjectHideFlags: 0

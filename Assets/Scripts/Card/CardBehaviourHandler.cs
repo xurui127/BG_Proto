@@ -6,10 +6,15 @@ using UnityEngine;
 
 public class CardBehaviourHandler : MonoBehaviour
 {
-    private Dictionary<string, CardBehaviour> cardBehaviourByName = new();
+    [SerializeField] Card_SO[] cardData;
+    
+    Dictionary<string, CardBehaviour> cardBehaviourByName = new();
+    Dictionary<string, Card_SO> cardDataByName = new();
 
+    List<CardBehaviour> cardBehaviours = new();
     private void Awake()
     {
+        InitCardDataByName();
         var cardTypes = GetTypesWith<CardAttribute>();
         foreach (var type in cardTypes)
         {
@@ -18,10 +23,20 @@ public class CardBehaviourHandler : MonoBehaviour
             {
                 var instance = Activator.CreateInstance(type) as CardBehaviour;
                 cardBehaviourByName[attribute.cardName] = instance;
+                cardBehaviours.Add(instance);
             }
         }
     }
 
+    private void Start()
+    {
+        for(int i = 0; i < cardBehaviours.Count; i++)
+        {
+            var amount = cardDataByName[cardData[i].name].value;
+            cardBehaviours[i].OnGameStart(amount); 
+        }
+       
+    }
     private IEnumerable<Type> GetTypesWith<T>() where T : Attribute
     {
         return from a in AppDomain.CurrentDomain.GetAssemblies()
@@ -39,6 +54,14 @@ public class CardBehaviourHandler : MonoBehaviour
         else
         {
             Debug.LogWarning($"Card {cardName} not found!");
+        }
+    }
+
+    private void InitCardDataByName()
+    {
+        foreach (var data in cardData)
+        {
+            cardDataByName[data.name] = data;
         }
     }
 }
