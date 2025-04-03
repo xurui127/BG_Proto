@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ed319f8151fab294394e5f082f65d465, type: 3}
-  m_Name: RollSix
+  m_Name: Card_GainGold
   m_EditorClassIdentifier: 
-  id: 20002
-  cardName: Roll Dice To 6
-  image: {fileID: 21300000, guid: 963a812a872709a4887c6772eb88dc0a, type: 3}
-  cardType: 2
+  id: 20001
+  cardName: GainGold
+  image: {fileID: 21300000, guid: fa2a49309c92f3b4a8b8af6641056fc3, type: 3}
+  cardType: 0
   value: 6

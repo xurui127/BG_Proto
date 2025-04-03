@@ -19,6 +19,7 @@ public class CardSystem : MonoBehaviour
     [SerializeField] GameObject cardPrefab;
     [SerializeField] Transform cardContainer;
     [SerializeField] CardVisualHandler cardVisualHandler;
+    [SerializeField] CardBehaviourHandler cardBehaviourHandler;
     [SerializeField] CardUI[] cardUIS;
 
     [FormerlySerializedAs("screenCards")]
@@ -53,6 +54,7 @@ public class CardSystem : MonoBehaviour
             var card = characterData.hand[index].sourceData;
             cardUIS[index].name = card.name;
             worldCards[index].Init(characterData.hand[index]);
+            worldCards[index].CardRegister(() => cardBehaviourHandler.OnCardExecute(card.name));
 
             if (cardVisualHandler != null)
             {

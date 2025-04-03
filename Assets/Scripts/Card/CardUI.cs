@@ -107,15 +107,11 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
     public void OnDrag(PointerEventData eventData)
     {
-        //Debug.Log("OnDrag");
-        //var mousePos = Input.mousePosition;
-        //this.currentTransform.position = mousePos;
         OnCardDraggingEvent?.Invoke(this);
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        //Debug.Log("OnEndDrag");
         if (!isDragging && transform.position.y > yOffset) return;
 
         OnCardDraggingEndEvent?.Invoke(this);

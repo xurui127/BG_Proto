@@ -1,7 +1,8 @@
-public class RollTwoDiceCommand : ICommand
+[Card("Card_RollTwoDice")]
+public class RollTwoDiceCommand : CardBehaviour
 {
-    public void Execute()
+    internal override void OnExecute()
     {
-        GameManager.Instance.RollTwoDices();
+        GM.RollTwoDices();
     }
 }

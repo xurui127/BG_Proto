@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class WorldCard : MonoBehaviour
 {
@@ -20,10 +22,19 @@ public class WorldCard : MonoBehaviour
     bool isStartDragging = false;
     private CardInstance cardInstance;
 
+     UnityEvent onCardExecute = new();
+
+
     private void Start()
     {
         origineScale = transform.localScale;
         origineRotation = transform.rotation;
+    }
+
+    internal void CardRegister(UnityAction onExecute)
+    {
+        onCardExecute.RemoveAllListeners(); 
+        onCardExecute.AddListener(onExecute);
     }
 
     internal void ScreenCardOnPointEnter()
@@ -114,7 +125,8 @@ public class WorldCard : MonoBehaviour
 
     internal void Execute()
     {
-        cardInstance.sourceData.GetCommands().Execute();
+        // cardInstance.sourceData.GetCommands().Execute();
+        onCardExecute?.Invoke();
     }
 
     internal void OnPointerHovering()

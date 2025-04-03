@@ -1,13 +1,17 @@
-public class AddGoldCommand : ICommand
+
+
+[Card("Card_GainGold")]
+public class AddGoldCommand : CardBehaviour
 {
     int gold = 0;
-    public AddGoldCommand(int amount)
+    //public AddGoldCommand(int amount)
+    //{
+    //    gold = amount;
+    //}
+
+    internal override void OnExecute()
     {
-        gold = amount;
-    }
-    public void Execute()
-    {
-        GameManager.Instance.AddGold(gold);
+        GM.AddGold(gold);
         GameManager.Instance.stateMachine.SetState<DecisionState>();
     }
 }

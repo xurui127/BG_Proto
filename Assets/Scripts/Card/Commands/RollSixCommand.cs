@@ -1,10 +1,11 @@
 
-
-public class RollSixCommand : ICommand
+[Card("Card_RollSix")]
+public class RollSixCommand : CardBehaviour
 {
     int step = 6;
-    public void Execute()
+
+    internal override void OnExecute()
     {
-        GameManager.Instance.RollSpecificDice(step);
+        GM.RollSpecificDice(step);
     }
 }
