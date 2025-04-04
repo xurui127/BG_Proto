@@ -57,6 +57,8 @@ public class CharacterBehaviour : MonoBehaviour
         }
     }
 
+    internal int GetCurrentTileIndex() => currentTileIndex;
+
     internal void SetupIConCam(RenderTexture camImage)
     {
         iconCam.targetTexture = camImage;

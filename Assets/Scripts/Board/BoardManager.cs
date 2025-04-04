@@ -46,6 +46,8 @@ public class BoardManager : MonoBehaviour
             var fruit = fruitNum == 0 ?
                       Instantiate(carrotPrefab, tiles[tileIndex].position + fruitPosOffset, Quaternion.identity) :
                       Instantiate(tomatoPrefab, tiles[tileIndex].position + fruitPosOffset, Quaternion.identity);
+
+            fruit.GetComponent<ItemBehaviour>().SetPlacedTileIndex(tileIndex);
             tileBehaviours[tileIndex].PlacedFruit();
         }
     }
@@ -58,6 +60,7 @@ public class BoardManager : MonoBehaviour
 
         var pot = Instantiate(potPrefab, tiles[tileIndex].position + fruitPosOffset, Quaternion.identity);
 
+        pot.GetComponent<ItemBehaviour>().SetPlacedTileIndex(tileIndex);
         tileBehaviours[tileIndex].PlacedPot();
 
     }
@@ -121,7 +124,9 @@ public class BoardManager : MonoBehaviour
         List<int> availableTiles = new();
         for (int i = 0; i < tileBehaviours.Count; i++)
         {
-            if (!tileBehaviours[i].isPlacedFruit)
+            if (!tileBehaviours[i].isPlacedFruit && 
+                !tileBehaviours[i].isPlacedCharacter && 
+                !tileBehaviours[i].isPlacedPot)
             {
                 availableTiles.Add(i);
             }

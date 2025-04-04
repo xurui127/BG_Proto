@@ -107,7 +107,6 @@ public class GameManager : MonoSingleton<GameManager>
             }
 
             boardManager.tileBehaviours[tileIndex].PlacedCharacter();
-            Debug.Log(tileIndex);
         }
     }
 
