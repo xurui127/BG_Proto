@@ -12,18 +12,19 @@ public class UIManager : MonoSingleton<UIManager>
     [SerializeField] public GameObject noCardPanel;
     [SerializeField] public GameObject backButton;
     [SerializeField] CharacterBinner[] characterBinners;
+    [SerializeField] RenderTexture[] iconCamTextures;
 
     private void OnEnable()
     {
         GameManager.OnTurnChangedEvent += UpdateTurnText;
-        GameManager.OnGoldChangedEvent += UpdateGoldText;
+        GameManager.OnFruitChangeEvent += UpdateCharacterFruitCount;
         GameManager.ClosePanelsEvent += ClosePanels;
     }
 
     private void OnDisable()
     {
         GameManager.OnTurnChangedEvent -= UpdateTurnText;
-        GameManager.OnGoldChangedEvent -= UpdateGoldText;
+        GameManager.OnFruitChangeEvent -= UpdateCharacterFruitCount;
         GameManager.ClosePanelsEvent -= ClosePanels;
     }
 
@@ -50,7 +51,7 @@ public class UIManager : MonoSingleton<UIManager>
         movementPanel.SetActive(false);
     }
 
-    internal void SetupCharacterBinners(int count, List<CharacterData> allData)
+    internal void SetupCharacterBinners(int count, List<CharacterData> allData,List<CharacterBehaviour> allBehaviours)
     {
         for (int i = 0; i <= count; i++)
         {
@@ -61,6 +62,7 @@ public class UIManager : MonoSingleton<UIManager>
 
             characterBinners[i].UpdateFruitText(allData[i].fruitCount);
             characterBinners[i].UpdateNameText(nameText,i.ToString());
+            allBehaviours[i].SetupIConCam(iconCamTextures[i]);
         }
     }
 

@@ -1,11 +1,12 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CharacterBinner : MonoBehaviour
 {
     [SerializeField] TMP_Text characterNameText;
     [SerializeField] TMP_Text fruitText;
-    int fruitCount;
+    [SerializeField] RawImage iconImage;
 
     internal void UpdateFruitText(int amount)
     {
@@ -18,4 +19,8 @@ public class CharacterBinner : MonoBehaviour
         characterNameText.text = $"{nameText} {indexText}";
     }
 
+    //internal void SetIconImage(Camera iconCam)
+    //{
+    //    iconCam.targetTexture = iconImage;
+    //}
 }

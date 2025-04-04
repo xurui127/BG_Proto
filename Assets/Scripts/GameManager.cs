@@ -24,12 +24,13 @@ public class GameManager : MonoSingleton<GameManager>
 
     CharacterBehaviour currentCharacterBehaviour;
     CharacterData currentCharacterData;
-    List<CharacterBehaviour> characterBehaviours = new();
+    List<CharacterBehaviour> allCharacterBehaviours = new();
     List<CharacterData> allCharacterData = new();
 
     public readonly FSMController stateMachine = new();
     public static UnityAction<int> OnTurnChangedEvent;
     public static UnityAction<int> OnGoldChangedEvent;
+    public static UnityAction<int, int> OnFruitChangeEvent;
     public static UnityAction ClosePanelsEvent;
 
     public FSMController GetStateController() => stateMachine;
@@ -45,7 +46,7 @@ public class GameManager : MonoSingleton<GameManager>
     protected override void Awake()
     {
         base.Awake();
-        characterBehaviours = new();
+        allCharacterBehaviours = new();
     }
 
     // Start is called before the first frame update
@@ -91,7 +92,7 @@ public class GameManager : MonoSingleton<GameManager>
             var data = character.gameObject.GetComponent<CharacterData>();
             cardSystem.GenerateDeck(data);
             character.currentTileIndex = capturedIndex;
-            characterBehaviours.Add(character);
+            allCharacterBehaviours.Add(character);
             allCharacterData.Add(data);
 
             if (isPlayer)
@@ -157,8 +158,8 @@ public class GameManager : MonoSingleton<GameManager>
     public void SetNextCharacterTurn()
     {
         currentCharacterData.DiscardHand();
-        characterIndex = (characterIndex + 1) % characterBehaviours.Count;
-        currentCharacterBehaviour = characterBehaviours[characterIndex];
+        characterIndex = (characterIndex + 1) % allCharacterBehaviours.Count;
+        currentCharacterBehaviour = allCharacterBehaviours[characterIndex];
         currentCharacterData = allCharacterData[characterIndex];
         UpdateCameraTarget();
         if (characterIndex == 0)
@@ -195,10 +196,10 @@ public class GameManager : MonoSingleton<GameManager>
         uiManager.movementPanel.SetActive(true);
     }
 
-    public void AddGold(int amount)
+    public void AddFruits(int amount)
     {
         var index = allCharacterData.IndexOf(currentCharacterData);
-        uiManager.UpdateCharacterFruitCount(index, currentCharacterData.AddFruits(amount));
+        OnFruitChangeEvent?.Invoke(index, currentCharacterData.AddFruits(amount));
         ClosePanelsEvent?.Invoke();
         RemoveCards("20001");
     }
@@ -217,6 +218,6 @@ public class GameManager : MonoSingleton<GameManager>
     
     private void SetCharacterBinner() 
     {
-        uiManager.SetupCharacterBinners(characterCount,allCharacterData);
+        uiManager.SetupCharacterBinners(characterCount,allCharacterData, allCharacterBehaviours);
     }
 }

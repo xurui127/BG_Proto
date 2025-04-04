@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class CharacterBehaviour : MonoBehaviour
 {
     [SerializeField] Animator anim;
     [SerializeField] public bool isPlayer;
+    [SerializeField] public Camera iconCam;
     public int currentTileIndex = 0;
     public bool isDoneMoving = false;
     const float turnSpeed = 5f;
@@ -55,5 +55,10 @@ public class CharacterBehaviour : MonoBehaviour
             }
             isDoneMoving = true;
         }
+    }
+
+    internal void SetupIConCam(RenderTexture camImage)
+    {
+        iconCam.targetTexture = camImage;
     }
 }
