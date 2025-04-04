@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CardVisualHandler : MonoBehaviour
 {
+    private const float CardSwapThreshold = 120f;
     [SerializeField] Camera cardCam;
     [SerializeField] GameObject canvas;
     [SerializeField] GameObject UICardContainer;
@@ -87,6 +88,9 @@ public class CardVisualHandler : MonoBehaviour
     {
         if (isConectUIcard) return;
 
+        int swapSource = -1;
+        int swapDestination = -1;
+
         for (var i = 0; i < uiCards.Count; i++)
         {
             if (uiCards[i] == null || i >= worldCards.Count || worldCards[i] == null)
@@ -105,7 +109,25 @@ public class CardVisualHandler : MonoBehaviour
 
                 if (!isCardPastYOffset)
                 {
-                    VerifyCardSwaps(uiCards[i]);
+                    float mouseX = Input.mousePosition.x;
+                    float cardUiX = uiCards[i].transform.position.x;
+                    float deltaX = mouseX - cardUiX;
+                    if (deltaX > CardSwapThreshold + 5)
+                    {
+                        if (i + 1 < uiCards.Count)
+                        {
+                            swapSource = i;
+                            swapDestination = i + 1;
+                        }
+                    }
+                    else if (deltaX < -CardSwapThreshold - 5)
+                    {
+                        if (i - 1 >= 0)
+                        {
+                            swapSource = i;
+                            swapDestination = i - 1;
+                        }
+                    }
                 }
                 else
                 {
@@ -125,11 +147,20 @@ public class CardVisualHandler : MonoBehaviour
             }
             worldCards[i].transform.position = Vector3.Lerp(worldCards[i].transform.position, cadidatePos, 20f * Time.deltaTime);
         }
-    }
 
-    private void VerifyCardSwaps(CardUI cardBeingDragged)
-    {
-        // Swap the position of world cards in the list
+        if (swapSource != -1)
+        {
+
+            uiCards[swapSource].transform.SetSiblingIndex(uiCards[swapDestination].transform.GetSiblingIndex());
+            (uiCards[swapSource], uiCards[swapDestination]) = (uiCards[swapDestination], uiCards[swapSource]);
+            (worldCards[swapSource], worldCards[swapDestination]) = (worldCards[swapDestination], worldCards[swapSource]);
+
+            for (int j = 0; j < uiCards.Count; j++)
+            {
+                uiCards[j].handIndex = j;
+                worldCards[j].handIndex = j;
+            }
+        }
     }
 
     private void PlaceCardLayout()
@@ -219,7 +250,7 @@ public class CardVisualHandler : MonoBehaviour
 
     internal void AIPlayCard()
     {
-        StartCoroutine (AIPlayCardCoroutine());
+        StartCoroutine(AIPlayCardCoroutine());
         IEnumerator AIPlayCardCoroutine()
         {
             isConectUIcard = true;
@@ -258,7 +289,7 @@ public class CardVisualHandler : MonoBehaviour
 
             isConectUIcard = false;
         }
-      
+
     }
 
     internal void OnTurnStart()
