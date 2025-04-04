@@ -88,6 +88,11 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
     public void OnPointerUp(PointerEventData eventData)
     {
+        OnCardDrop();
+    }
+
+    internal void OnCardDrop()
+    {
         isDragging = false;
         if (Input.mousePosition.y > yOffset)
         {
