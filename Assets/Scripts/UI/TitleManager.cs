@@ -8,7 +8,7 @@ public class TitleManager : MonoBehaviour
     [SerializeField] GameObject errorPanel;
     [SerializeField] TMP_Text enemyCount;
 
-    const int maxCount = 2;
+    const int maxCount = 3;
     private int currentCount = 0;
 
     public void OpenStartPanel()

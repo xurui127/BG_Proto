@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoSingleton<UIManager>
 {
@@ -9,6 +11,8 @@ public class UIManager : MonoSingleton<UIManager>
     [SerializeField] public GameObject cardPanel;
     [SerializeField] public GameObject noCardPanel;
     [SerializeField] public GameObject backButton;
+    [SerializeField] CharacterBinner[] characterBinners;
+    [SerializeField] VerticalLayoutGroup binnerLayoutGroup;//2: -170 3: -95 // 4: -15
 
     private void OnEnable()
     {
@@ -28,6 +32,7 @@ public class UIManager : MonoSingleton<UIManager>
 
     public void UpdateGoldText(int amount) => goldText.text = $"Gold: {amount}";   
     
+    //internal void UpdateFruitText(int amout, int index) => 
     public void TigglePanel()
     {
         cardPanel.SetActive(!cardPanel.activeSelf);
@@ -46,4 +51,22 @@ public class UIManager : MonoSingleton<UIManager>
         movementPanel.SetActive(false);
     }
 
+    internal void SetupCharacterBinners(int count, List<CharacterData> allData)
+    {
+        for (int i = 0; i <= count; i++)
+        {
+            characterBinners[i].gameObject.SetActive(true);
+
+            bool isPlayer = i == 0;
+            string nameText = isPlayer ? "Player" : "NPC";
+
+            characterBinners[i].UpdateFruitText(allData[i].fruitCount);
+            characterBinners[i].UpdateNameText(nameText,i.ToString());
+        }
+    }
+
+    internal void UpdateCharacterFruitCount(int index, int amount)
+    {
+        characterBinners[index].UpdateFruitText(amount);
+    }
 }

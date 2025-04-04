@@ -63,6 +63,7 @@ public class GameManager : MonoSingleton<GameManager>
         UpdateTurnNumber();
         pathTile = boardManager.tiles;
         InitCharacters();
+        SetCharacterBinner();
         AddCardsToCharacter();
         UpdateCameraTarget();
         stateMachine.SetState<DrawCardState>();
@@ -75,7 +76,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     private void InitCharacters()
     {
-        for (int i = 0; i < characterCount + 1; i++)
+        for (int i = 0; i <= characterCount; i++)
         {
             int tileIndex = boardManager.GetRandomTileIndex();
             int capturedIndex = tileIndex;
@@ -164,7 +165,7 @@ public class GameManager : MonoSingleton<GameManager>
         {
             UpdateTurnNumber();
         }
-        OnGoldChangedEvent?.Invoke(currentCharacterData.gold);
+        OnGoldChangedEvent?.Invoke(currentCharacterData.fruitCount);
         cardSystem.ResetCardsDate();
     }
 
@@ -194,10 +195,10 @@ public class GameManager : MonoSingleton<GameManager>
         uiManager.movementPanel.SetActive(true);
     }
 
-
     public void AddGold(int amount)
     {
-        OnGoldChangedEvent?.Invoke(currentCharacterData.AddGold(amount));
+        var index = allCharacterData.IndexOf(currentCharacterData);
+        uiManager.UpdateCharacterFruitCount(index, currentCharacterData.AddFruits(amount));
         ClosePanelsEvent?.Invoke();
         RemoveCards("20001");
     }
@@ -214,102 +215,8 @@ public class GameManager : MonoSingleton<GameManager>
 
     internal void PlayWorldCardFlyoutAnimation() => cardSystem.PlayWorldCardFlyoutAnimation();
     
+    private void SetCharacterBinner() 
+    {
+        uiManager.SetupCharacterBinners(characterCount,allCharacterData);
+    }
 }
-// Enemy turn 
-//1. roll dice 
-//2. move enemy 
-//3. endTurn
-
-// Character turn 
-//1. roll dice 
-//2. move Path
-//3. end Turn 
-
-//GameState 
-//1. player move 
-//2. enemy move
-
-#region Game Loop Couroutine
-// [SerializeField] PlayerBehaviour player;
-//readonly float rollForce = 5f;
-//readonly float torqueForce = 10f;
-//var rb = dice.GetComponent<Rigidbody>();
-//rb.AddForce(Vector3.up * rollForce, ForceMode.Impulse);
-//rb.AddTorque(Random.insideUnitSphere * torqueForce, ForceMode.Impulse);
-//private void GameLoop()
-//{
-//    StartCoroutine(GameLoopCoroutine());
-//    IEnumerator GameLoopCoroutine()
-//    {
-//        while (true)
-//        {
-//            switch (state)
-//            {
-//                case GameState.Roll:
-//                    yield return RollPhaseCoroutine();
-//                    break;
-//                case GameState.WaittingDice:
-//                    yield return WaitForDiceResultCoroutine();
-//                    break;
-//                case GameState.Move:
-//                    yield return MovePhaseCoroutine();
-//                    break;
-//                case GameState.EndTurn:
-//                    yield return EndTurnPhaseCoroutine();
-//                    break;
-//            }
-//        }
-//    }
-//}
-
-//private IEnumerator RollPhaseCoroutine()
-//{
-//    currentCharacter = characters[characterIndex];
-//    if (currentCharacter.isPlayer)
-//    {
-//        rollPanel.SetActive(true);
-//    }
-//    else
-//    {
-//        yield return new WaitForSeconds(1f);
-//        RollDice();
-//    }
-//}
-
-//private IEnumerator WaitForDiceResultCoroutine()
-//{
-//    yield return new WaitForSeconds(2f);
-//    var dice = currentDice.GetComponent<Dice>();
-//    yield return new WaitUntil(() => dice.isResultFound);
-//    state = GameState.Move;
-//}
-
-//private IEnumerator MovePhaseCoroutine()
-//{
-//    yield return WaitForCharacterMoveCoroutine();
-//    yield return new WaitUntil(() => currentCharacter.isDoneMoving);
-//    state = GameState.EndTurn;
-//}
-
-//private IEnumerator WaitForCharacterMoveCoroutine()
-//{
-//    yield return new WaitForSeconds(1f);
-//    Destroy(currentDice);
-//    MoveCharacter();
-//}
-
-//private IEnumerator EndTurnPhaseCoroutine()
-//{
-//    characterIndex = (characterIndex + 1) % characters.Count;
-//    currentCharacter = characters[characterIndex];
-//    UpdateCameraTarget();
-//    if (characterIndex == 0)
-//    {
-//        turnNumber++;
-//        UpdateTurnText();
-//    }
-//    yield return new WaitForSeconds(0.5f);
-//    state = GameState.Roll;
-//    yield return null;
-//}
-#endregion
