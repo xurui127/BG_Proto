@@ -679,7 +679,7 @@ PrefabInstance:
     - target: {fileID: 1116291564224120133, guid: 25c760297aaaaaf40aac1b052b948898,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 133.818
+      value: 135.35
       objectReference: {fileID: 0}
     - target: {fileID: 1116291564224120133, guid: 25c760297aaaaaf40aac1b052b948898,
         type: 3}
@@ -1112,7 +1112,7 @@ PrefabInstance:
     - target: {fileID: 1116291564224120133, guid: 25c760297aaaaaf40aac1b052b948898,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 133.818
+      value: 135.35
       objectReference: {fileID: 0}
     - target: {fileID: 1116291564224120133, guid: 25c760297aaaaaf40aac1b052b948898,
         type: 3}
@@ -2228,10 +2228,10 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 0
+  m_ChildAlignment: 1
   m_Spacing: -0.74
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
@@ -3662,6 +3662,7 @@ MonoBehaviour:
   - {fileID: 422877260}
   - {fileID: 541901509}
   - {fileID: 1897228811}
+  binnerLayoutGroup: {fileID: 0}
 --- !u!1 &1703838257
 GameObject:
   m_ObjectHideFlags: 0
@@ -4067,12 +4068,12 @@ PrefabInstance:
     - target: {fileID: 1116291564224120133, guid: 25c760297aaaaaf40aac1b052b948898,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 135.35
       objectReference: {fileID: 0}
     - target: {fileID: 1116291564224120133, guid: 25c760297aaaaaf40aac1b052b948898,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -289.015
       objectReference: {fileID: 0}
     - target: {fileID: 1116291564224120133, guid: 25c760297aaaaaf40aac1b052b948898,
         type: 3}
@@ -4102,7 +4103,7 @@ PrefabInstance:
     - target: {fileID: 1116291564224120133, guid: 25c760297aaaaaf40aac1b052b948898,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 133.818
+      value: 135.35
       objectReference: {fileID: 0}
     - target: {fileID: 1116291564224120133, guid: 25c760297aaaaaf40aac1b052b948898,
         type: 3}
@@ -4752,6 +4753,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerBinner1
       objectReference: {fileID: 0}
+    - target: {fileID: 1030895608401970682, guid: 25c760297aaaaaf40aac1b052b948898,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1116291564224120133, guid: 25c760297aaaaaf40aac1b052b948898,
         type: 3}
       propertyPath: m_Pivot.x
@@ -4830,7 +4836,7 @@ PrefabInstance:
     - target: {fileID: 1116291564224120133, guid: 25c760297aaaaaf40aac1b052b948898,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 133.818
+      value: 135.35
       objectReference: {fileID: 0}
     - target: {fileID: 1116291564224120133, guid: 25c760297aaaaaf40aac1b052b948898,
         type: 3}

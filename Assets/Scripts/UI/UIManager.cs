@@ -12,7 +12,6 @@ public class UIManager : MonoSingleton<UIManager>
     [SerializeField] public GameObject noCardPanel;
     [SerializeField] public GameObject backButton;
     [SerializeField] CharacterBinner[] characterBinners;
-    [SerializeField] VerticalLayoutGroup binnerLayoutGroup;//2: -170 3: -95 // 4: -15
 
     private void OnEnable()
     {
