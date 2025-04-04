@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class TileBehaviour : MonoBehaviour
 {
+   internal bool isPlaced = false;
+
+
     private void OnDrawGizmos()
     {
         DrawTilePosition();
@@ -13,4 +16,6 @@ public class TileBehaviour : MonoBehaviour
         Gizmos.color = Color.green;
         Gizmos.DrawSphere(pos, 0.1f);
     }
+
+    internal void SetCanNotPlaced() => isPlaced = true;
 }

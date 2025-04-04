@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering;
 
 
 public class GameManager : MonoSingleton<GameManager>
@@ -16,6 +17,8 @@ public class GameManager : MonoSingleton<GameManager>
     [SerializeField] Transform[] diceSpawnPoint;
 
     [HideInInspector] public List<Transform> pathTile;
+
+    readonly int  fruitCount = 2;
 
     int characterCount = 0;
     int characterIndex = 0;
@@ -67,6 +70,7 @@ public class GameManager : MonoSingleton<GameManager>
         SetCharacterBinner();
         AddCardsToCharacter();
         UpdateCameraTarget();
+        InitFruits();
         stateMachine.SetState<DrawCardState>();
     }
 
@@ -79,7 +83,7 @@ public class GameManager : MonoSingleton<GameManager>
     {
         for (int i = 0; i <= characterCount; i++)
         {
-            int tileIndex = boardManager.GetRandomTileIndex();
+            int tileIndex = boardManager.GetAvailiableTiles()[i];
             int capturedIndex = tileIndex;
 
             Quaternion rotation = boardManager.GetDirction(capturedIndex);
@@ -100,7 +104,15 @@ public class GameManager : MonoSingleton<GameManager>
                 currentCharacterBehaviour = character;
                 currentCharacterData = data;
             }
+
+            boardManager.tileBehaviours[tileIndex].SetCanNotPlaced();
+            Debug.Log(tileIndex);
         }
+    }
+
+    private void InitFruits()
+    {
+        boardManager.InitFruits(fruitCount);
     }
 
     private void AddCardsToCharacter()

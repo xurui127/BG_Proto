@@ -1928,6 +1928,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6b897e13d4c5a84bb152009d6104c17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  carrotPrefab: {fileID: 1243981745247793425, guid: cb0be7bd586247a4693ffcd9ac8501c9,
+    type: 3}
+  tomatoPrefab: {fileID: 476171350670835362, guid: a8a74c9bd66127e478630bef95ffcb82,
+    type: 3}
   tiles:
   - {fileID: 1811136442}
   - {fileID: 302896301}
@@ -1949,7 +1953,6 @@ MonoBehaviour:
   - {fileID: 2107600113}
   - {fileID: 1644897504}
   - {fileID: 37692862}
-  tileSpacing: 1.05
 --- !u!1 &1107383906
 GameObject:
   m_ObjectHideFlags: 0
@@ -4751,6 +4754,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PotPrefab
       objectReference: {fileID: 0}
+    - target: {fileID: 7624432812518651853, guid: 366468b65fd95b047a2eabbfd0f13dc2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8693241072473448465, guid: 366468b65fd95b047a2eabbfd0f13dc2,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4818,6 +4826,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TomatoPrefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 476171350670835362, guid: a8a74c9bd66127e478630bef95ffcb82,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3270069534893529077, guid: a8a74c9bd66127e478630bef95ffcb82,
         type: 3}
@@ -5209,6 +5222,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: CarrotPrefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 1243981745247793425, guid: cb0be7bd586247a4693ffcd9ac8501c9,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1895819402838938476, guid: cb0be7bd586247a4693ffcd9ac8501c9,
         type: 3}

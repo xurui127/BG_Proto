@@ -3,15 +3,14 @@ using UnityEngine;
 
 public class BoardManager : MonoBehaviour
 {
-    public List<Transform> tiles;
-    public float tileSpacing = 1.1f;
+    [SerializeField] private GameObject carrotPrefab;
+    [SerializeField] private GameObject tomatoPrefab;
+    [SerializeField] internal List<Transform> tiles;
+    internal List<TileBehaviour> tileBehaviours = new();
+    internal float tileSpacing = 1.1f;
 
-    readonly Dictionary<Vector3, Transform> tileMap = new();
-
-    private void Awake()
-    {
-        RegisterTiles();
-    }
+    readonly Vector3 fruitOffset = new(0f, 0.7f, 0f);
+    readonly Dictionary<Vector3, Transform> tileMapByPosition = new();
 
     private void OnDrawGizmos()
     {
@@ -24,16 +23,52 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
+    private void Awake()
+    {
+        RegisterTiles();
+        RegesterTileBehaviours();
+    }
+
+    internal void InitFruits(int fruitCount)
+    {
+        var availableTiles = GetAvailiableTiles();
+
+        int count = Mathf.Min(fruitCount, availableTiles.Count);
+
+        for (int i = 0; i < count; i++)
+        {
+            var tileIndex = availableTiles[i];
+
+            int fruitNum = Random.Range(0, 2);
+
+            var fruit = fruitNum == 0 ?
+                      Instantiate(carrotPrefab, tiles[tileIndex].position + fruitOffset, Quaternion.identity) :
+                      Instantiate(tomatoPrefab, tiles[tileIndex].position + fruitOffset, Quaternion.identity);
+            tileBehaviours[tileIndex].isPlaced = true;
+        }
+    }
+
 
     private void RegisterTiles()
     {
-        tileMap.Clear();
+        tileMapByPosition.Clear();
         foreach (var tile in tiles)
         {
             if (tile != null)
             {
                 Vector3 pos = tile.position;
-                tileMap[pos] = tile;
+                tileMapByPosition[pos] = tile;
+            }
+        }
+    }
+
+    private void RegesterTileBehaviours()
+    {
+        foreach (var tile in tiles)
+        {
+            if (tile != null)
+            {
+                tileBehaviours.Add(tile.GetComponent<TileBehaviour>());
             }
         }
     }
@@ -54,25 +89,38 @@ public class BoardManager : MonoBehaviour
         foreach (var dir in directions)
         {
             Vector3 neighborPos = RoundPosition(pos + dir * tileSpacing);
-            if (tileMap.ContainsKey(neighborPos))
+            if (tileMapByPosition.ContainsKey(neighborPos))
             {
-                neighbors.Add(tileMap[neighborPos]);
+                neighbors.Add(tileMapByPosition[neighborPos]);
             }
         }
         return neighbors;
     }
 
     private Vector3 RoundPosition(Vector3 pos) =>
-        new (Mathf.Round(pos.x * 100f) / 100f,
+        new(Mathf.Round(pos.x * 100f) / 100f,
             Mathf.Round(pos.y * 100f) / 100f,
             Mathf.Round(pos.z * 100f) / 100f
         );
 
-    public int GetRandomTileIndex() 
+    public List<int> GetAvailiableTiles()
     {
-        return Random.Range(1, tiles.Count - 1); 
-    }
+        List<int> availableTiles = new();
+        for (int i = 0; i < tileBehaviours.Count; i++)
+        {
+            if (!tileBehaviours[i].isPlaced)
+            {
+                availableTiles.Add(i);
+            }
+        }
 
+        for (int i = 0; i < availableTiles.Count; i++)
+        {
+            int randomIndex = Random.Range(i, availableTiles.Count);
+            (availableTiles[i], availableTiles[randomIndex]) = (availableTiles[randomIndex], availableTiles[i]);
+        }
+        return availableTiles;
+    }
     public Quaternion GetDirction(int index)
     {
         var currentTile = tiles[index];
@@ -89,4 +137,6 @@ public class BoardManager : MonoBehaviour
 
         return Quaternion.LookRotation(dirction);
     }
+
+
 }
