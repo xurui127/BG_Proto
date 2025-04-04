@@ -15,7 +15,7 @@ public class DecisionState : AbstractState
     {
         isWaitingForCardSelection = false;
         waitingTime = 1f;
-        decisionTimer = 2f;
+        decisionTimer = 1f;
         if (GM.IsPlayer())
         {
             GM.SetMovementPanel(true);
