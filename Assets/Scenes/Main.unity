@@ -1932,6 +1932,8 @@ MonoBehaviour:
     type: 3}
   tomatoPrefab: {fileID: 476171350670835362, guid: a8a74c9bd66127e478630bef95ffcb82,
     type: 3}
+  potPrefab: {fileID: 7624432812518651853, guid: 366468b65fd95b047a2eabbfd0f13dc2,
+    type: 3}
   tiles:
   - {fileID: 1811136442}
   - {fileID: 302896301}

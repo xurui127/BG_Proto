@@ -71,6 +71,7 @@ public class GameManager : MonoSingleton<GameManager>
         AddCardsToCharacter();
         UpdateCameraTarget();
         InitFruits();
+        InitPot();
         stateMachine.SetState<DrawCardState>();
     }
 
@@ -105,15 +106,14 @@ public class GameManager : MonoSingleton<GameManager>
                 currentCharacterData = data;
             }
 
-            boardManager.tileBehaviours[tileIndex].SetCanNotPlaced();
+            boardManager.tileBehaviours[tileIndex].PlacedCharacter();
             Debug.Log(tileIndex);
         }
     }
 
-    private void InitFruits()
-    {
-        boardManager.InitFruits(fruitCount);
-    }
+    private void InitFruits() => boardManager.InitFruits(fruitCount);
+
+    private void InitPot() => boardManager.InitPot();
 
     private void AddCardsToCharacter()
     {
