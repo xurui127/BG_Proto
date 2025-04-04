@@ -36,6 +36,7 @@ public class CardSystem : MonoBehaviour
     // Draw cards at the start of your turn
     public void DrawCards(CharacterData characterData)
     {
+        cardVisualHandler.OnTurnStart();
         if (isGenerated)
         {
             return;

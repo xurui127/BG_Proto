@@ -33,6 +33,7 @@ public class WorldCard : MonoBehaviour
 
     internal void CardRegister(UnityAction onExecute)
     {
+        transform.rotation = origineRotation;
         onCardExecute.RemoveAllListeners(); 
         onCardExecute.AddListener(onExecute);
     }

@@ -15,6 +15,7 @@ public class CardVisualHandler : MonoBehaviour
 
     List<CardUI> uiCards = new();
     List<WorldCard> worldCards = new();
+    private bool isCardFlyingOut;
     readonly Dictionary<CardUI, WorldCard> cardPairs = new();
 
     private void Update()
@@ -110,6 +111,10 @@ public class CardVisualHandler : MonoBehaviour
             else
             {
                 cadidatePos = GetUICardWordPos(uiCards[i]);
+                if (isCardFlyingOut)
+                {
+                    cadidatePos.x += 5;
+                }
             }
             worldCards[i].transform.position = Vector3.Lerp(worldCards[i].transform.position, cadidatePos, 20f * Time.deltaTime);
         }
@@ -162,46 +167,47 @@ public class CardVisualHandler : MonoBehaviour
 
     internal void WorldCardFlyOut()
     {
-        StartCoroutine(WorldCardFlyOutCoroutine());
-        IEnumerator WorldCardFlyOutCoroutine()
-        {
-            isConectUIcard = true;
+        isCardFlyingOut = true;
+        //StartCoroutine(WorldCardFlyOutCoroutine());
+        //IEnumerator WorldCardFlyOutCoroutine()
+        //{
+        //    isConectUIcard = true;
 
-            List<Transform> activeCards = new List<Transform>();
-            foreach (var card in worldCards)
-            {
-                if (card.gameObject.activeSelf)
-                {
-                    activeCards.Add(card.transform);
-                }
-            }
+        //    List<Transform> activeCards = new List<Transform>();
+        //    foreach (var card in worldCards)
+        //    {
+        //        if (card.gameObject.activeSelf)
+        //        {
+        //            activeCards.Add(card.transform);
+        //        }
+        //    }
 
-            bool allCardsReached = false;
-            while (!allCardsReached)
-            {
-                allCardsReached = true;
+        //    bool allCardsReached = false;
+        //    while (!allCardsReached)
+        //    {
+        //        allCardsReached = true;
 
-                foreach (var cardTransform in activeCards)
-                {
-                    cardTransform.position = Vector3.Lerp(cardTransform.position,
-                                                          worldCardFlyOutPosition.transform.position,
-                                                          2f * Time.deltaTime);
+        //        foreach (var cardTransform in activeCards)
+        //        {
+        //            cardTransform.position = Vector3.Lerp(cardTransform.position,
+        //                                                  worldCardFlyOutPosition.transform.position,
+        //                                                  2f * Time.deltaTime);
 
-                    if (Vector3.Distance(cardTransform.position, worldCardFlyOutPosition.transform.position) <= 0.5f)
-                    {
-                        cardTransform.gameObject.SetActive(false);
-                    }
-                    else
-                    {
-                        allCardsReached = false;
-                    }
-                }
+        //            if (Vector3.Distance(cardTransform.position, worldCardFlyOutPosition.transform.position) <= 0.5f)
+        //            {
+        //                cardTransform.gameObject.SetActive(false);
+        //            }
+        //            else
+        //            {
+        //                allCardsReached = false;
+        //            }
+        //        }
 
-                yield return null;
-            }
+        //        yield return null;
+        //    }
 
-            isConectUIcard = false;
-        }
+        //    isConectUIcard = false;
+        //}
     }
 
     internal void AIPlayCard()
@@ -246,5 +252,10 @@ public class CardVisualHandler : MonoBehaviour
             isConectUIcard = false;
         }
       
+    }
+
+    internal void OnTurnStart()
+    {
+        isCardFlyingOut = false;
     }
 }
