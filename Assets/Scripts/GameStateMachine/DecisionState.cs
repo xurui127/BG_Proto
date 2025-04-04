@@ -42,7 +42,6 @@ public class DecisionState : AbstractState
                 }
                 else
                 {
-                    //GM.InitCards();
                     decisionTimer -= Time.deltaTime;
                     isWaitingForCardSelection = true;
                     if (decisionTimer <= 0 && !isAIplayCard)

@@ -90,15 +90,3 @@ public class BoardManager : MonoBehaviour
         return Quaternion.LookRotation(dirction);
     }
 }
-//if (tiles.Count < 2) return;
-
-//Gizmos.color = Color.red;
-
-//for (int i = 0; i < tiles.Count - 1; i++)
-//{
-//    Gizmos.DrawLine(tiles[i].position, tiles[i + 1].position);
-//}
-//if (tiles.Count > 2)
-//{
-//    Gizmos.DrawLine(tiles[tiles.Count - 1].position, tiles[0].position);
-//}

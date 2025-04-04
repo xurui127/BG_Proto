@@ -69,7 +69,6 @@ public class CardVisualHandler : MonoBehaviour
     private void OnCardOnDragEvent(CardUI card)
     {
         worldCards[card.handIndex].CardOnDragging();
-        //CardOnDrag(card);
     }
 
     private void OnCardEndDragEvent(CardUI card)
@@ -206,46 +205,6 @@ public class CardVisualHandler : MonoBehaviour
     internal void WorldCardFlyOut()
     {
         isCardFlyingOut = true;
-        //StartCoroutine(WorldCardFlyOutCoroutine());
-        //IEnumerator WorldCardFlyOutCoroutine()
-        //{
-        //    isConectUIcard = true;
-
-        //    List<Transform> activeCards = new List<Transform>();
-        //    foreach (var card in worldCards)
-        //    {
-        //        if (card.gameObject.activeSelf)
-        //        {
-        //            activeCards.Add(card.transform);
-        //        }
-        //    }
-
-        //    bool allCardsReached = false;
-        //    while (!allCardsReached)
-        //    {
-        //        allCardsReached = true;
-
-        //        foreach (var cardTransform in activeCards)
-        //        {
-        //            cardTransform.position = Vector3.Lerp(cardTransform.position,
-        //                                                  worldCardFlyOutPosition.transform.position,
-        //                                                  2f * Time.deltaTime);
-
-        //            if (Vector3.Distance(cardTransform.position, worldCardFlyOutPosition.transform.position) <= 0.5f)
-        //            {
-        //                cardTransform.gameObject.SetActive(false);
-        //            }
-        //            else
-        //            {
-        //                allCardsReached = false;
-        //            }
-        //        }
-
-        //        yield return null;
-        //    }
-
-        //    isConectUIcard = false;
-        //}
     }
 
     internal void AIPlayCard()
@@ -289,7 +248,6 @@ public class CardVisualHandler : MonoBehaviour
 
             isConectUIcard = false;
         }
-
     }
 
     internal void OnTurnStart()
