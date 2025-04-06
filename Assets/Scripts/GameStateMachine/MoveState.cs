@@ -8,6 +8,7 @@ public class MoveState : AbstractState
 
     public override void OnEnter()
     {
+        GM.ResetCurrentTile();
         GM.MoveCharacter();
     }
 
@@ -21,7 +22,7 @@ public class MoveState : AbstractState
 
     public override void OnExit()
     {
-
+        GM.RegesterCurrentTile();
     }
 
 }

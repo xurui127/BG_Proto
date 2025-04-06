@@ -21,6 +21,7 @@ public class FruitBehaviour : ItemBehaviour
     {
         data.fruitCount += amount;
         OnCallIntercatEvent(data.index,data.fruitCount);
+
         Destroy(gameObject);
     }
 

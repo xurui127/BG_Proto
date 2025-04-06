@@ -1,5 +1,6 @@
 ﻿using Cinemachine;
 using System.Collections.Generic;
+using UnityEditor.MPE;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -19,7 +20,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     [HideInInspector] public List<Transform> pathTile;
 
-    readonly int fruitCount = 2;
+    [SerializeField] private int fruitCount = 3;
 
     int characterCount = 0;
     int characterIndex = 0;
@@ -173,6 +174,18 @@ public class GameManager : MonoSingleton<GameManager>
         }
     }
 
+    internal void ResetCurrentTile()
+    {
+        var tileIndex = currentCharacterBehaviour.currentTileIndex;
+        boardManager.ResetPlacedCharacter(tileIndex);
+    }
+
+    internal void RegesterCurrentTile()
+    {
+        var tileIndex = currentCharacterBehaviour.currentTileIndex;
+        boardManager.RegesterPlacedCharacter(tileIndex);
+    }
+
     public void SetNextCharacterTurn()
     {
         currentCharacterData.DiscardHand();
@@ -245,11 +258,14 @@ public class GameManager : MonoSingleton<GameManager>
         var currentTile = boardManager.GetCurrentTile(tileIndex);
         var currentItem = currentTile.GetCurrentItemBehaviour();
 
-        if (currentTile != null && 
-            currentTile.isPlacedItem && 
-            currentItem != null)
+        if (currentTile != null &&
+            currentItem != null &&
+            (currentTile.isPlacedFruit ||
+            currentTile.isPlacedPot))
         {
             currentItem.OnInteract(currentCharacterData);
         }
+
+        currentTile.ResetTilePlacedFruit(currentTile.isPlacedFruit);
     }
 }

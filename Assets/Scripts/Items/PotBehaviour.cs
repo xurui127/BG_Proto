@@ -20,8 +20,15 @@ public class PotBehaviour : ItemBehaviour
 
     internal override void OnInteract(CharacterData data)
     {
-        data.goalCount += amount;
-        OnCallIntercatEvent(data.index, data.goalCount);
+        if (data.fruitCount == 10)
+        {
+            data.goalCount += amount;
+            OnCallIntercatEvent(data.index, data.goalCount);
+        }
+        if (data.goalCount == 3)
+        {
+            Debug.Log("Finish");
+        }
     }
 
 

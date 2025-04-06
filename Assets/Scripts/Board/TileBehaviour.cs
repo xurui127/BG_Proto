@@ -4,7 +4,9 @@ public class TileBehaviour : MonoBehaviour
 {
 
     internal bool isPlacedItem = false;
-    internal bool isPlacedCharacter = false;
+    [SerializeField]internal bool isPlacedFruit = false;
+    [SerializeField]internal bool isPlacedPot = false;
+    [SerializeField]internal bool isPlacedCharacter = false;
     internal ItemBehaviour itemBehaviour;
 
     private void OnDrawGizmos()
@@ -23,6 +25,10 @@ public class TileBehaviour : MonoBehaviour
 
     internal void PlacedItem() => isPlacedItem = true;
 
+    internal void PlacedFruit() => isPlacedFruit = true;
+
+    internal void PlacedPot() => isPlacedPot = true;
+
     internal void SetCurrentBehaviour(ItemBehaviour behaviour) => itemBehaviour = behaviour;
 
     internal ItemBehaviour GetCurrentItemBehaviour()
@@ -31,7 +37,19 @@ public class TileBehaviour : MonoBehaviour
         {
             return itemBehaviour;
         }
-
         return null;
+    }
+
+    internal void ResetTilePlacedFruit(bool isReset)
+    {
+        if (isReset)
+        {
+            isPlacedFruit = false;
+        }
+    }
+
+    internal void ResetTilePlacedCharacter()
+    {
+        isPlacedCharacter = false;
     }
 }

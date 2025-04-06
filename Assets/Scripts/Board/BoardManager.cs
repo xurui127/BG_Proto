@@ -28,6 +28,7 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
+    
     private void Awake()
     {
         RegisterTiles();
@@ -53,7 +54,7 @@ public class BoardManager : MonoBehaviour
 
             var itemBehavour = fruit.GetComponent<ItemBehaviour>();
             itemBehavour.SetPlacedTileIndex(tileIndex);
-            tileBehaviours[tileIndex].PlacedItem();
+            tileBehaviours[tileIndex].PlacedFruit();
             tileBehaviours[tileIndex].SetCurrentBehaviour(itemBehavour);
             fruitBehaviourByTileIndex[tileIndex] = itemBehavour;
             itemBehavour.RegesterItem(3);
@@ -71,7 +72,7 @@ public class BoardManager : MonoBehaviour
         pot.GetComponent<ItemBehaviour>().SetPlacedTileIndex(tileIndex);
         var itemBehavour = pot.GetComponent<ItemBehaviour>();
         itemBehavour.SetPlacedTileIndex(tileIndex);
-        tileBehaviours[tileIndex].PlacedItem();
+        tileBehaviours[tileIndex].PlacedPot();
         tileBehaviours[tileIndex].SetCurrentBehaviour(itemBehavour);
         potBehaviourByTileIndex[tileIndex] = itemBehavour;
         itemBehavour.RegesterItem(1);
@@ -136,7 +137,8 @@ public class BoardManager : MonoBehaviour
         List<int> availableTiles = new();
         for (int i = 0; i < tileBehaviours.Count; i++)
         {
-            if (!tileBehaviours[i].isPlacedItem &&
+            if (!tileBehaviours[i].isPlacedFruit &&
+                !tileBehaviours[i].isPlacedPot&&
                 !tileBehaviours[i].isPlacedCharacter)
             {
                 availableTiles.Add(i);
@@ -169,4 +171,15 @@ public class BoardManager : MonoBehaviour
     }
 
     internal TileBehaviour GetCurrentTile(int index) => tileBehaviours[index];
+
+    internal void ResetPlacedCharacter(int index)
+    {
+        tileBehaviours[index].ResetTilePlacedCharacter();
+    }
+
+    internal void RegesterPlacedCharacter(int index)
+    {
+        tileBehaviours[index].PlacedCharacter();
+    }
+
 }
