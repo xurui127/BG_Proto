@@ -10,7 +10,6 @@ public class UIManager : MonoSingleton<UIManager>
     [SerializeField] public GameObject movementPanel;
     [SerializeField] public GameObject cardPanel;
     [SerializeField] public GameObject noCardPanel;
-    [SerializeField] public GameObject backButton;
     [SerializeField] CharacterBinner[] characterBinners;
     [SerializeField] RenderTexture[] iconCamTextures;
 
@@ -46,12 +45,7 @@ public class UIManager : MonoSingleton<UIManager>
     }
 
     public void OpenNoCardsPanel(bool isOpen) => noCardPanel.SetActive(isOpen);
-  
 
-    public void IsHideBackButton(bool isHide)
-    {
-        backButton.SetActive(isHide);
-    }
     private void ClosePanels()
     {
         movementPanel.SetActive(false);
@@ -68,6 +62,7 @@ public class UIManager : MonoSingleton<UIManager>
 
             characterBinners[i].UpdateFruitText(allData[i].fruitCount);
             characterBinners[i].UpdateNameText(nameText,i.ToString());
+            characterBinners[i].UpdateGoalText(allData[i].goalCount);
             allBehaviours[i].SetupIConCam(iconCamTextures[i]);
         }
     }

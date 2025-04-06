@@ -19,10 +19,11 @@ public class FruitBehaviour : ItemBehaviour
 
     internal override void OnInteract(CharacterData data)
     {
+        Destroy(gameObject);
+
         data.fruitCount += amount;
         OnCallIntercatEvent(data.index,data.fruitCount);
 
-        Destroy(gameObject);
     }
 
     internal override void SetPlacedTileIndex(int index) => placedTileIndex = index;
