@@ -19,6 +19,9 @@ public class UIManager : MonoSingleton<UIManager>
         GameManager.OnTurnChangedEvent += UpdateTurnText;
         GameManager.OnFruitChangeEvent += UpdateCharacterFruitCount;
         GameManager.ClosePanelsEvent += ClosePanels;
+
+        FruitBehaviour.OnInteractEvent += UpdateCharacterFruitCount;
+        PotBehaviour.OnInteractEvent += UpdateCharcterGoalCount;
     }
 
     private void OnDisable()
@@ -26,11 +29,14 @@ public class UIManager : MonoSingleton<UIManager>
         GameManager.OnTurnChangedEvent -= UpdateTurnText;
         GameManager.OnFruitChangeEvent -= UpdateCharacterFruitCount;
         GameManager.ClosePanelsEvent -= ClosePanels;
+
+        FruitBehaviour.OnInteractEvent -= UpdateCharacterFruitCount;
+        PotBehaviour.OnInteractEvent -= UpdateCharcterGoalCount;
     }
 
     public void UpdateTurnText(int turnNumber) => turnText.text = $"Turn: {turnNumber}";
 
-    public void UpdateGoldText(int amount) => goldText.text = $"Gold: {amount}";   
+   // public void UpdateGoldText(int amount) => goldText.text = $"Gold: {amount}";   
     
     //internal void UpdateFruitText(int amout, int index) => 
     public void TigglePanel()
@@ -69,5 +75,10 @@ public class UIManager : MonoSingleton<UIManager>
     internal void UpdateCharacterFruitCount(int index, int amount)
     {
         characterBinners[index].UpdateFruitText(amount);
+    }
+
+    internal void UpdateCharcterGoalCount(int index, int amount)
+    {
+        characterBinners[index].UpdateGoalText(amount);
     }
 }

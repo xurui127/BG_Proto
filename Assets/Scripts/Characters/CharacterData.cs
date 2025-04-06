@@ -9,13 +9,21 @@ public class CharacterData : MonoBehaviour
     internal List<CardInstance> activeDeck = new();
     internal List<CardInstance> hand = new();
     internal List<CardInstance> graveyard = new();
+    internal int index;
 
-    public int fruitCount = 0;
+    internal int fruitCount = 0;
+    internal int goalCount = 0;
 
-    public int AddFruits(int amount)
+    public int UpdateFruits(int amount)
     {
         fruitCount += amount;
         return fruitCount;
+    }
+
+    internal int UpdateGoal(int amount)
+    {
+        goalCount += amount;
+        return goalCount;
     }
 
     internal void GenerateDeck(Card_SO[] cards)

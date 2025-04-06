@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using static Cinemachine.CinemachineFreeLook;
 
 public class BoardManager : MonoBehaviour
 {
@@ -14,6 +13,9 @@ public class BoardManager : MonoBehaviour
     readonly Vector3 fruitPosOffset = new(0f, 0.7f, 0f);
     readonly Vector3 potPosOffset = new(0f, 0.4f, 0f);
     readonly Dictionary<Vector3, Transform> tileMapByPosition = new();
+    Dictionary<int,ItemBehaviour> fruitBehaviourByTileIndex = new();
+    Dictionary<int,ItemBehaviour> potBehaviourByTileIndex = new();
+
 
     private void OnDrawGizmos()
     {
@@ -51,8 +53,10 @@ public class BoardManager : MonoBehaviour
 
             var itemBehavour = fruit.GetComponent<ItemBehaviour>();
             itemBehavour.SetPlacedTileIndex(tileIndex);
-            tileBehaviours[tileIndex].PlacedFruit();
+            tileBehaviours[tileIndex].PlacedItem();
             tileBehaviours[tileIndex].SetCurrentBehaviour(itemBehavour);
+            fruitBehaviourByTileIndex[tileIndex] = itemBehavour;
+            itemBehavour.RegesterItem(3);
         }
     }
 
@@ -67,8 +71,10 @@ public class BoardManager : MonoBehaviour
         pot.GetComponent<ItemBehaviour>().SetPlacedTileIndex(tileIndex);
         var itemBehavour = pot.GetComponent<ItemBehaviour>();
         itemBehavour.SetPlacedTileIndex(tileIndex);
-        tileBehaviours[tileIndex].PlacedPot();
+        tileBehaviours[tileIndex].PlacedItem();
         tileBehaviours[tileIndex].SetCurrentBehaviour(itemBehavour);
+        potBehaviourByTileIndex[tileIndex] = itemBehavour;
+        itemBehavour.RegesterItem(1);
     }
 
     private void RegisterTiles()
@@ -130,9 +136,8 @@ public class BoardManager : MonoBehaviour
         List<int> availableTiles = new();
         for (int i = 0; i < tileBehaviours.Count; i++)
         {
-            if (!tileBehaviours[i].isPlacedFruit && 
-                !tileBehaviours[i].isPlacedCharacter && 
-                !tileBehaviours[i].isPlacedPot)
+            if (!tileBehaviours[i].isPlacedItem &&
+                !tileBehaviours[i].isPlacedCharacter)
             {
                 availableTiles.Add(i);
             }

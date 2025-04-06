@@ -84,7 +84,7 @@ public class GameManager : MonoSingleton<GameManager>
         {
             RollSpecificDice(TextStep);
         }
-        CheckIteractItems();
+        //CheckIteractItems();
     }
 
     private void InitCharacters()
@@ -112,7 +112,7 @@ public class GameManager : MonoSingleton<GameManager>
                 currentCharacterBehaviour = character;
                 currentCharacterData = data;
             }
-
+            data.index = i;
             boardManager.tileBehaviours[tileIndex].PlacedCharacter();
         }
     }
@@ -217,7 +217,7 @@ public class GameManager : MonoSingleton<GameManager>
     public void AddFruits(int amount)
     {
         var index = allCharacterData.IndexOf(currentCharacterData);
-        OnFruitChangeEvent?.Invoke(index, currentCharacterData.AddFruits(amount));
+        OnFruitChangeEvent?.Invoke(index, currentCharacterData.UpdateFruits(amount));
         ClosePanelsEvent?.Invoke();
         RemoveCards("20001");
     }
@@ -241,21 +241,15 @@ public class GameManager : MonoSingleton<GameManager>
 
     internal void CheckIteractItems()
     {
-        int tileIndex = currentCharacterBehaviour.currentTileIndex;
+        var tileIndex = currentCharacterBehaviour.currentTileIndex;
         var currentTile = boardManager.GetCurrentTile(tileIndex);
-        int amount = 1;
-        if (currentTile.isPlacedFruit)
-        {
-            var index = allCharacterData.IndexOf(currentCharacterData);
-            OnFruitChangeEvent?.Invoke(index, currentCharacterData.AddFruits(amount));
-        }
-        else if (currentTile.isPlacedPot)
-        {
+        var currentItem = currentTile.GetCurrentItemBehaviour();
 
-        }
-        else
+        if (currentTile != null && 
+            currentTile.isPlacedItem && 
+            currentItem != null)
         {
-            return;
+            currentItem.OnInteract(currentCharacterData);
         }
     }
 }

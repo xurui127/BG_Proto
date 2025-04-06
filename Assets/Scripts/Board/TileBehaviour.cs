@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class TileBehaviour : MonoBehaviour
 {
-    internal bool isPlacedFruit = false;
-    internal bool isPlacedPot = false;
+
+    internal bool isPlacedItem = false;
     internal bool isPlacedCharacter = false;
     internal ItemBehaviour itemBehaviour;
 
@@ -21,9 +21,17 @@ public class TileBehaviour : MonoBehaviour
 
     internal void PlacedCharacter() => isPlacedCharacter = true;
 
-    internal void PlacedFruit() => isPlacedFruit = true;
-
-    internal void PlacedPot() => isPlacedPot = true;
+    internal void PlacedItem() => isPlacedItem = true;
 
     internal void SetCurrentBehaviour(ItemBehaviour behaviour) => itemBehaviour = behaviour;
+
+    internal ItemBehaviour GetCurrentItemBehaviour()
+    {
+        if (itemBehaviour != null)
+        {
+            return itemBehaviour;
+        }
+
+        return null;
+    }
 }

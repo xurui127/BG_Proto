@@ -11,6 +11,7 @@ public class EndTurnState : AbstractState
     public override void OnEnter()
     {
         waitingTime = 1f;
+        GM.CheckIteractItems();
         GM.SetNextCharacterTurn();
     }
 
