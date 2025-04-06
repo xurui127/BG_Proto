@@ -57,7 +57,7 @@ public class BoardManager : MonoBehaviour
             tileBehaviours[tileIndex].PlacedFruit();
             tileBehaviours[tileIndex].SetCurrentBehaviour(itemBehavour);
             fruitBehaviourByTileIndex[tileIndex] = itemBehavour;
-            itemBehavour.RegesterItem(3);
+            itemBehavour.RegesterItem(10);
         }
     }
 

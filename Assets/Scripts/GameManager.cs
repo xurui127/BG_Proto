@@ -34,7 +34,6 @@ public class GameManager : MonoSingleton<GameManager>
 
     public readonly FSMController stateMachine = new();
     public static UnityAction<int> OnTurnChangedEvent;
-    public static UnityAction<int> OnGoldChangedEvent;
     public static UnityAction<int, int> OnFruitChangeEvent;
     public static UnityAction ClosePanelsEvent;
 
@@ -84,6 +83,11 @@ public class GameManager : MonoSingleton<GameManager>
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             RollSpecificDice(TextStep);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            TEXTPOT();
         }
         //CheckIteractItems();
     }
@@ -197,7 +201,6 @@ public class GameManager : MonoSingleton<GameManager>
         {
             UpdateTurnNumber();
         }
-        OnGoldChangedEvent?.Invoke(currentCharacterData.fruitCount);
         cardSystem.ResetCardsDate();
     }
 
@@ -267,5 +270,11 @@ public class GameManager : MonoSingleton<GameManager>
         }
 
         currentTile.ResetTilePlacedFruit(currentTile.isPlacedFruit);
+    }
+    private void TEXTPOT()
+    {
+        currentCharacterData.FruitCount = 10;
+        var newItem = new FruitBehaviour();
+        newItem.TESTOnInteract(currentCharacterData);
     }
 }

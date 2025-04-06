@@ -7,13 +7,10 @@ public abstract class ItemBehaviour : MonoBehaviour
 
     internal  int amount;
 
- 
-
     internal abstract void RegesterItem(int amount);
 
     internal abstract void SetPlacedTileIndex(int index);
 
     internal abstract void OnInteract(CharacterData data);
 
-    internal abstract void OnCallIntercatEvent(int index, int amount);
 }

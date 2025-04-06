@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class CharacterData : MonoBehaviour
 {
@@ -11,19 +11,48 @@ public class CharacterData : MonoBehaviour
     internal List<CardInstance> graveyard = new();
     internal int index;
 
-    internal int fruitCount = 0;
-    internal int goalCount = 0;
+    int _fruitCount = 0;
+    int _goalCount = 0;
+
+    internal int FruitCount
+    {
+        get => _fruitCount;
+        set
+        {
+            if (_fruitCount != value)
+            {
+                _fruitCount = value;
+                OnFruitCountChangedEvent?.Invoke(_fruitCount);
+            }
+        }
+    }
+
+    internal int GoalCount
+    {
+        get => _goalCount;
+        set
+        {
+            if (_goalCount != value)
+            {
+                _goalCount = value;
+                OnGoalCountChangedEvent?.Invoke(_goalCount);
+            }
+        }
+    }
+
+    internal UnityAction<int> OnFruitCountChangedEvent;
+    internal UnityAction<int> OnGoalCountChangedEvent;
 
     public int UpdateFruits(int amount)
     {
-        fruitCount += amount;
-        return fruitCount;
+        FruitCount += amount;
+        return FruitCount;
     }
 
     internal int UpdateGoal(int amount)
     {
-        goalCount += amount;
-        return goalCount;
+        GoalCount += amount;
+        return GoalCount;
     }
 
     internal void GenerateDeck(Card_SO[] cards)

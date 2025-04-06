@@ -18,9 +18,6 @@ public class UIManager : MonoSingleton<UIManager>
         GameManager.OnTurnChangedEvent += UpdateTurnText;
         GameManager.OnFruitChangeEvent += UpdateCharacterFruitCount;
         GameManager.ClosePanelsEvent += ClosePanels;
-
-        FruitBehaviour.OnInteractEvent += UpdateCharacterFruitCount;
-        PotBehaviour.OnInteractEvent += UpdateCharcterGoalCount;
     }
 
     private void OnDisable()
@@ -28,9 +25,6 @@ public class UIManager : MonoSingleton<UIManager>
         GameManager.OnTurnChangedEvent -= UpdateTurnText;
         GameManager.OnFruitChangeEvent -= UpdateCharacterFruitCount;
         GameManager.ClosePanelsEvent -= ClosePanels;
-
-        FruitBehaviour.OnInteractEvent -= UpdateCharacterFruitCount;
-        PotBehaviour.OnInteractEvent -= UpdateCharcterGoalCount;
     }
 
     public void UpdateTurnText(int turnNumber) => turnText.text = $"Turn: {turnNumber}";
@@ -60,9 +54,13 @@ public class UIManager : MonoSingleton<UIManager>
             bool isPlayer = i == 0;
             string nameText = isPlayer ? "Player" : "NPC";
 
-            characterBinners[i].UpdateFruitText(allData[i].fruitCount);
             characterBinners[i].UpdateNameText(nameText,i.ToString());
-            characterBinners[i].UpdateGoalText(allData[i].goalCount);
+            characterBinners[i].UpdateFruitText(allData[i].FruitCount);
+            characterBinners[i].UpdateGoalText(allData[i].GoalCount);
+
+            characterBinners[i].Init(allData[i]);
+            characterBinners[i].BindCharacterTextEvents();
+
             allBehaviours[i].SetupIConCam(iconCamTextures[i]);
         }
     }
@@ -76,4 +74,5 @@ public class UIManager : MonoSingleton<UIManager>
     {
         characterBinners[index].UpdateGoalText(amount);
     }
+
 }
