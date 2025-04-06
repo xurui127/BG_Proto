@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using static Cinemachine.CinemachineFreeLook;
 
 public class BoardManager : MonoBehaviour
 {
@@ -43,12 +44,15 @@ public class BoardManager : MonoBehaviour
 
             int fruitNum = Random.Range(0, 2);
 
+            // TODO: After need refactor
             var fruit = fruitNum == 0 ?
                       Instantiate(carrotPrefab, tiles[tileIndex].position + fruitPosOffset, Quaternion.identity) :
                       Instantiate(tomatoPrefab, tiles[tileIndex].position + fruitPosOffset, Quaternion.identity);
 
-            fruit.GetComponent<ItemBehaviour>().SetPlacedTileIndex(tileIndex);
+            var itemBehavour = fruit.GetComponent<ItemBehaviour>();
+            itemBehavour.SetPlacedTileIndex(tileIndex);
             tileBehaviours[tileIndex].PlacedFruit();
+            tileBehaviours[tileIndex].SetCurrentBehaviour(itemBehavour);
         }
     }
 
@@ -58,11 +62,13 @@ public class BoardManager : MonoBehaviour
 
         var tileIndex = availableTiles[0];
 
-        var pot = Instantiate(potPrefab, tiles[tileIndex].position + fruitPosOffset, Quaternion.identity);
-
+        var pot = Instantiate(potPrefab, tiles[tileIndex].position + potPosOffset, Quaternion.identity);
+        // TODO: After need refactor
         pot.GetComponent<ItemBehaviour>().SetPlacedTileIndex(tileIndex);
+        var itemBehavour = pot.GetComponent<ItemBehaviour>();
+        itemBehavour.SetPlacedTileIndex(tileIndex);
         tileBehaviours[tileIndex].PlacedPot();
-
+        tileBehaviours[tileIndex].SetCurrentBehaviour(itemBehavour);
     }
 
     private void RegisterTiles()
@@ -139,6 +145,7 @@ public class BoardManager : MonoBehaviour
         }
         return availableTiles;
     }
+
     public Quaternion GetDirction(int index)
     {
         var currentTile = tiles[index];
@@ -155,4 +162,6 @@ public class BoardManager : MonoBehaviour
 
         return Quaternion.LookRotation(dirction);
     }
+
+    internal TileBehaviour GetCurrentTile(int index) => tileBehaviours[index];
 }

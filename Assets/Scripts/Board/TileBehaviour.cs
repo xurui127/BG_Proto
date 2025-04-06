@@ -5,6 +5,7 @@ public class TileBehaviour : MonoBehaviour
     internal bool isPlacedFruit = false;
     internal bool isPlacedPot = false;
     internal bool isPlacedCharacter = false;
+    internal ItemBehaviour itemBehaviour;
 
     private void OnDrawGizmos()
     {
@@ -18,9 +19,11 @@ public class TileBehaviour : MonoBehaviour
         Gizmos.DrawSphere(pos, 0.1f);
     }
 
-    internal void PlacedCharacter() =>isPlacedCharacter = true;
+    internal void PlacedCharacter() => isPlacedCharacter = true;
 
     internal void PlacedFruit() => isPlacedFruit = true;
 
     internal void PlacedPot() => isPlacedPot = true;
+
+    internal void SetCurrentBehaviour(ItemBehaviour behaviour) => itemBehaviour = behaviour;
 }

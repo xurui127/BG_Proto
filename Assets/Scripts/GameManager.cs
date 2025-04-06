@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Rendering;
 
 
 public class GameManager : MonoSingleton<GameManager>
@@ -16,9 +15,11 @@ public class GameManager : MonoSingleton<GameManager>
     [SerializeField] GameObject dicePrefab;
     [SerializeField] Transform[] diceSpawnPoint;
 
+    [SerializeField] int TextStep = 0;
+
     [HideInInspector] public List<Transform> pathTile;
 
-    readonly int  fruitCount = 2;
+    readonly int fruitCount = 2;
 
     int characterCount = 0;
     int characterIndex = 0;
@@ -78,6 +79,12 @@ public class GameManager : MonoSingleton<GameManager>
     private void Update()
     {
         stateMachine.OnUpdate();
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            RollSpecificDice(TextStep);
+        }
+        CheckIteractItems();
     }
 
     private void InitCharacters()
@@ -226,9 +233,29 @@ public class GameManager : MonoSingleton<GameManager>
     }
 
     internal void PlayWorldCardFlyoutAnimation() => cardSystem.PlayWorldCardFlyoutAnimation();
-    
-    private void SetCharacterBinner() 
+
+    private void SetCharacterBinner()
     {
-        uiManager.SetupCharacterBinners(characterCount,allCharacterData, allCharacterBehaviours);
+        uiManager.SetupCharacterBinners(characterCount, allCharacterData, allCharacterBehaviours);
+    }
+
+    internal void CheckIteractItems()
+    {
+        int tileIndex = currentCharacterBehaviour.currentTileIndex;
+        var currentTile = boardManager.GetCurrentTile(tileIndex);
+        int amount = 1;
+        if (currentTile.isPlacedFruit)
+        {
+            var index = allCharacterData.IndexOf(currentCharacterData);
+            OnFruitChangeEvent?.Invoke(index, currentCharacterData.AddFruits(amount));
+        }
+        else if (currentTile.isPlacedPot)
+        {
+
+        }
+        else
+        {
+            return;
+        }
     }
 }

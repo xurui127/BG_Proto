@@ -6,8 +6,8 @@ public class CharacterBehaviour : MonoBehaviour
     [SerializeField] Animator anim;
     [SerializeField] public bool isPlayer;
     [SerializeField] public Camera iconCam;
-    public int currentTileIndex = 0;
-    public bool isDoneMoving = false;
+    internal int currentTileIndex = 0;
+    internal bool isDoneMoving = false;
     const float turnSpeed = 5f;
     const float jumpHeight = 0.5f;
     const float jumpDuration = 0.3f;
