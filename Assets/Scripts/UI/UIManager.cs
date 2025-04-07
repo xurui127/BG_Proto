@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UIManager : MonoSingleton<UIManager>
 {
@@ -9,14 +12,21 @@ public class UIManager : MonoSingleton<UIManager>
     [SerializeField] public GameObject movementPanel;
     [SerializeField] public GameObject cardPanel;
     [SerializeField] public GameObject noCardPanel;
+    [SerializeField] GameObject[] characterIconprefabs;
+    [SerializeField] Transform[] iconSpawnPoints;
     [SerializeField] CharacterBinner[] characterBinners;
     [SerializeField] RenderTexture[] iconCamTextures;
+    [SerializeField] GameObject endPanel;
+    [SerializeField] GameObject winText;
+    [SerializeField] GameObject loseText;
 
     private void OnEnable()
     {
         GameManager.OnTurnChangedEvent += UpdateTurnText;
         GameManager.OnFruitChangeEvent += UpdateCharacterFruitCount;
         GameManager.ClosePanelsEvent += ClosePanels;
+
+        PotBehaviour.OpenEndPanelEvent += OpenEndPanel;
     }
 
     private void OnDisable()
@@ -24,6 +34,7 @@ public class UIManager : MonoSingleton<UIManager>
         GameManager.OnTurnChangedEvent -= UpdateTurnText;
         GameManager.OnFruitChangeEvent -= UpdateCharacterFruitCount;
         GameManager.ClosePanelsEvent -= ClosePanels;
+        PotBehaviour.OpenEndPanelEvent -= OpenEndPanel;
     }
 
     public void UpdateTurnText(int turnNumber) => turnText.text = $"Turn: {turnNumber}";
@@ -58,7 +69,12 @@ public class UIManager : MonoSingleton<UIManager>
             characterBinners[i].Init(allData[i]);
             characterBinners[i].BindCharacterTextEvents();
 
-            allBehaviours[i].SetupIConCam(iconCamTextures[i]);
+            var prefab = isPlayer ? characterIconprefabs[0]: characterIconprefabs[1];
+            var icon = Instantiate(prefab, iconSpawnPoints[i].position,Quaternion.identity).GetComponent<IconProxy>();
+            icon.gameObject.transform.parent = iconSpawnPoints[i];
+            icon.SetupIConCam(iconCamTextures[i]);
+
+            //allBehaviours[i].SetupIConCam(iconCamTextures[i]);
         }
     }
 
@@ -70,6 +86,18 @@ public class UIManager : MonoSingleton<UIManager>
     internal void UpdateCharcterGoalCount(int index, int amount)
     {
         characterBinners[index].UpdateGoalText(amount);
+    }
+
+    internal void OpenEndPanel(bool isWin)
+    {
+        endPanel.SetActive(true);
+        winText.SetActive(isWin);
+        loseText.SetActive(!isWin);
+    }
+
+    public void BackToTitleSceen()
+    {
+        SceneManager.LoadScene("Title");
     }
 
 }

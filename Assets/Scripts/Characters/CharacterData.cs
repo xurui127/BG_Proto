@@ -49,15 +49,15 @@ public class CharacterData : MonoBehaviour
         return FruitCount;
     }
 
-    internal int UpdateGoal(int mod)
+    internal int UpdateGoal(int quotient)
     {
-        GoalCount += mod;
+        GoalCount += quotient;
         return GoalCount;
     }
 
-    internal void CostFruits(int mod)
+    internal void CostFruits(int quotient)
     {
-        FruitCount -= 10 * mod;
+        FruitCount -= 10 * quotient;
     }
 
     internal void GenerateDeck(Card_SO[] cards)
