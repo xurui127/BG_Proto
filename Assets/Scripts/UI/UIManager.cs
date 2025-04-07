@@ -73,8 +73,6 @@ public class UIManager : MonoSingleton<UIManager>
             var icon = Instantiate(prefab, iconSpawnPoints[i].position,Quaternion.identity).GetComponent<IconProxy>();
             icon.gameObject.transform.parent = iconSpawnPoints[i];
             icon.SetupIConCam(iconCamTextures[i]);
-
-            //allBehaviours[i].SetupIConCam(iconCamTextures[i]);
         }
     }
 

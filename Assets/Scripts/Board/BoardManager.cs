@@ -37,7 +37,7 @@ public class BoardManager : MonoBehaviour
 
     private  GameObject SpawnFruitAtTile(int tileIndex, int amount = 3)
     {
-        int fruitNum = Random.Range(0, 2);
+        var fruitNum = Random.Range(0, 2);
         var prefab = fruitNum == 0 ? carrotPrefab : tomatoPrefab;
 
         var fruit = Instantiate(prefab, tiles[tileIndex].position + fruitPosOffset, Quaternion.identity);
@@ -74,9 +74,7 @@ public class BoardManager : MonoBehaviour
         var availableTiles = GetAvailiableTiles();
 
         var tileIndex = availableTiles[0];
-
         var pot = Instantiate(potPrefab, tiles[tileIndex].position + potPosOffset, Quaternion.identity);
-        // TODO: After need refactor
         var itemBehavour = pot.GetComponent<ItemBehaviour>();
         tileBehaviours[tileIndex].PlacedPot();
         tileBehaviours[tileIndex].SetCurrentBehaviour(itemBehavour);
