@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class UIManager : MonoSingleton<UIManager>
 {
@@ -29,9 +28,6 @@ public class UIManager : MonoSingleton<UIManager>
 
     public void UpdateTurnText(int turnNumber) => turnText.text = $"Turn: {turnNumber}";
 
-   // public void UpdateGoldText(int amount) => goldText.text = $"Gold: {amount}";   
-    
-    //internal void UpdateFruitText(int amout, int index) => 
     public void TigglePanel()
     {
         cardPanel.SetActive(!cardPanel.activeSelf);
@@ -45,7 +41,7 @@ public class UIManager : MonoSingleton<UIManager>
         movementPanel.SetActive(false);
     }
 
-    internal void SetupCharacterBinners(int count, List<CharacterData> allData,List<CharacterBehaviour> allBehaviours)
+    internal void SetupCharacterBinners(int count, List<CharacterData> allData, List<CharacterBehaviour> allBehaviours)
     {
         for (int i = 0; i <= count; i++)
         {
@@ -53,8 +49,9 @@ public class UIManager : MonoSingleton<UIManager>
 
             bool isPlayer = i == 0;
             string nameText = isPlayer ? "Player" : "NPC";
+            int index = isPlayer ? i + 1 : i;
 
-            characterBinners[i].UpdateNameText(nameText,i.ToString());
+            characterBinners[i].UpdateNameText(nameText, index.ToString());
             characterBinners[i].UpdateFruitText(allData[i].FruitCount);
             characterBinners[i].UpdateGoalText(allData[i].GoalCount);
 

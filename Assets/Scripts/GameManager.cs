@@ -1,6 +1,5 @@
 ﻿using Cinemachine;
 using System.Collections.Generic;
-using UnityEditor.MPE;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -20,7 +19,8 @@ public class GameManager : MonoSingleton<GameManager>
 
     [HideInInspector] public List<Transform> pathTile;
 
-    [SerializeField] private int fruitCount = 3;
+    const int maxFruitCount = 3;
+    int currentFruitCount = 0;
 
     int characterCount = 0;
     int characterIndex = 0;
@@ -51,6 +51,7 @@ public class GameManager : MonoSingleton<GameManager>
     {
         base.Awake();
         allCharacterBehaviours = new();
+        currentFruitCount = maxFruitCount;
     }
 
     // Start is called before the first frame update
@@ -70,7 +71,7 @@ public class GameManager : MonoSingleton<GameManager>
         InitCharacters();
         SetCharacterBinner();
         AddCardsToCharacter();
-        UpdateCameraTarget();
+        UpdateCameraTarget(currentCharacterBehaviour.gameObject);
         InitFruits();
         InitPot();
         stateMachine.SetState<DrawCardState>();
@@ -122,7 +123,7 @@ public class GameManager : MonoSingleton<GameManager>
         }
     }
 
-    private void InitFruits() => boardManager.InitFruits(fruitCount);
+    private void InitFruits() => boardManager.InitFruits(maxFruitCount);
 
     private void InitPot() => boardManager.InitPot();
 
@@ -196,7 +197,7 @@ public class GameManager : MonoSingleton<GameManager>
         characterIndex = (characterIndex + 1) % allCharacterBehaviours.Count;
         currentCharacterBehaviour = allCharacterBehaviours[characterIndex];
         currentCharacterData = allCharacterData[characterIndex];
-        UpdateCameraTarget();
+        UpdateCameraTarget(currentCharacterBehaviour.gameObject);
         if (characterIndex == 0)
         {
             UpdateTurnNumber();
@@ -204,12 +205,12 @@ public class GameManager : MonoSingleton<GameManager>
         cardSystem.ResetCardsDate();
     }
 
-    private void UpdateCameraTarget()
+    private void UpdateCameraTarget(GameObject target)
     {
         if (virtualCamera != null)
         {
-            virtualCamera.Follow = currentCharacterBehaviour.transform;
-            virtualCamera.LookAt = currentCharacterBehaviour.transform;
+            virtualCamera.Follow = target.transform;
+            virtualCamera.LookAt = target.transform;
         }
     }
 
@@ -261,16 +262,31 @@ public class GameManager : MonoSingleton<GameManager>
         var currentTile = boardManager.GetCurrentTile(tileIndex);
         var currentItem = currentTile.GetCurrentItemBehaviour();
 
+        if (currentTile.isPlacedFruit)
+        {
+            currentFruitCount--;
+        }
+
         if (currentTile != null &&
             currentItem != null &&
             (currentTile.isPlacedFruit ||
             currentTile.isPlacedPot))
-        {
+        { 
             currentItem.OnInteract(currentCharacterData);
         }
 
         currentTile.ResetTilePlacedFruit(currentTile.isPlacedFruit);
     }
+
+    internal void PlaceFruit()
+    {
+        if (currentFruitCount != maxFruitCount)
+        {
+            currentFruitCount++;
+            UpdateCameraTarget(boardManager.InitPlacedFruit());
+        }
+    }
+
     private void TEXTPOT()
     {
         currentCharacterData.FruitCount = 10;

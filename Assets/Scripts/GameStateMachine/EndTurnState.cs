@@ -12,12 +12,14 @@ public class EndTurnState : AbstractState
     {
         waitingTime = 1f;
         GM.CheckIteractItems();
-        GM.SetNextCharacterTurn();
+        GM.PlaceFruit();
+      
     }
 
     public override void OnExit()
     {
         waitingTime = 1;
+        GM.SetNextCharacterTurn();
     }
 
     public override void OnUpdate()

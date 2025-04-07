@@ -35,30 +35,38 @@ public class BoardManager : MonoBehaviour
         RegesterTileBehaviours();
     }
 
+    private  GameObject SpawnFruitAtTile(int tileIndex, int amount = 3)
+    {
+        int fruitNum = Random.Range(0, 2);
+        var prefab = fruitNum == 0 ? carrotPrefab : tomatoPrefab;
+
+        var fruit = Instantiate(prefab, tiles[tileIndex].position + fruitPosOffset, Quaternion.identity);
+
+        var itemBehaviour = fruit.GetComponent<ItemBehaviour>();
+        itemBehaviour.RegesterItem(amount);
+
+        tileBehaviours[tileIndex].PlacedFruit();
+        tileBehaviours[tileIndex].SetCurrentBehaviour(itemBehaviour);
+        fruitBehaviourByTileIndex[tileIndex] = itemBehaviour;
+
+        return fruit;
+    }
+
     internal void InitFruits(int fruitCount)
     {
         var availableTiles = GetAvailiableTiles();
-
         int count = Mathf.Min(fruitCount, availableTiles.Count);
 
         for (int i = 0; i < count; i++)
         {
-            var tileIndex = availableTiles[i];
-
-            int fruitNum = Random.Range(0, 2);
-
-            // TODO: After need refactor
-            var fruit = fruitNum == 0 ?
-                      Instantiate(carrotPrefab, tiles[tileIndex].position + fruitPosOffset, Quaternion.identity) :
-                      Instantiate(tomatoPrefab, tiles[tileIndex].position + fruitPosOffset, Quaternion.identity);
-
-            var itemBehavour = fruit.GetComponent<ItemBehaviour>();
-            itemBehavour.SetPlacedTileIndex(tileIndex);
-            tileBehaviours[tileIndex].PlacedFruit();
-            tileBehaviours[tileIndex].SetCurrentBehaviour(itemBehavour);
-            fruitBehaviourByTileIndex[tileIndex] = itemBehavour;
-            itemBehavour.RegesterItem(10);
+            SpawnFruitAtTile(availableTiles[i]);
         }
+    }
+
+    internal GameObject InitPlacedFruit()
+    {
+        var availableTiles = GetAvailiableTiles();
+        return SpawnFruitAtTile(availableTiles[0]);
     }
 
     internal void InitPot()
@@ -69,9 +77,7 @@ public class BoardManager : MonoBehaviour
 
         var pot = Instantiate(potPrefab, tiles[tileIndex].position + potPosOffset, Quaternion.identity);
         // TODO: After need refactor
-        pot.GetComponent<ItemBehaviour>().SetPlacedTileIndex(tileIndex);
         var itemBehavour = pot.GetComponent<ItemBehaviour>();
-        itemBehavour.SetPlacedTileIndex(tileIndex);
         tileBehaviours[tileIndex].PlacedPot();
         tileBehaviours[tileIndex].SetCurrentBehaviour(itemBehavour);
         potBehaviourByTileIndex[tileIndex] = itemBehavour;

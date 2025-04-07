@@ -7,7 +7,7 @@ public class TileBehaviour : MonoBehaviour
     [SerializeField]internal bool isPlacedFruit = false;
     [SerializeField]internal bool isPlacedPot = false;
     [SerializeField]internal bool isPlacedCharacter = false;
-    internal ItemBehaviour itemBehaviour;
+    [SerializeField]internal ItemBehaviour itemBehaviour;
 
     private void OnDrawGizmos()
     {

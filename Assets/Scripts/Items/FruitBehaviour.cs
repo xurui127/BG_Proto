@@ -1,11 +1,7 @@
 using UnityEngine;
-using UnityEngine.Events;
 
 public class FruitBehaviour : ItemBehaviour
 {
-    [SerializeField] int placedTileIndex = 0;
-
-
     internal override void RegesterItem(int amount)
     {
         this.amount = amount;
@@ -22,5 +18,4 @@ public class FruitBehaviour : ItemBehaviour
     {
         data.FruitCount += 10;
     }
-    internal override void SetPlacedTileIndex(int index) => placedTileIndex = index;
 }

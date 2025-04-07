@@ -1,12 +1,8 @@
 using UnityEngine;
-using UnityEngine.Events;
 
 
 public class PotBehaviour : ItemBehaviour
 {
-    [SerializeField] int placedTileIndex = 0;
-
-
     internal override void RegesterItem(int amount)
     {
         this.amount = amount;
@@ -14,13 +10,14 @@ public class PotBehaviour : ItemBehaviour
 
     internal override void OnInteract(CharacterData data)
     {
-        if (data.FruitCount == 10)
+        if (data.FruitCount >= 10)
         {
-            data.GoalCount += amount;
+            data.CostFruits(data.FruitCount / 10);
+            data.UpdateGoal(data.FruitCount / 10);
+        }
+        if (data.GoalCount >= 3)
+        {
+            Debug.Log("Finish");
         }
     }
-
-    internal override void SetPlacedTileIndex(int index) => placedTileIndex = index;
-
-   
 }
