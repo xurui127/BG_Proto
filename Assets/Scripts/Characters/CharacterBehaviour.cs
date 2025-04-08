@@ -63,4 +63,14 @@ public class CharacterBehaviour : MonoBehaviour
     {
         iconCam.targetTexture = camImage;
     }
+
+    internal void SetOffset(Vector3 offset)
+    {
+        transform.position = offset;
+    }
+
+    internal void ResetOffset(Vector3 position)
+    {
+        transform.position = position;
+    }
 }

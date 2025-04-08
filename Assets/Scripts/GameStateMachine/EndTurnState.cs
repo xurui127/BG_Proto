@@ -13,7 +13,6 @@ public class EndTurnState : AbstractState
         waitingTime = 1f;
         GM.CheckIteractItems();
         GM.PlaceFruit();
-      
     }
 
     public override void OnExit()

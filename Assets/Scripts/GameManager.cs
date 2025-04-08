@@ -45,7 +45,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     public void SetMovementPanel(bool isOpen) => uiManager.movementPanel.SetActive(isOpen);
 
-    public bool IsEmptyCard() => currentCharacterData.currentCards.Count == 0;
+    public bool IsEmptyCard() => currentCharacterData.activeDeck.Count == 0;
 
     protected override void Awake()
     {
@@ -85,12 +85,6 @@ public class GameManager : MonoSingleton<GameManager>
         {
             RollSpecificDice(TextStep);
         }
-
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            TEXTPOT();
-        }
-        //CheckIteractItems();
     }
 
     private void InitCharacters()
@@ -98,6 +92,8 @@ public class GameManager : MonoSingleton<GameManager>
         for (int i = 0; i <= characterCount; i++)
         {
             int tileIndex = boardManager.GetAvailiableTiles()[i];
+            // For Character in same tile Test
+            //int tileIndex = 1;
             int capturedIndex = tileIndex;
 
             Quaternion rotation = boardManager.GetDirction(capturedIndex);
@@ -120,6 +116,7 @@ public class GameManager : MonoSingleton<GameManager>
             }
             data.index = i;
             boardManager.tileBehaviours[tileIndex].PlacedCharacter();
+            boardManager.tileBehaviours[tileIndex].RegisterCharacter(character);
         }
     }
 
@@ -181,13 +178,25 @@ public class GameManager : MonoSingleton<GameManager>
 
     internal void ResetCurrentTile()
     {
-        var tileIndex = currentCharacterBehaviour.currentTileIndex;
+        var tileIndex = currentCharacterBehaviour.GetCurrentTileIndex();
+        foreach (var character in allCharacterBehaviours)
+        {
+            if (character == currentCharacterBehaviour)
+            {
+                continue;
+            }
+            if (character.currentTileIndex == tileIndex)
+            {
+                return;
+            }
+        }
+
         boardManager.ResetPlacedCharacter(tileIndex);
     }
 
     internal void RegesterCurrentTile()
     {
-        var tileIndex = currentCharacterBehaviour.currentTileIndex;
+        var tileIndex = currentCharacterBehaviour.GetCurrentTileIndex();
         boardManager.RegesterPlacedCharacter(tileIndex);
     }
 
@@ -271,7 +280,7 @@ public class GameManager : MonoSingleton<GameManager>
             currentItem != null &&
             (currentTile.isPlacedFruit ||
             currentTile.isPlacedPot))
-        { 
+        {
             currentItem.OnInteract(currentCharacterData);
         }
 
@@ -287,10 +296,16 @@ public class GameManager : MonoSingleton<GameManager>
         }
     }
 
-    private void TEXTPOT()
+
+    internal void RegisterCurrentCharacterOnTile()
     {
-        currentCharacterData.FruitCount = 10;
-        var newItem = new FruitBehaviour();
-        newItem.TESTOnInteract(currentCharacterData);
+        boardManager.RegesterCurrentCharacterOnTile(currentCharacterBehaviour.GetCurrentTileIndex(),
+                                                    currentCharacterBehaviour);
     }
+    internal void UnregisterCurrentCharacterOnTile()
+    {
+        boardManager.UnregesterCurrentChracterOntile(currentCharacterBehaviour.GetCurrentTileIndex(),
+                                                    currentCharacterBehaviour);
+    }
+
 }
