@@ -3,9 +3,8 @@ using UnityEngine;
 
 public class BoardManager : MonoBehaviour
 {
-    [SerializeField] private GameObject carrotPrefab;
-    [SerializeField] private GameObject tomatoPrefab;
-    [SerializeField] private GameObject potPrefab;
+    [SerializeField] ItemData[] fruitsData;
+    [SerializeField] ItemData potData;
     [SerializeField] internal List<Transform> tiles;
     internal List<TileBehaviour> tileBehaviours = new();
     internal float tileSpacing = 1.1f;
@@ -13,8 +12,8 @@ public class BoardManager : MonoBehaviour
     readonly Vector3 fruitPosOffset = new(0f, 0.7f, 0f);
     readonly Vector3 potPosOffset = new(0f, 0.4f, 0f);
     readonly Dictionary<Vector3, Transform> tileMapByPosition = new();
-    Dictionary<int,ItemBehaviour> fruitBehaviourByTileIndex = new();
-    Dictionary<int,ItemBehaviour> potBehaviourByTileIndex = new();
+    Dictionary<int, ItemBehaviour> fruitBehaviourByTileIndex = new();
+    Dictionary<int, ItemBehaviour> potBehaviourByTileIndex = new();
 
 
     private void OnDrawGizmos()
@@ -28,22 +27,21 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
-    
+
     private void Awake()
     {
         RegisterTiles();
         RegesterTileBehaviours();
     }
 
-    private  GameObject SpawnFruitAtTile(int tileIndex, int amount = 3)
+    private GameObject SpawnFruitAtTile(int tileIndex, int amount = 3)
     {
         var fruitNum = Random.Range(0, 2);
-        var prefab = fruitNum == 0 ? carrotPrefab : tomatoPrefab;
-
-        var fruit = Instantiate(prefab, tiles[tileIndex].position + fruitPosOffset, Quaternion.identity);
+        var fruitData = fruitNum == 0 ? fruitsData[0] : fruitsData[1];
+        var fruit = Instantiate(fruitData.itemPrefab, tiles[tileIndex].position + fruitPosOffset, Quaternion.identity);
 
         var itemBehaviour = fruit.GetComponent<ItemBehaviour>();
-        itemBehaviour.RegesterItem(amount);
+        itemBehaviour.RegesterItem(fruitData.value);
 
         tileBehaviours[tileIndex].PlacedFruit();
         tileBehaviours[tileIndex].SetCurrentBehaviour(itemBehaviour);
@@ -74,7 +72,7 @@ public class BoardManager : MonoBehaviour
         var availableTiles = GetAvailiableTiles();
 
         var tileIndex = availableTiles[0];
-        var pot = Instantiate(potPrefab, tiles[tileIndex].position + potPosOffset, Quaternion.identity);
+        var pot = Instantiate(potData.itemPrefab, tiles[tileIndex].position + potPosOffset, Quaternion.identity);
         var itemBehavour = pot.GetComponent<ItemBehaviour>();
         tileBehaviours[tileIndex].PlacedPot();
         tileBehaviours[tileIndex].SetCurrentBehaviour(itemBehavour);
@@ -142,7 +140,7 @@ public class BoardManager : MonoBehaviour
         for (int i = 0; i < tileBehaviours.Count; i++)
         {
             if (!tileBehaviours[i].isPlacedFruit &&
-                !tileBehaviours[i].isPlacedPot&&
+                !tileBehaviours[i].isPlacedPot &&
                 !tileBehaviours[i].isPlacedCharacter)
             {
                 availableTiles.Add(i);
@@ -184,6 +182,16 @@ public class BoardManager : MonoBehaviour
     internal void RegesterPlacedCharacter(int index)
     {
         tileBehaviours[index].PlacedCharacter();
+    }
+
+    internal void RegesterCurrentCharacterOnTile(int tileIndex, CharacterBehaviour character)
+    {
+        tileBehaviours[tileIndex].RegisterCharacter(character);
+    }
+
+    internal void UnregesterCurrentChracterOntile(int tileIndex, CharacterBehaviour chracter)
+    {
+        tileBehaviours[tileIndex].UnregisterCharacter(chracter);
     }
 
 }

@@ -2315,6 +2315,10 @@ MonoBehaviour:
     type: 3}
   potPrefab: {fileID: 7624432812518651853, guid: 366468b65fd95b047a2eabbfd0f13dc2,
     type: 3}
+  fruitsData:
+  - {fileID: 11400000, guid: 0ba6ba43f993c344c970f832e0d56af6, type: 2}
+  - {fileID: 11400000, guid: 88b6102cd5b72f2459e4a5cdb26a845f, type: 2}
+  potData: {fileID: 11400000, guid: 7b2e45ca96c6f71479c4245bb01d8397, type: 2}
   tiles:
   - {fileID: 1811136442}
   - {fileID: 302896301}

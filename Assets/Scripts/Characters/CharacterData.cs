@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 public class CharacterData : MonoBehaviour
 {
-    [SerializeField] public Dictionary<string, Card_SO> currentCards = new();
+    public Dictionary<string, Card_SO> currentCards = new();
     internal CardInstance[] sourceDeck;
     internal List<CardInstance> activeDeck = new();
     internal List<CardInstance> hand = new();

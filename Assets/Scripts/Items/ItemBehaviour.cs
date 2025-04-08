@@ -2,6 +2,7 @@ using UnityEngine;
 
 public abstract class ItemBehaviour : MonoBehaviour
 {
+
     protected GameManager GM => GameManager.Instance;
 
     internal int amount;

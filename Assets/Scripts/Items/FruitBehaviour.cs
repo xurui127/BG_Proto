@@ -14,8 +14,4 @@ public class FruitBehaviour : ItemBehaviour
         data.FruitCount += amount;
     }
 
-    internal void TESTOnInteract(CharacterData data)
-    {
-        data.FruitCount += 10;
-    }
 }
