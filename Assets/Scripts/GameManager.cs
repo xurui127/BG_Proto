@@ -296,7 +296,6 @@ public class GameManager : MonoSingleton<GameManager>
         }
     }
 
-
     internal void RegisterCurrentCharacterOnTile()
     {
         boardManager.RegesterCurrentCharacterOnTile(currentCharacterBehaviour.GetCurrentTileIndex(),

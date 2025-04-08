@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class FruitBehaviour : ItemBehaviour
 {
+    [SerializeField] FruitAnimation anim;
     internal override void RegesterItem(int amount)
     {
         this.amount = amount;
@@ -9,9 +10,12 @@ public class FruitBehaviour : ItemBehaviour
 
     internal override void OnInteract(CharacterData data)
     {
-        Destroy(gameObject);
+        anim.SetPlayGetFruitAnimation();
 
-        data.FruitCount += amount;
+        if (anim.isAnimFinished)
+        {
+            data.FruitCount += amount;
+        }
     }
 
 }

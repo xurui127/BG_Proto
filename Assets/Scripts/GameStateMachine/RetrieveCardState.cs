@@ -12,6 +12,7 @@ public class RetrieveCardState : AbstractState
     public override void OnEnter()
     {
         GM.PlayWorldCardFlyoutAnimation();
+        GM.CheckIteractItems();
     }
 
     public override void OnExit()

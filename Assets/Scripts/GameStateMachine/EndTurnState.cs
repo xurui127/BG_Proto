@@ -10,8 +10,7 @@ public class EndTurnState : AbstractState
     }
     public override void OnEnter()
     {
-        waitingTime = 1f;
-        GM.CheckIteractItems();
+        waitingTime = 1.5f;
         GM.PlaceFruit();
     }
 
@@ -29,4 +28,5 @@ public class EndTurnState : AbstractState
             stateMachine.SetState<DrawCardState>();
         }
     }
+
 }
