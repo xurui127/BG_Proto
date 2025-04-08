@@ -28,4 +28,6 @@ public class FSMController
     {
         currentState?.OnUpdate();
     }
+
+    public IState GetCurrentState() => currentState;
 }
