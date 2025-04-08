@@ -15,6 +15,6 @@ MonoBehaviour:
   id: 30003
   itemName: Pot
   type: 1
-  itemPrefab: {fileID: 1243981745247793425, guid: cb0be7bd586247a4693ffcd9ac8501c9,
+  itemPrefab: {fileID: 7624432812518651853, guid: 366468b65fd95b047a2eabbfd0f13dc2,
     type: 3}
   value: 0

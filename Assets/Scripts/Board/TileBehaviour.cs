@@ -11,7 +11,7 @@ public class TileBehaviour : MonoBehaviour
     [SerializeField] internal ItemBehaviour itemBehaviour;
 
     List<CharacterBehaviour> characterOnTile = new();
-    
+
     readonly Vector3 yOffset = new(0, 0.4f, 0);
 
     private void OnDrawGizmos()
@@ -98,21 +98,21 @@ public class TileBehaviour : MonoBehaviour
                 break;
 
             case 2:
-                characterOnTile[0].SetOffset(-offsetRight + yOffset); // left
-                characterOnTile[1].SetOffset(offsetRight + yOffset); // right
+                characterOnTile[0].SetOffset(center - offsetRight + yOffset); // left
+                characterOnTile[1].SetOffset(center + offsetRight + yOffset); // right
                 break;
 
             case 3:
-                characterOnTile[0].SetOffset(-offsetRight + offsetForward + yOffset);  // leftup
-                characterOnTile[1].SetOffset(offsetRight + offsetForward + yOffset);  // rightup
-                characterOnTile[2].SetOffset(-offsetRight - offsetForward + yOffset);  // leftdown
+                characterOnTile[0].SetOffset(center - offsetRight + offsetForward + yOffset);  // leftup
+                characterOnTile[1].SetOffset(center + offsetRight + offsetForward + yOffset);  // rightup
+                characterOnTile[2].SetOffset(center - offsetRight - offsetForward + yOffset);  // leftdown
                 break;
 
             case 4:
-                characterOnTile[0].SetOffset(-offsetRight + offsetForward + yOffset);  // leftup
-                characterOnTile[1].SetOffset(offsetRight + offsetForward + yOffset);  // rightup
-                characterOnTile[2].SetOffset(-offsetRight - offsetForward + yOffset);  // leftdown
-                characterOnTile[3].SetOffset(offsetRight - offsetForward + yOffset);  // rightdown
+                characterOnTile[0].SetOffset(center - offsetRight + offsetForward + yOffset);  // leftup
+                characterOnTile[1].SetOffset(center + offsetRight + offsetForward + yOffset);  // rightup
+                characterOnTile[2].SetOffset(center - offsetRight - offsetForward + yOffset);  // leftdown
+                characterOnTile[3].SetOffset(center + offsetRight - offsetForward + yOffset);  // rightdown
                 break;
 
             default:
