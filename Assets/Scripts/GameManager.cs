@@ -45,7 +45,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     public void SetMovementPanel(bool isOpen) => uiManager.movementPanel.SetActive(isOpen);
 
-    public bool IsEmptyCard() => currentCharacterData.activeDeck.Count == 0;
+    public bool IsEmptyCard() => currentCharacterData.hand.Count == 0;
 
     protected override void Awake()
     {
