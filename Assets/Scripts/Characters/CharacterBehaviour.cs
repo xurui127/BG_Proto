@@ -8,7 +8,7 @@ public class CharacterBehaviour : MonoBehaviour
     [SerializeField] public Camera iconCam;
     internal int currentTileIndex = 0;
     internal bool isDoneMoving = false;
-    const float turnSpeed = 5f;
+    const float turnSpeed = 8f;
     const float jumpHeight = 0.5f;
     const float jumpDuration = 0.3f;
     public void MovePath(int steps)
@@ -53,6 +53,32 @@ public class CharacterBehaviour : MonoBehaviour
                 transform.position = newTargetPos;
                 anim.SetBool("IsJump", false);
             }
+
+            Transform targetTile = null;
+
+            if (currentTileIndex + 1 < GameManager.Instance.pathTile.Count)
+            {
+                targetTile = GameManager.Instance.pathTile[currentTileIndex + 1];
+            }
+            else
+            {
+                targetTile = GameManager.Instance.pathTile[0];
+            }
+
+            Vector3 lookTarget = new Vector3(
+                targetTile.position.x,
+                transform.position.y ,
+                targetTile.position.z
+            );
+
+            Quaternion finalRotation = Quaternion.LookRotation(lookTarget - transform.position);
+
+            while (Quaternion.Angle(transform.rotation, finalRotation) > 1f)
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, finalRotation, turnSpeed * Time.deltaTime);
+                yield return null;
+            }
+
             isDoneMoving = true;
         }
     }

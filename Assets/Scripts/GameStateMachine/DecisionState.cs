@@ -48,12 +48,15 @@ public class DecisionState : AbstractState
                         isAIplayCard = true;
                         waitingTime = 1f;
                         GM.UseRandomCard();
+                        
                     }
                 }
+                return;
             }
             else
             {
                 GM.RollDice();
+                return;
             }
         }
     }
