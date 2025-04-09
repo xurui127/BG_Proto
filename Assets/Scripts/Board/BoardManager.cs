@@ -201,7 +201,7 @@ public class BoardManager : MonoBehaviour
         StartCoroutine(InitFruitCoroutine(tileIndex));
         IEnumerator InitFruitCoroutine(int tileIndex)
         {
-            var fruitPlacedVFX = fruitsData[0].destroyVFX;
+            var fruitPlacedVFX = fruitsData[0].initEffect;
             var vfx = Instantiate(fruitPlacedVFX, tiles[tileIndex].position + fruitPosOffset, Quaternion.identity);
             yield return new WaitForSeconds(1f);
             Destroy(vfx);

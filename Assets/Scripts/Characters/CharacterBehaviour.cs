@@ -54,7 +54,7 @@ public class CharacterBehaviour : MonoBehaviour
                 anim.SetBool("IsJump", false);
             }
 
-            Transform targetTile = null;
+            Transform targetTile;
 
             if (currentTileIndex + 1 < GameManager.Instance.pathTile.Count)
             {

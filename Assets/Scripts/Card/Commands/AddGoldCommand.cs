@@ -4,10 +4,7 @@
 public class AddGoldCommand : CardBehaviour
 {
     int fruits = 0;
-    //public AddGoldCommand(int amount)
-    //{
-    //    gold = amount;
-    //}
+
     internal override void OnGameStart(int amount)
     {
         fruits = amount;

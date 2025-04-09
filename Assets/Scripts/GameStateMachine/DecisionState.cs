@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class DecisionState : AbstractState
 {
     float decisionTimer;
     bool isWaitingForCardSelection;
     bool isAIplayCard = false;
+    bool isRollDice = false;
 
     public DecisionState(GameManager gm)
     {
@@ -16,6 +18,7 @@ public class DecisionState : AbstractState
         isWaitingForCardSelection = false;
         waitingTime = 1f;
         decisionTimer = 1f;
+
         if (GM.IsPlayer())
         {
             GM.SetMovementPanel(true);
@@ -23,41 +26,49 @@ public class DecisionState : AbstractState
     }
     public override void OnUpdate()
     {
-        if (GM.IsPlayer())
+        if (!GM.IsEmptyCard() && !isRollDice)
         {
-            return;
-        }
+            int action = Random.Range(0, 2);
 
-        waitingTime -= Time.deltaTime;
-
-        if (waitingTime <= 0f)
-        {
-            if (!GM.IsEmptyCard())
+            if (action == 0)
             {
-                int action = Random.Range(0, 2);
-                if (action == 0 && !isWaitingForCardSelection)
+                isRollDice = true;
+                GM.RollDice();
+            }
+            else
+            {
+                if (!isWaitingForCardSelection)
                 {
-                    GM.RollDice();
+                    decisionTimer = 1.5f;
+                    isWaitingForCardSelection = true;
                 }
                 else
                 {
                     decisionTimer -= Time.deltaTime;
-                    isWaitingForCardSelection = true;
-                    if (decisionTimer <= 0 && !isAIplayCard)
+
+                    if (decisionTimer <= 0f && !isAIplayCard)
                     {
                         isAIplayCard = true;
-                        waitingTime = 1f;
+
+                        var before = GM.GetStateController().GetCurrentState();
                         GM.UseRandomCard();
-                        
+                        var after = GM.GetStateController().GetCurrentState();
+
+                        if (before == after)
+                        {
+                            GM.RollDice();
+                            isRollDice = true;
+                        }
+
+                        waitingTime = 1f;
                     }
                 }
-                return;
             }
-            else
-            {
-                GM.RollDice();
-                return;
-            }
+        }
+        else if (!isRollDice)
+        {
+            isRollDice = true;
+            GM.RollDice();
         }
     }
 
@@ -67,6 +78,7 @@ public class DecisionState : AbstractState
         decisionTimer = 2f;
         isWaitingForCardSelection = false;
         isAIplayCard = false;
+        isRollDice = false;
     }
 
 
