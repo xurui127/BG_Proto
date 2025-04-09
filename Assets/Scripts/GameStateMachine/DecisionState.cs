@@ -31,49 +31,33 @@ public class DecisionState : AbstractState
             return;
         }
 
-        if (!GM.IsEmptyCard() && !isRollDice)
-        {
-            int action = Random.Range(0, 2);
+        waitingTime -= Time.deltaTime;
 
-            if (action == 0)
+        if (waitingTime <= 0f)
+        {
+            if (!GM.IsEmptyCard())
             {
-                isRollDice = true;
-                GM.RollDice();
-            }
-            else
-            {
-                if (!isWaitingForCardSelection)
+                int action = Random.Range(0, 2);
+                if (action == 0 && !isWaitingForCardSelection)
                 {
-                    decisionTimer = 1.5f;
-                    isWaitingForCardSelection = true;
+
+                    GM.RollDice();
                 }
                 else
                 {
                     decisionTimer -= Time.deltaTime;
-
-                    if (decisionTimer <= 0f && !isAIplayCard)
+                    isWaitingForCardSelection = true;
+                    if (decisionTimer <= 0 && !isAIplayCard)
                     {
                         isAIplayCard = true;
-
-                        var before = GM.GetStateController().GetCurrentState();
                         GM.UseRandomCard();
-                        var after = GM.GetStateController().GetCurrentState();
-
-                        if (before == after)
-                        {
-                            GM.RollDice();
-                            isRollDice = true;
-                        }
-
-                        waitingTime = 1f;
                     }
                 }
             }
-        }
-        else if (!isRollDice)
-        {
-            isRollDice = true;
-            GM.RollDice();
+            else
+            {
+                GM.RollDice();
+            }
         }
     }
 
