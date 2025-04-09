@@ -11,10 +11,6 @@ public class FruitBehaviour : ItemBehaviour
     internal override void OnInteract(CharacterData data)
     {
         anim.SetPlayGetFruitAnimation();
-
-        if (anim.isAnimFinished)
-        {
-            data.FruitCount += amount;
-        }
+        data.FruitCount += amount;
     }
 }
