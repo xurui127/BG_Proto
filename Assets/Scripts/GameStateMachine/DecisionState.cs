@@ -26,6 +26,11 @@ public class DecisionState : AbstractState
     }
     public override void OnUpdate()
     {
+        if (GM.IsPlayer())
+        {
+            return;
+        }
+
         if (!GM.IsEmptyCard() && !isRollDice)
         {
             int action = Random.Range(0, 2);

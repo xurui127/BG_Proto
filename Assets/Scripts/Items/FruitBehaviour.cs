@@ -17,5 +17,4 @@ public class FruitBehaviour : ItemBehaviour
             data.FruitCount += amount;
         }
     }
-
 }

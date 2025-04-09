@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class FruitAnimation : MonoBehaviour
 {
@@ -9,17 +9,22 @@ public class FruitAnimation : MonoBehaviour
 
     internal bool isRotating = true;
     internal bool isCollected = false;
-    private Vector3 initialPos;
+    Vector3 initialPos;
 
-    private float riseDuration = 0.4f;
+    internal bool isAnimFinished = false;
+    float riseDuration = 0.4f;
     float riseSpeed = 1.5f;
     float riseTimer = 0.4f;
-    internal bool isAnimFinished = false;
+
+    internal GameObject collectEffectPrefab;
 
     private void Start()
     {
         initialPos = transform.position;
     }
+
+    internal void GetCollectEffect(GameObject collectPrefab) => collectEffectPrefab = collectPrefab;
+
     private void Update()
     {
         if (isRotating)
@@ -39,6 +44,12 @@ public class FruitAnimation : MonoBehaviour
 
             if (riseTimer <= 0f)
             {
+                if (collectEffectPrefab != null)
+                {
+                    GameObject fx = Instantiate(collectEffectPrefab, transform.position, Quaternion.identity);
+                    Destroy(fx, 2f);
+                }
+
                 isAnimFinished = true;
                 Destroy(gameObject);
             }

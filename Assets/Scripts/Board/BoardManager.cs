@@ -44,6 +44,12 @@ public class BoardManager : MonoBehaviour
         var itemBehaviour = fruit.GetComponent<ItemBehaviour>();
         itemBehaviour.RegesterItem(fruitData.value);
 
+        var anim = fruit.GetComponent<FruitAnimation>();
+        if (anim != null)
+        {
+            anim.GetCollectEffect(fruitData.collectEffect);
+        }
+
         tileBehaviours[tileIndex].PlacedFruit();
         tileBehaviours[tileIndex].SetCurrentBehaviour(itemBehaviour);
         fruitBehaviourByTileIndex[tileIndex] = itemBehaviour;
