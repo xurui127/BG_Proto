@@ -13,5 +13,6 @@ public class ItemData : ScriptableObject
     public string itemName;
     public ItemType type;
     public GameObject itemPrefab;
+    public GameObject destroyVFX;
     public int value;
 }

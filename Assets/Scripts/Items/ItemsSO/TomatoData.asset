@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 30002
   itemName: Tomato
+  type: 0
   itemPrefab: {fileID: 476171350670835362, guid: a8a74c9bd66127e478630bef95ffcb82,
+    type: 3}
+  destroyVFX: {fileID: 8800761877633365762, guid: 178faec88c4139c4cb58920e53287086,
     type: 3}
   value: 3

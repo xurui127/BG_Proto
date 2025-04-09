@@ -17,4 +17,6 @@ MonoBehaviour:
   type: 1
   itemPrefab: {fileID: 7624432812518651853, guid: 366468b65fd95b047a2eabbfd0f13dc2,
     type: 3}
+  destroyVFX: {fileID: 8800761877633365762, guid: 178faec88c4139c4cb58920e53287086,
+    type: 3}
   value: 0

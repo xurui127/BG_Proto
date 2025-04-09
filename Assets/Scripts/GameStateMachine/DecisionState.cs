@@ -37,7 +37,6 @@ public class DecisionState : AbstractState
                 int action = Random.Range(0, 2);
                 if (action == 0 && !isWaitingForCardSelection)
                 {
-
                     GM.RollDice();
                 }
                 else
@@ -47,6 +46,7 @@ public class DecisionState : AbstractState
                     if (decisionTimer <= 0 && !isAIplayCard)
                     {
                         isAIplayCard = true;
+                        waitingTime = 1f;
                         GM.UseRandomCard();
                     }
                 }

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class BoardManager : MonoBehaviour
 {
@@ -64,6 +66,7 @@ public class BoardManager : MonoBehaviour
     internal GameObject InitPlacedFruit()
     {
         var availableTiles = GetAvailiableTiles();
+        InitPlacedFruitVFX(availableTiles[0]);
         return SpawnFruitAtTile(availableTiles[0]);
     }
 
@@ -194,4 +197,15 @@ public class BoardManager : MonoBehaviour
         tileBehaviours[tileIndex].UnregisterCharacter(chracter);
     }
 
+    private void InitPlacedFruitVFX(int tileIndex)
+    {
+        StartCoroutine(InitFruitCoroutine(tileIndex));
+        IEnumerator InitFruitCoroutine(int tileIndex)
+        {
+            var fruitPlacedVFX = fruitsData[0].destroyVFX;
+            var vfx = Instantiate(fruitPlacedVFX, tiles[tileIndex].position + fruitPosOffset, Quaternion.identity);
+            yield return new WaitForSeconds(1f);
+            Destroy(vfx);
+        }
+    }
 }

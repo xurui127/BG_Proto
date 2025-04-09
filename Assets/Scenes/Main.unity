@@ -2309,12 +2309,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6b897e13d4c5a84bb152009d6104c17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  carrotPrefab: {fileID: 1243981745247793425, guid: cb0be7bd586247a4693ffcd9ac8501c9,
-    type: 3}
-  tomatoPrefab: {fileID: 476171350670835362, guid: a8a74c9bd66127e478630bef95ffcb82,
-    type: 3}
-  potPrefab: {fileID: 7624432812518651853, guid: 366468b65fd95b047a2eabbfd0f13dc2,
-    type: 3}
   fruitsData:
   - {fileID: 11400000, guid: 0ba6ba43f993c344c970f832e0d56af6, type: 2}
   - {fileID: 11400000, guid: 88b6102cd5b72f2459e4a5cdb26a845f, type: 2}
@@ -2609,7 +2603,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 18.400024, y: -29.799988}
+  m_AnchoredPosition: {x: 18.400024, y: -29.800049}
   m_SizeDelta: {x: 414.855, y: 330.531}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1112501631
