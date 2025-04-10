@@ -1,12 +1,10 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class DecisionState : AbstractState
 {
     float decisionTimer;
     bool isWaitingForCardSelection;
     bool isAIplayCard = false;
-    bool isRollDice = false;
 
     public DecisionState(GameManager gm)
     {
@@ -67,7 +65,6 @@ public class DecisionState : AbstractState
         decisionTimer = 2f;
         isWaitingForCardSelection = false;
         isAIplayCard = false;
-        isRollDice = false;
     }
 
 

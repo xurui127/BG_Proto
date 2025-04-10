@@ -301,6 +301,7 @@ public class GameManager : MonoSingleton<GameManager>
         boardManager.RegesterCurrentCharacterOnTile(currentCharacterBehaviour.GetCurrentTileIndex(),
                                                     currentCharacterBehaviour);
     }
+
     internal void UnregisterCurrentCharacterOnTile()
     {
         boardManager.UnregesterCurrentChracterOntile(currentCharacterBehaviour.GetCurrentTileIndex(),
