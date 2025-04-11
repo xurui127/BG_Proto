@@ -66,6 +66,4 @@ public class DecisionState : AbstractState
         isWaitingForCardSelection = false;
         isAIplayCard = false;
     }
-
-
 }

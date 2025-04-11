@@ -10,6 +10,7 @@ public class GameManager : MonoSingleton<GameManager>
     [SerializeField] UIManager uiManager;
     [SerializeField] BoardManager boardManager;
     [SerializeField] CardSystem cardSystem;
+    [SerializeField] CameraHandler camHandler;
     [SerializeField] GameObject PlayerPrefab;
     [SerializeField] GameObject EnemyPrefab;
     [SerializeField] GameObject dicePrefab;
@@ -143,6 +144,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     private void RollDiceInternal(int diceCount, int? step)
     {
+        SetCameraTarget();
         ClosePanelsEvent?.Invoke();
         diceNumber = 0;
 
@@ -306,6 +308,11 @@ public class GameManager : MonoSingleton<GameManager>
     {
         boardManager.UnregesterCurrentChracterOntile(currentCharacterBehaviour.GetCurrentTileIndex(),
                                                     currentCharacterBehaviour);
+    }
+
+    internal void SetCameraTarget()
+    {
+        camHandler.SetCanmerFollowTarget(currentCharacterBehaviour.transform);
     }
 
 }

@@ -15,6 +15,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     public const float yOffset = 280f;
 
     bool isHoverOver = false;
+    bool isPlayer = false;
 
     UnityEvent OnCardPlay = new();
     internal UnityEvent<CardUI> OnCardPointEnterEvent = new();
@@ -73,8 +74,11 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (CanUseCard()) return;
+
         if (!isHoverOver)
         {
+            CanMoveCamera(false);
             isHoverOver = true;
             OnCardPointEnterEvent?.Invoke(this);
         }
@@ -83,16 +87,19 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     public void OnPointerExit(PointerEventData eventData)
     {
         isHoverOver = false;
+        CanMoveCamera(true);
         OnCardPointExitEvent?.Invoke(this);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
         OnCardDrop();
+        CanMoveCamera(true);
     }
 
     internal void OnCardDrop()
     {
+        if (CanUseCard()) return;
         isDragging = false;
         if (Input.mousePosition.y > yOffset)
         {
@@ -102,24 +109,30 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         {
             OnCardPointUpEvent?.Invoke(this);
         }
+        CanMoveCamera(true);
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        if (CanUseCard()) return;
         isDragging = true;
+        CanMoveCamera(false);
         OnCardPointDownEvent?.Invoke(this);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (CanUseCard()) return;
+        CanMoveCamera(false);
         OnCardDraggingEvent?.Invoke(this);
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (CanUseCard()) return;
         if (!isDragging && transform.position.y > yOffset) return;
-
         OnCardDraggingEndEvent?.Invoke(this);
+        CanMoveCamera(false);
     }
 
     internal void AIPlayCard()
@@ -134,4 +147,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         transform.gameObject.SetActive(false);
     }
 
+    private void CanMoveCamera(bool isMoving) => CameraHandler.OnCameraMovementToggleEvent?.Invoke(isMoving);
+
+    private bool CanUseCard() => isPlayer = GameManager.Instance.IsPlayer();
 }

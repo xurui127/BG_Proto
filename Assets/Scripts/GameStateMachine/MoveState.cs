@@ -8,6 +8,7 @@ public class MoveState : AbstractState
 
     public override void OnEnter()
     {
+       // GM.SetCameraTarget();
         GM.ResetCurrentTile();
         GM.UnregisterCurrentCharacterOnTile();
         GM.MoveCharacter();

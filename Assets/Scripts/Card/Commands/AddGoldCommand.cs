@@ -12,6 +12,7 @@ public class AddGoldCommand : CardBehaviour
     internal override void OnExecute()
     {
         GM.AddFruits(fruits);
+        GM.SetCameraTarget();
         GameManager.Instance.stateMachine.SetState<DecisionState>();
     }
 
