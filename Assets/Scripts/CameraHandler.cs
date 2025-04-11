@@ -16,8 +16,8 @@ public class CameraHandler : MonoBehaviour
     const float boundZ = 10f;
 
     const float zoomSpeed = 2f;
-    const float minZoom = 5f;
-    const float maxZoom = 20f;
+    const float minZoom = 10f;
+    const float maxZoom = 50f;
 
     Vector3 dragOrigin;
 
@@ -71,6 +71,7 @@ public class CameraHandler : MonoBehaviour
             }
         }
     }
+
     private void HandleZoom()
     {
         float scroll = Input.GetAxis("Mouse ScrollWheel");
