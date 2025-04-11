@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -19,9 +20,10 @@ public class WorldCard : MonoBehaviour
     bool isDragging = false;
     bool isShaking = false;
     bool isStartDragging = false;
-    private CardInstance cardInstance;
 
-     UnityEvent onCardExecute = new();
+    CardInstance cardInstance;
+
+    UnityEvent onCardExecute = new();
 
 
     private void Start()
@@ -33,33 +35,38 @@ public class WorldCard : MonoBehaviour
     internal void CardRegister(UnityAction onExecute)
     {
         transform.rotation = origineRotation;
-        onCardExecute.RemoveAllListeners(); 
+        onCardExecute.RemoveAllListeners();
         onCardExecute.AddListener(onExecute);
     }
 
     internal void ScreenCardOnPointEnter()
     {
+        SetCameraMove(false);
         OnPointerHovering();
     }
 
     internal void ScreenCardOnPointExit()
     {
+        SetCameraMove(true);
         transform.localScale = origineScale;
     }
 
     internal void ScreenCardPointDown()
     {
+        SetCameraMove(false);
         isDragging = true;
     }
 
     internal void ScreenCardPointUp()
     {
+        SetCameraMove(true);
         isDragging = false;
         transform.rotation = origineRotation;
     }
 
     internal void CardOnDragging()
     {
+        SetCameraMove(false);
         DragEffect();
     }
 
@@ -105,12 +112,13 @@ public class WorldCard : MonoBehaviour
 
     internal void CardOnDraggEnd()
     {
+        SetCameraMove(true);
         isStartDragging = false;
-
     }
 
     internal void HideScreenCard()
     {
+        SetCameraMove(true);
         gameObject.SetActive(false);
     }
 
@@ -125,7 +133,6 @@ public class WorldCard : MonoBehaviour
 
     internal void Execute()
     {
-        // cardInstance.sourceData.GetCommands().Execute();
         onCardExecute?.Invoke();
     }
 
@@ -134,5 +141,10 @@ public class WorldCard : MonoBehaviour
         transform.localScale = new Vector3(origineScale.x + 0.1f,
                                            origineScale.y + 0.1f,
                                            origineScale.z + 0.1f);
+    }
+
+    private void SetCameraMove(bool moveCamera)
+    {
+       CameraHandler.OnCameraMovementToggleEvent?.Invoke(moveCamera);
     }
 }

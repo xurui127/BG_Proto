@@ -11,12 +11,11 @@ public class CardVisualHandler : MonoBehaviour
     [SerializeField] GameObject screenCardContainer;
     [SerializeField] GameObject worldCardFlyOutPosition;
     Vector2 lastScreenSize;
-
     bool isConectUIcard = false;
+    bool isCardFlyingOut;
 
     List<CardUI> uiCards = new();
     List<WorldCard> worldCards = new();
-    private bool isCardFlyingOut;
     readonly Dictionary<CardUI, WorldCard> cardPairs = new();
 
     private void Update()
@@ -86,7 +85,6 @@ public class CardVisualHandler : MonoBehaviour
     private void UpdateCardsVisualPostion()
     {
         if (isConectUIcard) return;
-
         int swapSource = -1;
         int swapDestination = -1;
 

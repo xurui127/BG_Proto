@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IDragHandler, IEndDragHandler, IPointerUpHandler
 {
     internal int handIndex;
-    public Button cardButton;
     public RectTransform currentTransform;
     public GameObject container;
 
@@ -15,7 +13,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     public const float yOffset = 280f;
 
     bool isHoverOver = false;
-    bool isPlayer = false;
+    internal bool canPlayCard = false;
 
     UnityEvent OnCardPlay = new();
     internal UnityEvent<CardUI> OnCardPointEnterEvent = new();
@@ -67,13 +65,12 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         OnCardExecuteEvent.AddListener(onExecute);
     }
 
-    private void OnDisable()
-    {
-        cardButton.onClick.RemoveAllListeners();
-    }
+    internal void SetCardPlayToggle(bool canPlay) => canPlayCard = canPlay;
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (!canPlayCard) return;
+
         if (!isHoverOver)
         {
             isHoverOver = true;
@@ -94,6 +91,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
     internal void OnCardDrop()
     {
+        if (!canPlayCard) return;
         isDragging = false;
         if (Input.mousePosition.y > yOffset)
         {
@@ -107,6 +105,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        if (!canPlayCard) return;
         isDragging = true;
         OnCardPointDownEvent?.Invoke(this);
     }
@@ -133,6 +132,4 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         OnCardExecuteEvent?.Invoke(this);
         transform.gameObject.SetActive(false);
     }
-
-
 }

@@ -21,19 +21,21 @@ public class CameraHandler : MonoBehaviour
 
     Vector3 dragOrigin;
 
-    private bool canMoveCamera = true;
+    bool canMoveCamera = true;
+    bool allowCameraControl = true;
+
 
     internal static UnityEvent<bool> OnCameraMovementToggleEvent = new();
 
     private void OnEnable()
     {
-        OnCameraMovementToggleEvent.RemoveListener(SetCameraMoveTiggle);
-        OnCameraMovementToggleEvent.AddListener(SetCameraMoveTiggle);
+        OnCameraMovementToggleEvent.RemoveListener(RequestCameraMove);
+        OnCameraMovementToggleEvent.AddListener(RequestCameraMove);
     }
 
     private void OnDisable()
     {
-        OnCameraMovementToggleEvent.RemoveListener(SetCameraMoveTiggle);
+        OnCameraMovementToggleEvent.RemoveListener(RequestCameraMove);
     }
 
     private void Update()
@@ -116,5 +118,21 @@ public class CameraHandler : MonoBehaviour
         cam.Follow = null;
     }
 
-    private void SetCameraMoveTiggle(bool canMove) => canMoveCamera = canMove;
+    internal void RequestCameraMove(bool enable)
+    {
+        if (!allowCameraControl) return;
+        canMoveCamera = enable;
+    }
+
+    internal void LockCameraControl()
+    {
+        allowCameraControl = false;
+        canMoveCamera = false; 
+    }
+
+    internal void UnlockCameraControl()
+    {
+        allowCameraControl = true;
+        canMoveCamera = true; 
+    }
 }

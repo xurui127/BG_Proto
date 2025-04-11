@@ -7,11 +7,11 @@ using UnityEngine;
 public class CardBehaviourHandler : MonoBehaviour
 {
     [SerializeField] Card_SO[] cardData;
-    
     Dictionary<string, CardBehaviour> cardBehaviourByName = new();
     Dictionary<string, Card_SO> cardDataByName = new();
-
     List<CardBehaviour> cardBehaviours = new();
+
+
     private void Awake()
     {
         InitCardDataByName();

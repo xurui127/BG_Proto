@@ -15,6 +15,4 @@ public class AddGoldCommand : CardBehaviour
         GM.SetCameraTarget();
         GameManager.Instance.stateMachine.SetState<DecisionState>();
     }
-
-   
 }

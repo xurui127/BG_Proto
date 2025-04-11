@@ -15,6 +15,7 @@ public class CardInstance
 
 public class CardSystem : MonoBehaviour
 {
+    internal static CardSystem Instance { get; private set; }
     [SerializeField] public Card_SO[] cards;
     [SerializeField] GameObject cardPrefab;
     [SerializeField] Transform cardContainer;
@@ -27,6 +28,15 @@ public class CardSystem : MonoBehaviour
 
     bool isGenerated = false;
 
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+            return;
+        }
+        Instance = this;
+    }
     // Generate the deck once, at the start of the match
     internal void GenerateDeck(CharacterData characterData)
     {
@@ -52,6 +62,8 @@ public class CardSystem : MonoBehaviour
             worldCards[index].gameObject.SetActive(true);
             worldCards[index].transform.position = new(-18f, 0.1f, 0f);
 
+
+
             var card = characterData.hand[index].sourceData;
             cardUIS[index].name = card.name;
             worldCards[index].Init(characterData.hand[index]);
@@ -71,8 +83,14 @@ public class CardSystem : MonoBehaviour
 
     internal void PlayWorldCardFlyoutAnimation() => cardVisualHandler.WorldCardFlyOut();
 
-    internal void AIPlayCard()=> cardVisualHandler.AIPlayCard();
+    internal void AIPlayCard() => cardVisualHandler.AIPlayCard();
 
-    public CardUI[] GetCurrentCards() => cardUIS;
+    internal void SetCardPlayToggle(bool isEnable)
+    {
+        foreach (var cardUI in cardUIS)
+        {
+            cardUI.SetCardPlayToggle(isEnable);
+        }
+    }
 
 }

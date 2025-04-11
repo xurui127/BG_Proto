@@ -144,7 +144,9 @@ public class GameManager : MonoSingleton<GameManager>
 
     private void RollDiceInternal(int diceCount, int? step)
     {
+        LockCamera();
         SetCameraTarget();
+        LockCardMove();
         ClosePanelsEvent?.Invoke();
         diceNumber = 0;
 
@@ -234,6 +236,7 @@ public class GameManager : MonoSingleton<GameManager>
     public void InitCards()
     {
         cardSystem.DrawCards(currentCharacterData);
+        cardSystem.SetCardPlayToggle(IsPlayer());
     }
 
     internal void OpenPanels()
@@ -315,4 +318,26 @@ public class GameManager : MonoSingleton<GameManager>
         camHandler.SetCanmerFollowTarget(currentCharacterBehaviour.transform);
     }
 
+    internal void UnlockCamera()
+    {
+        if (currentCharacterBehaviour.isPlayer)
+        {
+            camHandler.UnlockCameraControl();
+            camHandler.RequestCameraMove(true);
+        }
+        else
+        {
+            LockCamera();
+        }
+    }
+
+    internal void LockCamera()
+    {
+        camHandler.LockCameraControl();
+    }
+
+    internal void LockCardMove()
+    {
+        cardSystem.SetCardPlayToggle(false);
+    }
 }
