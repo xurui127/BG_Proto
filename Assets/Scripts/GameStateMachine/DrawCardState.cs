@@ -11,7 +11,6 @@ public class DrawCardState : AbstractState
 
     public override void OnEnter()
     {
-        GM.UnlockCamera();
         GM.InitCards();
     }
 

@@ -1,7 +1,6 @@
 ﻿using Cinemachine;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class CameraHandler : MonoBehaviour
 {
@@ -22,22 +21,8 @@ public class CameraHandler : MonoBehaviour
     Vector3 dragOrigin;
 
     bool canMoveCamera = true;
-    bool allowCameraControl = true;
 
-
-    internal static UnityEvent<bool> OnCameraMovementToggleEvent = new();
     private bool isPanning;
-
-    private void OnEnable()
-    {
-        OnCameraMovementToggleEvent.RemoveListener(RequestCameraMove);
-        OnCameraMovementToggleEvent.AddListener(RequestCameraMove);
-    }
-
-    private void OnDisable()
-    {
-        OnCameraMovementToggleEvent.RemoveListener(RequestCameraMove);
-    }
 
     private void Update()
     {
@@ -119,7 +104,6 @@ public class CameraHandler : MonoBehaviour
 
             cam.m_Lens.FieldOfView = targetFOV;
         }
-
     }
 
     private void ResetCameraFollowTarget()
@@ -127,21 +111,6 @@ public class CameraHandler : MonoBehaviour
         cam.Follow = null;
     }
 
-    internal void RequestCameraMove(bool enable)
-    {
-        if (!allowCameraControl) return;
-        canMoveCamera = enable;
-    }
-
-    internal void LockCameraControl()
-    {
-        allowCameraControl = false;
-        canMoveCamera = false;
-    }
-
-    internal void UnlockCameraControl()
-    {
-        allowCameraControl = true;
-        canMoveCamera = true;
-    }
+    internal void LockCamera() => canMoveCamera = false;
+    internal void UnlockCamera() => canMoveCamera = true;
 }

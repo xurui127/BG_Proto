@@ -144,7 +144,6 @@ public class GameManager : MonoSingleton<GameManager>
 
     private void RollDiceInternal(int diceCount, int? step)
     {
-        LockCamera();
         SetCameraTarget();
         LockCardMove();
         ClosePanelsEvent?.Invoke();
@@ -316,24 +315,6 @@ public class GameManager : MonoSingleton<GameManager>
     internal void SetCameraTarget()
     {
         camHandler.SetCanmerFollowTarget(currentCharacterBehaviour.transform);
-    }
-
-    internal void UnlockCamera()
-    {
-        if (currentCharacterBehaviour.isPlayer)
-        {
-            camHandler.UnlockCameraControl();
-            camHandler.RequestCameraMove(true);
-        }
-        else
-        {
-            LockCamera();
-        }
-    }
-
-    internal void LockCamera()
-    {
-        camHandler.LockCameraControl();
     }
 
     internal void LockCardMove()

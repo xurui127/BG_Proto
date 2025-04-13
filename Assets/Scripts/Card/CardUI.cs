@@ -7,7 +7,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     internal int handIndex;
     public RectTransform currentTransform;
     public GameObject container;
-
+    private CameraHandler cameraHandler;
     public Vector3 originePosition;
     public bool isDragging = false;
     public const float yOffset = 280f;
@@ -32,6 +32,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
     private void Start()
     {
+        cameraHandler = GameObject.FindAnyObjectByType<CameraHandler>();
         originePosition = currentTransform.position;
     }
 
@@ -93,6 +94,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     {
         if (!canPlayCard) return;
         isDragging = false;
+        cameraHandler.UnlockCamera();
         if (Input.mousePosition.y > yOffset)
         {
             CardExecuted();
@@ -107,6 +109,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     {
         if (!canPlayCard) return;
         isDragging = true;
+        cameraHandler.LockCamera();
         OnCardPointDownEvent?.Invoke(this);
     }
 
