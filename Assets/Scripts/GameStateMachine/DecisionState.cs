@@ -5,6 +5,7 @@ public class DecisionState : AbstractState
     float decisionTimer;
     bool isWaitingForCardSelection;
     bool isAIplayCard = false;
+    private int action;
 
     public DecisionState(GameManager gm)
     {
@@ -21,7 +22,9 @@ public class DecisionState : AbstractState
         {
             GM.SetMovementPanel(true);
         }
+        action = Random.Range(0, 2);
     }
+
     public override void OnUpdate()
     {
         if (GM.IsPlayer())
@@ -35,10 +38,8 @@ public class DecisionState : AbstractState
         {
             if (!GM.IsEmptyCard())
             {
-                int action = Random.Range(0, 2);
                 if (action == 0 && !isWaitingForCardSelection)
                 {
-
                     GM.RollDice();
                 }
                 else

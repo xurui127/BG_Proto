@@ -252,4 +252,10 @@ public class CardVisualHandler : MonoBehaviour
     {
         isCardFlyingOut = false;
     }
+
+    internal void ResetCards()
+    {
+        uiCards.Clear();
+        worldCards.Clear();
+    }
 }

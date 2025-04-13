@@ -54,6 +54,8 @@ public class CardSystem : MonoBehaviour
 
         characterData.DrawHand();
 
+        cardVisualHandler.ResetCards();
+
         for (int index = 0; index < characterData.hand.Count; index++)
         {
             cardUIS[index].handIndex = index;
@@ -61,8 +63,6 @@ public class CardSystem : MonoBehaviour
             worldCards[index].handIndex = index;
             worldCards[index].gameObject.SetActive(true);
             worldCards[index].transform.position = new(-18f, 0.1f, 0f);
-
-
 
             var card = characterData.hand[index].sourceData;
             cardUIS[index].name = card.name;
