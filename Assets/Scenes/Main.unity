@@ -941,15 +941,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1112501630}
     m_Modifications:
-    - target: {fileID: 116440137175625637, guid: 25c760297aaaaaf40aac1b052b948898,
-        type: 3}
-      propertyPath: m_Texture
-      value: 
-      objectReference: {fileID: 8400000, guid: 63b4785c8dfafc74cb0c80f5b0d0c6eb, type: 2}
     - target: {fileID: 1030895608401970682, guid: 25c760297aaaaaf40aac1b052b948898,
         type: 3}
       propertyPath: m_Name
-      value: PlayerBinner2
+      value: PlayerBanner2
       objectReference: {fileID: 0}
     - target: {fileID: 1030895608401970682, guid: 25c760297aaaaaf40aac1b052b948898,
         type: 3}
@@ -1056,15 +1051,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2541363753627577849, guid: 25c760297aaaaaf40aac1b052b948898,
+    - target: {fileID: 6426837447010886233, guid: 25c760297aaaaaf40aac1b052b948898,
         type: 3}
-      propertyPath: m_margin.x
-      value: 14.089584
-      objectReference: {fileID: 0}
-    - target: {fileID: 5856013428764293005, guid: 25c760297aaaaaf40aac1b052b948898,
-        type: 3}
-      propertyPath: m_margin.x
-      value: 14.226471
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1387,7 +1377,7 @@ PrefabInstance:
     - target: {fileID: 1030895608401970682, guid: 25c760297aaaaaf40aac1b052b948898,
         type: 3}
       propertyPath: m_Name
-      value: PlayerBinner3
+      value: PlayerBanner3
       objectReference: {fileID: 0}
     - target: {fileID: 1030895608401970682, guid: 25c760297aaaaaf40aac1b052b948898,
         type: 3}
@@ -1503,6 +1493,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_margin.x
       value: 14.226471
+      objectReference: {fileID: 0}
+    - target: {fileID: 6426837447010886233, guid: 25c760297aaaaaf40aac1b052b948898,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2603,7 +2598,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 18.400024, y: -29.800049}
+  m_AnchoredPosition: {x: 18.399902, y: -29.800049}
   m_SizeDelta: {x: 414.855, y: 330.531}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1112501631
@@ -4158,7 +4153,7 @@ MonoBehaviour:
   - {fileID: 1559772115}
   - {fileID: 985829329}
   - {fileID: 1720101892}
-  characterBinners:
+  characterBanners:
   - {fileID: 5335032726962203886}
   - {fileID: 422877260}
   - {fileID: 541901509}
@@ -4695,13 +4690,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 1703838258}
   panSpeed: 3
-  panRangeMax: 8
-  panRangeMin: -8
-  boundX: 10
-  boundZ: 10
-  zoomSpeed: 2
-  minZoom: 20
-  maxZoom: 50
 --- !u!1001 &1897228809
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4718,7 +4706,7 @@ PrefabInstance:
     - target: {fileID: 1030895608401970682, guid: 25c760297aaaaaf40aac1b052b948898,
         type: 3}
       propertyPath: m_Name
-      value: PlayerBinner4
+      value: PlayerBanner4
       objectReference: {fileID: 0}
     - target: {fileID: 1030895608401970682, guid: 25c760297aaaaaf40aac1b052b948898,
         type: 3}
@@ -4834,6 +4822,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_margin.x
       value: 14.226471
+      objectReference: {fileID: 0}
+    - target: {fileID: 6426837447010886233, guid: 25c760297aaaaaf40aac1b052b948898,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5345,37 +5338,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2063946496}
   m_CullTransparentMesh: 1
---- !u!1 &2100673604
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2100673605}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2100673605
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2100673604}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.0558596, y: 2.6068223, z: 80.27216}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &2107600113 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7077133828619582585, guid: fbfe7c4c3236a5c4299199c26eefa073,
@@ -5710,10 +5672,15 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1112501630}
     m_Modifications:
+    - target: {fileID: 116440137175625637, guid: 25c760297aaaaaf40aac1b052b948898,
+        type: 3}
+      propertyPath: m_Texture
+      value: 
+      objectReference: {fileID: 8400000, guid: 0697c3a017ea1624c987ff04cb65f57f, type: 2}
     - target: {fileID: 1030895608401970682, guid: 25c760297aaaaaf40aac1b052b948898,
         type: 3}
       propertyPath: m_Name
-      value: PlayerBinner1
+      value: PlayerBanner1
       objectReference: {fileID: 0}
     - target: {fileID: 1030895608401970682, guid: 25c760297aaaaaf40aac1b052b948898,
         type: 3}
@@ -5958,4 +5925,3 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 1112100010}
   - {fileID: 1841887643}
-  - {fileID: 2100673605}

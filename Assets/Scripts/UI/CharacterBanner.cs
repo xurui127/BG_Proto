@@ -2,12 +2,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CharacterBinner : MonoBehaviour
+public class CharacterBanner : MonoBehaviour
 {
     [SerializeField] TMP_Text characterNameText;
     [SerializeField] TMP_Text fruitText;
     [SerializeField] TMP_Text goalText;
     [SerializeField] RawImage iconImage;
+    [SerializeField] GameObject border;
+    [SerializeField] GameObject arrow;
 
     CharacterData characterData;
 
@@ -44,5 +46,15 @@ public class CharacterBinner : MonoBehaviour
     internal void UpdateNameText(string nameText, string indexText)
     {
         characterNameText.text = $"{nameText} {indexText}";
+    }
+
+    internal void BorderToggle(bool isEnable)
+    {
+        border.SetActive(isEnable);
+    }
+
+    internal void EnableArrow(bool isEnable)
+    {
+        arrow.SetActive(isEnable);
     }
 }

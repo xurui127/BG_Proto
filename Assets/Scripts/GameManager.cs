@@ -329,4 +329,9 @@ public class GameManager : MonoSingleton<GameManager>
     {
         cardSystem.SetCardPlayToggle(false);
     }
+
+    internal void ToggleCharacterBanner()
+    {
+        uiManager.EnableCharacterBannerArrow(currentCharacterData.index);
+    }
 }

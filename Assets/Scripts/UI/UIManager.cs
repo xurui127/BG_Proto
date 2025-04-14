@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class UIManager : MonoSingleton<UIManager>
 {
@@ -14,7 +12,7 @@ public class UIManager : MonoSingleton<UIManager>
     [SerializeField] public GameObject noCardPanel;
     [SerializeField] GameObject[] characterIconprefabs;
     [SerializeField] Transform[] iconSpawnPoints;
-    [SerializeField] CharacterBinner[] characterBinners;
+    [SerializeField] CharacterBanner[] characterBanners;
     [SerializeField] RenderTexture[] iconCamTextures;
     [SerializeField] GameObject endPanel;
     [SerializeField] GameObject winText;
@@ -56,21 +54,21 @@ public class UIManager : MonoSingleton<UIManager>
     {
         for (int i = 0; i <= count; i++)
         {
-            characterBinners[i].gameObject.SetActive(true);
+            characterBanners[i].gameObject.SetActive(true);
 
             bool isPlayer = i == 0;
             string nameText = isPlayer ? "Player" : "NPC";
             int index = isPlayer ? i + 1 : i;
 
-            characterBinners[i].UpdateNameText(nameText, index.ToString());
-            characterBinners[i].UpdateFruitText(allData[i].FruitCount);
-            characterBinners[i].UpdateGoalText(allData[i].GoalCount);
+            characterBanners[i].UpdateNameText(nameText, index.ToString());
+            characterBanners[i].UpdateFruitText(allData[i].FruitCount);
+            characterBanners[i].UpdateGoalText(allData[i].GoalCount);
 
-            characterBinners[i].Init(allData[i]);
-            characterBinners[i].BindCharacterTextEvents();
+            characterBanners[i].Init(allData[i]);
+            characterBanners[i].BindCharacterTextEvents();
 
-            var prefab = isPlayer ? characterIconprefabs[0]: characterIconprefabs[1];
-            var icon = Instantiate(prefab, iconSpawnPoints[i].position,Quaternion.identity).GetComponent<IconProxy>();
+            var prefab = isPlayer ? characterIconprefabs[0] : characterIconprefabs[1];
+            var icon = Instantiate(prefab, iconSpawnPoints[i].position, Quaternion.identity).GetComponent<IconProxy>();
             icon.gameObject.transform.parent = iconSpawnPoints[i];
             icon.SetupIConCam(iconCamTextures[i]);
         }
@@ -78,12 +76,7 @@ public class UIManager : MonoSingleton<UIManager>
 
     internal void UpdateCharacterFruitCount(int index, int amount)
     {
-        characterBinners[index].UpdateFruitText(amount);
-    }
-
-    internal void UpdateCharcterGoalCount(int index, int amount)
-    {
-        characterBinners[index].UpdateGoalText(amount);
+        characterBanners[index].UpdateFruitText(amount);
     }
 
     internal void OpenEndPanel(bool isWin)
@@ -96,6 +89,14 @@ public class UIManager : MonoSingleton<UIManager>
     public void BackToTitleSceen()
     {
         SceneManager.LoadScene("Title");
+    }
+
+    internal void EnableCharacterBannerArrow(int index)
+    {
+        for (int i = 0; i < characterBanners.Length; i++)
+        {
+            characterBanners[i].EnableArrow(i == index);
+        }
     }
 
 }

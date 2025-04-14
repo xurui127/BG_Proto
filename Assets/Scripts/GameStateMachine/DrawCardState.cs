@@ -12,6 +12,7 @@ public class DrawCardState : AbstractState
     public override void OnEnter()
     {
         GM.InitCards();
+        GM.ToggleCharacterBanner();
     }
 
     public override void OnExit()
