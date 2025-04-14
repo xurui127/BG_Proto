@@ -148,7 +148,6 @@ public class GameManager : MonoSingleton<GameManager>
 
     private void RollDiceInternal(int diceCount, int? step)
     {
-        SetCameraTarget();
         LockCardMove();
         ClosePanelsEvent?.Invoke();
         diceNumber = 0;
@@ -227,7 +226,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     private void UpdateCameraTarget(GameObject target)
     {
-        if (virtualCamera != null)
+        if (virtualCamera != null && IsPlayer())
         {
             virtualCamera.Follow = target.transform;
             virtualCamera.LookAt = target.transform;
@@ -304,7 +303,7 @@ public class GameManager : MonoSingleton<GameManager>
         if (currentFruitCount != maxFruitCount)
         {
             currentFruitCount++;
-            UpdateCameraTarget(boardManager.InitPlacedFruit());
+            boardManager.InitPlacedFruit();
         }
     }
 
@@ -318,11 +317,6 @@ public class GameManager : MonoSingleton<GameManager>
     {
         boardManager.UnregesterCurrentChracterOntile(currentCharacterBehaviour.GetCurrentTileIndex(),
                                                     currentCharacterBehaviour);
-    }
-
-    internal void SetCameraTarget()
-    {
-        camHandler.SetCanmerFollowTarget(currentCharacterBehaviour.transform);
     }
 
     internal void LockCardMove()

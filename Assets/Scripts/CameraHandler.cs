@@ -81,36 +81,12 @@ public class CameraHandler : MonoBehaviour
         }
     }
 
-    internal void SetCanmerFollowTarget(Transform target)
-    {
-        if (cam.Follow != null) return;
-
-        StartCoroutine(MoveToTargerConroutine(target));
-        IEnumerator MoveToTargerConroutine(Transform target)
-        {
-            cam.Follow = target;
-
-            float startFOV = cam.m_Lens.FieldOfView;
-            float targetFOV = 50f;
-            float fovDuration = 0.3f;
-            float fovElapsed = 0f;
-
-            while (fovElapsed < fovDuration)
-            {
-                fovElapsed += Time.deltaTime;
-                cam.m_Lens.FieldOfView = Mathf.Lerp(startFOV, targetFOV, fovElapsed / fovDuration);
-                yield return null;
-            }
-
-            cam.m_Lens.FieldOfView = targetFOV;
-        }
-    }
-
     private void ResetCameraFollowTarget()
     {
         cam.Follow = null;
     }
 
     internal void LockCamera() => canMoveCamera = false;
+
     internal void UnlockCamera() => canMoveCamera = true;
 }
