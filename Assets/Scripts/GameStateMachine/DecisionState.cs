@@ -15,8 +15,8 @@ public class DecisionState : AbstractState
     public override void OnEnter()
     {
         isWaitingForCardSelection = false;
-        waitingTime = 1f;
-        decisionTimer = 1f;
+        waitingTime = 0.5f;
+        decisionTimer = 0.5f;
 
         if (GM.IsPlayer())
         {

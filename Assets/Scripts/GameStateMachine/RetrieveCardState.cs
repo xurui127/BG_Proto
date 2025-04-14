@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class RetrieveCardState : AbstractState
 {
-    float flyoutTimer = 1f;
+    float flyoutTimer = 0.5f;
     public RetrieveCardState(GameManager gm)
     {
         GM = gm;
@@ -17,7 +17,7 @@ public class RetrieveCardState : AbstractState
 
     public override void OnExit()
     {
-        flyoutTimer = 1f;
+        flyoutTimer = 0.5f;
     }
 
     public override void OnUpdate()

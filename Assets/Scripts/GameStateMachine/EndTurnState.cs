@@ -10,13 +10,13 @@ public class EndTurnState : AbstractState
     }
     public override void OnEnter()
     {
-        waitingTime = 1.5f;
+        waitingTime = 0.5f;
         GM.PlaceFruit();
     }
 
     public override void OnExit()
     {
-        waitingTime = 1;
+        waitingTime = 0.5f;
         GM.SetNextCharacterTurn();
     }
 
