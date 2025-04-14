@@ -26,6 +26,8 @@ public class CardSystem : MonoBehaviour
     [FormerlySerializedAs("screenCards")]
     [SerializeField] WorldCard[] worldCards;
 
+    GameManager gameManager;
+
     bool isGenerated = false;
 
     private void Awake()
@@ -37,6 +39,12 @@ public class CardSystem : MonoBehaviour
         }
         Instance = this;
     }
+
+    private void Start()
+    {
+        gameManager = GameManager.Instance;
+    }
+
     // Generate the deck once, at the start of the match
     internal void GenerateDeck(CharacterData characterData)
     {
@@ -63,6 +71,7 @@ public class CardSystem : MonoBehaviour
             worldCards[index].handIndex = index;
             worldCards[index].gameObject.SetActive(true);
             worldCards[index].transform.position = new(-18f, 0.1f, 0f);
+            //worldCards[index].FlipCard(gameManager.IsPlayer());
 
             var card = characterData.hand[index].sourceData;
             cardUIS[index].name = card.name;
@@ -74,6 +83,7 @@ public class CardSystem : MonoBehaviour
                 cardVisualHandler.CardRegister(cardUIS[index], worldCards[index]);
             }
         }
+        cardVisualHandler.FlipCards(gameManager.IsPlayer());
     }
 
     public void ResetCardsDate()

@@ -15,6 +15,7 @@ public class WorldCard : MonoBehaviour
     [SerializeField] TextMeshPro cardText;
     [SerializeField] TextMeshPro deckIndexText;
     [SerializeField] SpriteRenderer spriteRenderer;
+    [SerializeField] internal Transform visualTarget;
 
     bool isDragging = false;
     bool isShaking = false;

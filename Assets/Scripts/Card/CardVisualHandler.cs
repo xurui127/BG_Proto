@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CardVisualHandler : MonoBehaviour
@@ -240,6 +241,7 @@ public class CardVisualHandler : MonoBehaviour
 
             yield return new WaitForSeconds(1f);
 
+
             playCard.gameObject.SetActive(false);
 
             uiCards[randomIndex].AIPlayCard();
@@ -257,5 +259,15 @@ public class CardVisualHandler : MonoBehaviour
     {
         uiCards.Clear();
         worldCards.Clear();
+    }
+
+    internal void FlipCards(bool isFlipped)
+    {
+        float targetY = isFlipped ? 0f : 180f;
+       
+        foreach (var card in worldCards)
+        {
+            card.visualTarget.localEulerAngles = new Vector3(0, targetY, 0);
+        }
     }
 }
