@@ -48,6 +48,10 @@ public class GameManager : MonoSingleton<GameManager>
 
     public bool IsEmptyCard() => currentCharacterData.hand.Count == 0;
 
+    internal int GetCurrentCharacterIndex() => currentCharacterBehaviour.GetCurrentTileIndex();
+
+    internal int GetDiceNumber() => diceNumber;
+
     protected override void Awake()
     {
         base.Awake();
@@ -175,6 +179,10 @@ public class GameManager : MonoSingleton<GameManager>
     {
         if (currentCharacterBehaviour != null)
         {
+            if (currentCharacterData.HasReachedPotRequirement())
+            {
+                diceNumber = boardManager.GetTargetStep();
+            }
             currentCharacterBehaviour.MovePath(diceNumber);
         }
     }

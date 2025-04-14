@@ -4,11 +4,16 @@ using UnityEngine;
 
 public class BoardManager : MonoBehaviour
 {
+    GameManager gameManager;
+
     [SerializeField] ItemData[] fruitsData;
     [SerializeField] ItemData potData;
     [SerializeField] internal List<Transform> tiles;
     internal List<TileBehaviour> tileBehaviours = new();
     internal float tileSpacing = 1.1f;
+
+    CharacterBehaviour currentCharacter;
+
 
     readonly Vector3 fruitPosOffset = new(0f, 0.7f, 0f);
     readonly Vector3 potPosOffset = new(0f, 0.4f, 0f);
@@ -35,6 +40,10 @@ public class BoardManager : MonoBehaviour
         RegesterTileBehaviours();
     }
 
+    private void Start()
+    {
+        gameManager = GameManager.Instance;
+    }
     private GameObject SpawnFruitAtTile(int tileIndex, int amount = 3)
     {
         var fruitNum = Random.Range(0, 2);
@@ -212,5 +221,51 @@ public class BoardManager : MonoBehaviour
             yield return new WaitForSeconds(1f);
             Destroy(vfx);
         }
+    }
+
+    internal int GetPotIndex()
+    {
+        for (int i = 0; i < tileBehaviours.Count; i++)
+        {
+            if (tileBehaviours[i].isPlacedPot)
+            {
+                return i;
+            }
+        }
+        Debug.LogWarning("Can not fount pot index!");
+        return -1;
+    }
+
+    internal int GetTargetStep()
+    {
+        int currentCharacterIndex = gameManager.GetCurrentCharacterIndex();
+        int diceNumber = gameManager.GetDiceNumber();
+        int potIndex = GetPotIndex();
+        int tileCount = tileBehaviours.Count;
+
+        if (IsOverPot(currentCharacterIndex, diceNumber, potIndex, tileCount))
+        {
+            if (potIndex >= currentCharacterIndex)
+            {
+                return potIndex - currentCharacterIndex;
+            }
+            else
+            {
+                return (tileCount - currentCharacterIndex) + potIndex;
+            }
+        }
+
+        return diceNumber;
+    }
+
+    private bool IsOverPot(int currentIndex, int diceNumber, int potIndex, int tileCount)
+    {
+        for (int i = 1; i <= diceNumber; i++)
+        {
+            int stepIndex = (currentIndex + i) % tileCount;
+            if (stepIndex == potIndex)
+                return true;
+        }
+        return false;
     }
 }

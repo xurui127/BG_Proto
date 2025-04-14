@@ -13,7 +13,7 @@ public class CharacterData : MonoBehaviour
 
     int _fruitCount = 0;
     int _goalCount = 0;
-
+    const int requiredGoalCount = 10;
     internal int FruitCount
     {
         get => _fruitCount;
@@ -99,4 +99,6 @@ public class CharacterData : MonoBehaviour
         graveyard.AddRange(hand);
         hand.Clear();
     }
+
+    internal bool HasReachedPotRequirement() => _fruitCount >= requiredGoalCount;
 }
