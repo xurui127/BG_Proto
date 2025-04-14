@@ -8,9 +8,9 @@ public class CharacterBehaviour : MonoBehaviour
     [SerializeField] public Camera iconCam;
     internal int currentTileIndex = 0;
     internal bool isDoneMoving = false;
-    const float turnSpeed = 8f;
+    const float turnSpeed = 12f;
     const float jumpHeight = 0.5f;
-    const float jumpDuration = 0.3f;
+    const float jumpDuration = 0.25f;
     public void MovePath(int steps)
     {
         isDoneMoving = false;
@@ -40,13 +40,13 @@ public class CharacterBehaviour : MonoBehaviour
                 float elapsedTime = 0f;
                 Vector3 startPos = transform.position;
 
+                anim.SetBool("IsJump", true);
                 while (elapsedTime < jumpDuration)
                 {
                     elapsedTime += Time.deltaTime;
                     float t = elapsedTime / jumpDuration;
                     float heightOffset = Mathf.Sin(t * Mathf.PI) * jumpHeight;
                     transform.position = Vector3.Lerp(startPos, newTargetPos, t) + new Vector3(0, heightOffset, 0);
-                    anim.SetBool("IsJump", true);
                     yield return null;
                 }
 
@@ -67,7 +67,7 @@ public class CharacterBehaviour : MonoBehaviour
 
             Vector3 lookTarget = new Vector3(
                 targetTile.position.x,
-                transform.position.y ,
+                transform.position.y,
                 targetTile.position.z
             );
 
