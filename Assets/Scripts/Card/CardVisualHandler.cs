@@ -239,6 +239,7 @@ public class CardVisualHandler : MonoBehaviour
                 yield return null;
             }
 
+            FlipCardVisual(worldCards[randomIndex]);
             yield return new WaitForSeconds(1f);
 
 
@@ -247,6 +248,33 @@ public class CardVisualHandler : MonoBehaviour
             uiCards[randomIndex].AIPlayCard();
 
             isConectUIcard = false;
+        }
+    }
+
+    private void FlipCardVisual(WorldCard worldCard)
+    {
+        StartCoroutine(FlipCardVisualSmooth(worldCard));
+
+        IEnumerator FlipCardVisualSmooth(WorldCard worldCard)
+        {
+            float duration = 0.2f;
+            float elapsed = 0f;
+
+            Transform visual = worldCard.visualTarget;
+
+            Vector3 startRotation = visual.localEulerAngles;
+            Vector3 endRotation = new Vector3(0f, 0f, 0f);
+
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / duration;
+                float y = Mathf.Lerp(startRotation.y, endRotation.y, t);
+                visual.localEulerAngles = new Vector3(0, y, 0);
+                yield return null;
+            }
+
+            visual.localEulerAngles = endRotation;
         }
     }
 
