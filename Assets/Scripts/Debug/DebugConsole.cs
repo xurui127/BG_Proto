@@ -13,7 +13,8 @@ public class DebugConsole : MonoBehaviour
     internal static bool IsOpen { get; private set; }
 
     Dictionary<string, DebugCommand> commands = new();
-
+    Queue<string> logLines = new();
+    const int MaxLines = 7;
 
     private void Awake()
     {
@@ -74,11 +75,17 @@ public class DebugConsole : MonoBehaviour
 
     private void AddLog(string input)
     {
-        if (log.text.Length > 0)
+        logLines.Enqueue(input);
+
+        while(logLines.Count > MaxLines)
         {
-            log.text += "\n";
+            logLines.Dequeue();
+            if (logLines.Count > MaxLines)
+            {
+                logLines.Dequeue();
+            }
         }
-        log.text += input;
+        log.text = string.Join("\n", logLines);
     }
 
     private void ProcessInput(string input)
