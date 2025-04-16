@@ -59,6 +59,7 @@ public class DebugConsole : MonoBehaviour
     public void OnEndEdit()
     {
         string input = inputField.text;
+
         if (string.IsNullOrEmpty(input))
         {
             return;

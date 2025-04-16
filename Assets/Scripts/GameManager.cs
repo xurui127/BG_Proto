@@ -85,11 +85,6 @@ public class GameManager : MonoSingleton<GameManager>
     private void Update()
     {
         stateMachine.OnUpdate();
-
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            RollSpecificDice(TextStep);
-        }
     }
 
     private void InitCharacters()
@@ -327,5 +322,20 @@ public class GameManager : MonoSingleton<GameManager>
     internal void ToggleCharacterBanner()
     {
         uiManager.EnableCharacterBannerArrow(currentCharacterData.index);
+    }
+
+    internal void DebugAddFruit(int amount)
+    {
+      currentCharacterData.FruitCount += amount;
+    }
+
+    internal void DebugAddGoal(int amount)
+    {
+        currentCharacterData.GoalCount += amount;
+    }
+
+    internal void DebugRollDice(int diceNumber)
+    {
+        RollSpecificDice(diceNumber);
     }
 }
