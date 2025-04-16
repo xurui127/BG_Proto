@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,10 +12,27 @@ public class DebugConsole : MonoBehaviour
     [SerializeField] GameObject defaultLog;
     internal static bool IsOpen { get; private set; }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
+    Dictionary<string, DebugCommand> commands = new();
 
+
+    private void Awake()
+    {
+        var debugCommandTypes = Util.GetTypesWith<DebugCommandAttribute>();
+        foreach (var debugCommandType in debugCommandTypes)
+        {
+            var debugCommand = (DebugCommand)Activator.CreateInstance(debugCommandType);
+
+            var attrs = Attribute.GetCustomAttributes(debugCommand.GetType());
+
+            foreach (System.Attribute attr in attrs)
+            {
+                if (attr is DebugCommandAttribute a)
+                {
+                    commands.Add(a.commandName, debugCommand);
+                    break;
+                }
+            }
+        }
     }
 
     // Update is called once per frame
@@ -25,7 +44,7 @@ public class DebugConsole : MonoBehaviour
             panel.SetActive(IsOpen);
             if (IsOpen)
             {
-                log.text = "Open";
+                log.text = "";
                 defaultLog = EventSystem.current.currentSelectedGameObject;
                 EventSystem.current.SetSelectedGameObject(inputField.gameObject);
             }
@@ -48,6 +67,8 @@ public class DebugConsole : MonoBehaviour
         AddLog(input);
         inputField.text = "";
         inputField.ActivateInputField();
+
+        ProcessInput(input.ToLowerInvariant());
     }
 
     private void AddLog(string input)
@@ -57,5 +78,19 @@ public class DebugConsole : MonoBehaviour
             log.text += "\n";
         }
         log.text += input;
+    }
+
+    private void ProcessInput(string input)
+    {
+        var words = input.Split(' ');
+        if (commands.ContainsKey(words[0]))
+        {
+            string log = commands[words[0]].OnCommand(words);
+            AddLog(log);
+        }
+        else
+        {
+            AddLog($"Cannot find command {words[0]}.");
+        }
     }
 }

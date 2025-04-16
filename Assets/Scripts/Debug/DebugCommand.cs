@@ -6,7 +6,7 @@ public abstract class DebugCommand
 }
 
 //Add fruit 
-
+[DebugCommand("fruit")]
 public class FruitCommand : DebugCommand
 {
     public override string OnCommand(string[] p)
@@ -16,6 +16,7 @@ public class FruitCommand : DebugCommand
     }
 }
 //Add Gold
+[DebugCommand("gold")]
 public class GoldCommand : DebugCommand
 {
     public override string OnCommand(string[] p)
@@ -25,6 +26,7 @@ public class GoldCommand : DebugCommand
     }
 }
 //force roll dice
+[DebugCommand("roll")]
 public class RollDiceCommand : DebugCommand
 {
     public override string OnCommand(string[] p)

@@ -15,7 +15,7 @@ public class CardBehaviourHandler : MonoBehaviour
     private void Awake()
     {
         InitCardDataByName();
-        var cardTypes = GetTypesWith<CardAttribute>();
+        var cardTypes = Util.GetTypesWith<CardAttribute>();
         foreach (var type in cardTypes)
         {
             var attribute = type.GetCustomAttribute<CardAttribute>();
@@ -36,13 +36,6 @@ public class CardBehaviourHandler : MonoBehaviour
             cardBehaviours[i].OnGameStart(amount); 
         }
        
-    }
-    private IEnumerable<Type> GetTypesWith<T>() where T : Attribute
-    {
-        return from a in AppDomain.CurrentDomain.GetAssemblies()
-               from t in a.GetTypes()
-               where t.GetCustomAttributes(typeof(T), true).Length > 0
-               select t;
     }
 
     internal void OnCardExecute(string cardName)
