@@ -326,7 +326,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     internal void DebugAddFruit(int amount)
     {
-      currentCharacterData.FruitCount += amount;
+        currentCharacterData.FruitCount += amount;
     }
 
     internal void DebugAddGoal(int amount)

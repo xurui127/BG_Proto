@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 8400000, guid: 63b4785c8dfafc74cb0c80f5b0d0c6eb, type: 2}
+  m_Texture: {fileID: 8400000, guid: 0697c3a017ea1624c987ff04cb65f57f, type: 2}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -206,8 +206,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -48.766, y: 0}
-  m_SizeDelta: {x: 175.225, y: 41.605}
+  m_AnchoredPosition: {x: -54.575, y: 0}
+  m_SizeDelta: {x: 186.842, y: 41.605}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &8302456153438214531
 CanvasRenderer:
@@ -237,7 +237,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Fruits: 00
+  m_text: 'Fruits: 000
 
 '
   m_isRightToLeft: 0
@@ -345,8 +345,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -6.268982, y: -20.803}
-  m_SizeDelta: {x: 163.582, y: 41.605}
+  m_AnchoredPosition: {x: -2.5220032, y: -20.803}
+  m_SizeDelta: {x: 167.329, y: 41.605}
   m_Pivot: {x: 0.9999999, y: 0.5}
 --- !u!222 &3637424457207611617
 CanvasRenderer:
@@ -376,7 +376,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Goal: 00'
+  m_text: 'Goal: 000'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

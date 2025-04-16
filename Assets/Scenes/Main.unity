@@ -1305,6 +1305,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1112501630}
     m_Modifications:
+    - target: {fileID: 116440137175625637, guid: 25c760297aaaaaf40aac1b052b948898,
+        type: 3}
+      propertyPath: m_Texture
+      value: 
+      objectReference: {fileID: 8400000, guid: 63b4785c8dfafc74cb0c80f5b0d0c6eb, type: 2}
     - target: {fileID: 1030895608401970682, guid: 25c760297aaaaaf40aac1b052b948898,
         type: 3}
       propertyPath: m_Name
@@ -6649,11 +6654,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1112501630}
     m_Modifications:
-    - target: {fileID: 116440137175625637, guid: 25c760297aaaaaf40aac1b052b948898,
-        type: 3}
-      propertyPath: m_Texture
-      value: 
-      objectReference: {fileID: 8400000, guid: 0697c3a017ea1624c987ff04cb65f57f, type: 2}
     - target: {fileID: 1030895608401970682, guid: 25c760297aaaaaf40aac1b052b948898,
         type: 3}
       propertyPath: m_Name
