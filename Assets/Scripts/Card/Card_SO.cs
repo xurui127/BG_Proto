@@ -5,6 +5,7 @@ public enum CardType
     GainGold,
     DoubleDice,
     RollSix,
+    Trap,
 }
 
 [CreateAssetMenu(fileName = "New Card", menuName = "Card system/Card")]
