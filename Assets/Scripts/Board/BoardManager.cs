@@ -1,7 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 
 public class BoardManager : MonoBehaviour
@@ -19,9 +17,8 @@ public class BoardManager : MonoBehaviour
     readonly Vector3 potPosOffset = new(0f, 0.4f, 0f);
     readonly Vector3 trapPosOffset = new(0f, 0.8f, 0f);
     readonly Dictionary<Vector3, Transform> tileMapByPosition = new();
-    // Dictionary<int, ItemBehaviour> fruitBehaviourByTileIndex = new();
-    // Dictionary<int, ItemBehaviour> potBehaviourByTileIndex = new();
-    Dictionary<int, ItemBehaviour> bombBehaviourByOwnerIndex = new();
+
+    [SerializeField] List<ItemInstance> items = new();
 
     private void OnDrawGizmos()
     {
@@ -45,14 +42,14 @@ public class BoardManager : MonoBehaviour
     {
         gameManager = GameManager.Instance;
     }
-    private GameObject SpawnFruitAtTile(int tileIndex, int amount = 3)
+    private GameObject SpawnFruitAtTile(int tileIndex)
     {
-        var fruitNum = Random.Range(0, 2);
+        var fruitNum = UnityEngine.Random.Range(0, 2);
         var fruitData = fruitNum == 0 ? fruitsData[0] : fruitsData[1];
         var fruit = Instantiate(fruitData.itemPrefab, tiles[tileIndex].position + fruitPosOffset, Quaternion.identity);
 
         var itemBehaviour = fruit.GetComponent<ItemBehaviour>();
-        itemBehaviour.RegesterItem(fruitData.value, null);
+        itemBehaviour.RegesterItem(fruitData.value);
 
         var anim = fruit.GetComponent<ItemAnimation>();
         if (anim != null)
@@ -62,8 +59,6 @@ public class BoardManager : MonoBehaviour
 
         tileBehaviours[tileIndex].PlacedFruit();
         tileBehaviours[tileIndex].SetCurrentBehaviour(itemBehaviour);
-        //fruitBehaviourByTileIndex[tileIndex] = itemBehaviour;
-
         return fruit;
     }
 
@@ -94,33 +89,27 @@ public class BoardManager : MonoBehaviour
         var itemBehavour = pot.GetComponent<ItemBehaviour>();
         tileBehaviours[tileIndex].PlacedPot();
         tileBehaviours[tileIndex].SetCurrentBehaviour(itemBehavour);
-        //potBehaviourByTileIndex[tileIndex] = itemBehavour;
-        itemBehavour.RegesterItem(potData.value, null);
+        itemBehavour.RegesterItem(potData.value);
     }
 
     internal void InitBomb(CharacterData data)
     {
-        if (data.hasTrap)
+        for(int i = 0; i < items.Count; i++)
         {
-            Destroy(bombBehaviourByOwnerIndex[data.index].gameObject);
-            bombBehaviourByOwnerIndex.Remove(data.index);
+            if (items[i].ownerIndex == data.index)
+            {
+                tileBehaviours[items[i].tileIndex].ResetTilePlacedTrap();
+                Destroy(items[i].itemBehaviour.gameObject);
+                items.Remove(items[i]);
+            }
         }
-        var availableTiles = GetAvailiableTiles();
-        var tileIndex = availableTiles[0];
+        var tileIndex = gameManager.GetCurrentCharacterIndex();
         var bomb = Instantiate(bombData.itemPrefab, tiles[tileIndex].position + trapPosOffset, Quaternion.identity);
         var itemBehavour = bomb.GetComponent<ItemBehaviour>();
         tileBehaviours[tileIndex].PlacedTrap();
         tileBehaviours[tileIndex].SetCurrentBehaviour(itemBehavour);
-        int? index = data.index;
-        itemBehavour.RegesterItem(bombData.value, index);
-        bombBehaviourByOwnerIndex[data.index] = itemBehavour;
-        data.hasTrap = true;
-
-        foreach (var item in bombBehaviourByOwnerIndex)
-        {
-            Debug.Log("Key = " + item.Key + "Value = " + item.Value);
-        }
-        Debug.Log(bombBehaviourByOwnerIndex.Count);
+        itemBehavour.RegesterItem(bombData.value);
+        items.Add(new ItemInstance(data.index, tileIndex, itemBehavour));
     }
 
     private void RegisterTiles()
@@ -184,7 +173,8 @@ public class BoardManager : MonoBehaviour
         {
             if (!tileBehaviours[i].isPlacedFruit &&
                 !tileBehaviours[i].isPlacedPot &&
-                !tileBehaviours[i].isPlacedCharacter)
+                !tileBehaviours[i].isPlacedCharacter &&
+                !tileBehaviours[i].isPlacedTrap)
             {
                 availableTiles.Add(i);
             }
@@ -192,7 +182,7 @@ public class BoardManager : MonoBehaviour
 
         for (int i = 0; i < availableTiles.Count; i++)
         {
-            int randomIndex = Random.Range(i, availableTiles.Count);
+            int randomIndex = UnityEngine.Random.Range(i, availableTiles.Count);
             (availableTiles[i], availableTiles[randomIndex]) = (availableTiles[randomIndex], availableTiles[i]);
         }
         return availableTiles;
@@ -292,6 +282,16 @@ public class BoardManager : MonoBehaviour
             if (stepIndex == potIndex)
                 return true;
         }
+        return false;
+    }
+
+    internal bool IsTrapInteract(int characterIndex)
+    {
+        foreach (var item in items)
+        {
+            return item.ownerIndex == characterIndex;
+        }
+        Debug.LogWarning("Not find Character index!");
         return false;
     }
 }

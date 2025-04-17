@@ -1,11 +1,10 @@
-using UnityEngine;
 using UnityEngine.Events;
 
 
 public class PotBehaviour : ItemBehaviour
 {
     internal static UnityAction<bool> OpenEndPanelEvent;
-    internal override void RegesterItem(int amount, int? ownerIndex)
+    internal override void RegesterItem(int amount)
     {
         this.amount = amount;
     }
@@ -21,7 +20,7 @@ public class PotBehaviour : ItemBehaviour
         }
         if (data.GoalCount >= 3)
         {
-           OpenEndPanelEvent?.Invoke(data.index == 0);
+            OpenEndPanelEvent?.Invoke(data.index == 0);
         }
     }
 }

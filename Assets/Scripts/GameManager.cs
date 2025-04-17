@@ -280,7 +280,7 @@ public class GameManager : MonoSingleton<GameManager>
         var tileIndex = currentCharacterBehaviour.currentTileIndex;
         var currentTile = boardManager.GetCurrentTile(tileIndex);
         var currentItem = currentTile.GetCurrentItemBehaviour();
-
+        var isOwnerTrap = boardManager.IsTrapInteract(currentCharacterData.index);
         if (currentTile.isPlacedFruit)
         {
             currentFruitCount--;
@@ -288,8 +288,10 @@ public class GameManager : MonoSingleton<GameManager>
 
         if (currentTile != null &&
             currentItem != null &&
-            (currentTile.isPlacedFruit ||
-            currentTile.isPlacedPot))
+           (currentTile.isPlacedFruit ||
+            currentTile.isPlacedPot ||
+            currentTile.isPlacedTrap) ||
+            !isOwnerTrap)
         {
             currentItem.OnInteract(currentCharacterData);
         }

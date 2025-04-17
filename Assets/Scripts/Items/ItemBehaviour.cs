@@ -6,7 +6,7 @@ public abstract class ItemBehaviour : MonoBehaviour
 
     internal int amount;
 
-    internal abstract void RegesterItem(int amount, int? ownerIndex);
+    internal abstract void RegesterItem(int amount);
 
     internal abstract void OnInteract(CharacterData data);
 

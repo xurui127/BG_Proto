@@ -3,7 +3,7 @@ using UnityEngine;
 public class FruitBehaviour : ItemBehaviour
 {
     [SerializeField] ItemAnimation anim;
-    internal override void RegesterItem(int amount, int? ownerIndex)
+    internal override void RegesterItem(int amount)
     {
         this.amount = amount;
     }
