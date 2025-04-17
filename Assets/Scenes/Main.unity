@@ -2890,6 +2890,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0ba6ba43f993c344c970f832e0d56af6, type: 2}
   - {fileID: 11400000, guid: 88b6102cd5b72f2459e4a5cdb26a845f, type: 2}
   potData: {fileID: 11400000, guid: 7b2e45ca96c6f71479c4245bb01d8397, type: 2}
+  bombData: {fileID: 11400000, guid: 72a3258a7bf7e4747821c9164e627b91, type: 2}
   tiles:
   - {fileID: 1811136442}
   - {fileID: 302896301}
@@ -3705,7 +3706,6 @@ MonoBehaviour:
   - {fileID: 1128916037}
   - {fileID: 521016977}
   - {fileID: 1650877835}
-  TextStep: 0
   pathTile: []
 --- !u!1 &1255358838
 GameObject:

@@ -10,13 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fee9f6f9ce2a2ac4184ab12d649f8053, type: 3}
-  m_Name: PotData
+  m_Name: BombData
   m_EditorClassIdentifier: 
-  id: 30003
-  itemName: Pot
+  id: 30004
+  itemName: Bomb
   type: 1
-  itemPrefab: {fileID: 7624432812518651853, guid: 366468b65fd95b047a2eabbfd0f13dc2,
+  itemPrefab: {fileID: 3823928363900818667, guid: 9e7e3b06d9be86b4e8593c4d97e27fff,
     type: 3}
-  initEffect: {fileID: 0}
-  collectEffect: {fileID: 0}
-  value: 1
+  initEffect: {fileID: 8800761877633365762, guid: 178faec88c4139c4cb58920e53287086,
+    type: 3}
+  collectEffect: {fileID: 3440308236262991693, guid: 706bb41b64dbdf74fa8bcf88e6c1ebc4,
+    type: 3}
+  value: 3

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class FruitAnimation : MonoBehaviour
+public class ItemAnimation : MonoBehaviour
 {
 
     [SerializeField] float rotationSpeed = 60f;

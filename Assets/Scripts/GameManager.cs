@@ -16,8 +16,6 @@ public class GameManager : MonoSingleton<GameManager>
     [SerializeField] GameObject dicePrefab;
     [SerializeField] Transform[] diceSpawnPoint;
 
-    [SerializeField] int TextStep = 0;
-
     [HideInInspector] public List<Transform> pathTile;
 
     const int maxFruitCount = 3;
@@ -85,6 +83,10 @@ public class GameManager : MonoSingleton<GameManager>
     private void Update()
     {
         stateMachine.OnUpdate();
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            InitBomb();
+        }
     }
 
     private void InitCharacters()
@@ -123,6 +125,8 @@ public class GameManager : MonoSingleton<GameManager>
     private void InitFruits() => boardManager.InitFruits(maxFruitCount);
 
     private void InitPot() => boardManager.InitPot();
+
+    private void InitBomb() => boardManager.InitBomb(currentCharacterData);
 
     private void AddCardsToCharacter()
     {

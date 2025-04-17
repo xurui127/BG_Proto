@@ -3,6 +3,7 @@ using UnityEngine;
 public enum ItemType
 {
     Fruit,
+    Trap,
     Default
 }
 

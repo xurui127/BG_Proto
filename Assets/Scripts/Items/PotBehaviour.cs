@@ -5,7 +5,7 @@ using UnityEngine.Events;
 public class PotBehaviour : ItemBehaviour
 {
     internal static UnityAction<bool> OpenEndPanelEvent;
-    internal override void RegesterItem(int amount)
+    internal override void RegesterItem(int amount, int? ownerIndex)
     {
         this.amount = amount;
     }

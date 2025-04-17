@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 public class BoardManager : MonoBehaviour
@@ -8,19 +10,18 @@ public class BoardManager : MonoBehaviour
 
     [SerializeField] ItemData[] fruitsData;
     [SerializeField] ItemData potData;
+    [SerializeField] ItemData bombData;
     [SerializeField] internal List<Transform> tiles;
     internal List<TileBehaviour> tileBehaviours = new();
     internal float tileSpacing = 1.1f;
 
-    CharacterBehaviour currentCharacter;
-
-
     readonly Vector3 fruitPosOffset = new(0f, 0.7f, 0f);
     readonly Vector3 potPosOffset = new(0f, 0.4f, 0f);
+    readonly Vector3 trapPosOffset = new(0f, 0.8f, 0f);
     readonly Dictionary<Vector3, Transform> tileMapByPosition = new();
-    Dictionary<int, ItemBehaviour> fruitBehaviourByTileIndex = new();
-    Dictionary<int, ItemBehaviour> potBehaviourByTileIndex = new();
-
+    // Dictionary<int, ItemBehaviour> fruitBehaviourByTileIndex = new();
+    // Dictionary<int, ItemBehaviour> potBehaviourByTileIndex = new();
+    Dictionary<int, ItemBehaviour> bombBehaviourByOwnerIndex = new();
 
     private void OnDrawGizmos()
     {
@@ -51,9 +52,9 @@ public class BoardManager : MonoBehaviour
         var fruit = Instantiate(fruitData.itemPrefab, tiles[tileIndex].position + fruitPosOffset, Quaternion.identity);
 
         var itemBehaviour = fruit.GetComponent<ItemBehaviour>();
-        itemBehaviour.RegesterItem(fruitData.value);
+        itemBehaviour.RegesterItem(fruitData.value, null);
 
-        var anim = fruit.GetComponent<FruitAnimation>();
+        var anim = fruit.GetComponent<ItemAnimation>();
         if (anim != null)
         {
             anim.GetCollectEffect(fruitData.collectEffect);
@@ -61,7 +62,7 @@ public class BoardManager : MonoBehaviour
 
         tileBehaviours[tileIndex].PlacedFruit();
         tileBehaviours[tileIndex].SetCurrentBehaviour(itemBehaviour);
-        fruitBehaviourByTileIndex[tileIndex] = itemBehaviour;
+        //fruitBehaviourByTileIndex[tileIndex] = itemBehaviour;
 
         return fruit;
     }
@@ -93,8 +94,33 @@ public class BoardManager : MonoBehaviour
         var itemBehavour = pot.GetComponent<ItemBehaviour>();
         tileBehaviours[tileIndex].PlacedPot();
         tileBehaviours[tileIndex].SetCurrentBehaviour(itemBehavour);
-        potBehaviourByTileIndex[tileIndex] = itemBehavour;
-        itemBehavour.RegesterItem(1);
+        //potBehaviourByTileIndex[tileIndex] = itemBehavour;
+        itemBehavour.RegesterItem(potData.value, null);
+    }
+
+    internal void InitBomb(CharacterData data)
+    {
+        if (data.hasTrap)
+        {
+            Destroy(bombBehaviourByOwnerIndex[data.index].gameObject);
+            bombBehaviourByOwnerIndex.Remove(data.index);
+        }
+        var availableTiles = GetAvailiableTiles();
+        var tileIndex = availableTiles[0];
+        var bomb = Instantiate(bombData.itemPrefab, tiles[tileIndex].position + trapPosOffset, Quaternion.identity);
+        var itemBehavour = bomb.GetComponent<ItemBehaviour>();
+        tileBehaviours[tileIndex].PlacedTrap();
+        tileBehaviours[tileIndex].SetCurrentBehaviour(itemBehavour);
+        int? index = data.index;
+        itemBehavour.RegesterItem(bombData.value, index);
+        bombBehaviourByOwnerIndex[data.index] = itemBehavour;
+        data.hasTrap = true;
+
+        foreach (var item in bombBehaviourByOwnerIndex)
+        {
+            Debug.Log("Key = " + item.Key + "Value = " + item.Value);
+        }
+        Debug.Log(bombBehaviourByOwnerIndex.Count);
     }
 
     private void RegisterTiles()

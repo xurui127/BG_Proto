@@ -8,6 +8,7 @@ public class TileBehaviour : MonoBehaviour
     [SerializeField] internal bool isPlacedFruit = false;
     [SerializeField] internal bool isPlacedPot = false;
     [SerializeField] internal bool isPlacedCharacter = false;
+    [SerializeField] internal bool isPlacedTrap = false;
     [SerializeField] internal ItemBehaviour itemBehaviour;
 
     List<CharacterBehaviour> characterOnTile = new();
@@ -34,6 +35,8 @@ public class TileBehaviour : MonoBehaviour
 
     internal void PlacedPot() => isPlacedPot = true;
 
+    internal void PlacedTrap() => isPlacedTrap = true;
+
     internal void SetCurrentBehaviour(ItemBehaviour behaviour) => itemBehaviour = behaviour;
 
     internal ItemBehaviour GetCurrentItemBehaviour()
@@ -53,10 +56,9 @@ public class TileBehaviour : MonoBehaviour
         }
     }
 
-    internal void ResetTilePlacedCharacter()
-    {
-        isPlacedCharacter = false;
-    }
+    internal void ResetTilePlacedCharacter() => isPlacedCharacter = false;
+
+    internal void ResetTilePlacedTrap() => isPlacedTrap = false;
 
     internal void RegisterCharacter(CharacterBehaviour character)
     {

@@ -10,6 +10,7 @@ public class CharacterData : MonoBehaviour
     internal List<CardInstance> hand = new();
     internal List<CardInstance> graveyard = new();
     internal int index;
+    internal bool hasTrap = false;
 
     int _fruitCount = 0;
     int _goalCount = 0;
@@ -101,4 +102,6 @@ public class CharacterData : MonoBehaviour
     }
 
     internal bool HasReachedPotRequirement() => _fruitCount >= requiredGoalCount;
+
+    internal void SetHasTrap() => hasTrap = true;
 }
