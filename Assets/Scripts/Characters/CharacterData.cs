@@ -102,4 +102,20 @@ public class CharacterData : MonoBehaviour
 
     internal bool HasReachedPotRequirement() => _fruitCount >= requiredGoalCount;
 
+    internal List<CardInstance> GetTrapCards()
+    {
+        List<CardInstance> traps = new();
+        foreach (var card in hand)
+        {
+            if (card.sourceData.cardType.Equals(CardType.Trap))
+            {
+                traps.Add(card);
+            }
+        }
+
+        return traps; 
+    }
+
+   
+
 }

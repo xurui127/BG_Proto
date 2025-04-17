@@ -71,7 +71,6 @@ public class CardSystem : MonoBehaviour
             worldCards[index].handIndex = index;
             worldCards[index].gameObject.SetActive(true);
             worldCards[index].transform.position = new(-18f, 0.1f, 0f);
-            //worldCards[index].FlipCard(gameManager.IsPlayer());
 
             var card = characterData.hand[index].sourceData;
             cardUIS[index].name = card.name;
@@ -103,4 +102,16 @@ public class CardSystem : MonoBehaviour
         }
     }
 
+    internal void IsTrapCardEnabled(CharacterData characterData)
+    {
+        if (gameManager.GetCanPlaceTrap()) return;
+
+        for (int i = 0; i < characterData.hand.Count; i++)
+        {
+            if (characterData.hand[i].sourceData.cardType.Equals(CardType.Trap))
+            {
+                cardUIS[i].SetCardPlayToggle(false);
+            }
+        }
+    }
 }

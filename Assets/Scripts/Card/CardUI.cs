@@ -15,6 +15,8 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     bool isHoverOver = false;
     internal bool canPlayCard = false;
 
+    internal bool isEnable = false;
+
     UnityEvent OnCardPlay = new();
     internal UnityEvent<CardUI> OnCardPointEnterEvent = new();
     internal UnityEvent<CardUI> OnCardPointExitEvent = new();

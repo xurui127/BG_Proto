@@ -9,5 +9,4 @@ public abstract class ItemBehaviour : MonoBehaviour
     internal abstract void RegesterItem(int amount);
 
     internal abstract void OnInteract(CharacterData data);
-
 }

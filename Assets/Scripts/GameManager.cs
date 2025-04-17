@@ -1,4 +1,5 @@
 ﻿using Cinemachine;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -46,9 +47,11 @@ public class GameManager : MonoSingleton<GameManager>
 
     public bool IsEmptyCard() => currentCharacterData.hand.Count == 0;
 
-    internal int GetCurrentCharacterIndex() => currentCharacterBehaviour.GetCurrentTileIndex();
+    internal int GetCurrentCharacterTileIndex() => currentCharacterBehaviour.GetCurrentTileIndex();
 
     internal int GetDiceNumber() => diceNumber;
+
+    internal bool GetCanPlaceTrap() => boardManager.CanPlaceTrap();
 
     protected override void Awake()
     {
@@ -242,6 +245,7 @@ public class GameManager : MonoSingleton<GameManager>
     {
         cardSystem.DrawCards(currentCharacterData);
         cardSystem.SetCardPlayToggle(IsPlayer());
+        cardSystem.IsTrapCardEnabled(currentCharacterData);
     }
 
     internal void OpenPanels()
@@ -290,7 +294,7 @@ public class GameManager : MonoSingleton<GameManager>
             currentItem != null &&
            (currentTile.isPlacedFruit ||
             currentTile.isPlacedPot ||
-            currentTile.isPlacedTrap) ||
+            currentTile.isPlacedTrap) &&
             !isOwnerTrap)
         {
             currentItem.OnInteract(currentCharacterData);
@@ -344,4 +348,10 @@ public class GameManager : MonoSingleton<GameManager>
     {
         RollSpecificDice(diceNumber);
     }
+
+    internal void PlaceBombTrap()
+    {
+        boardManager.InitBomb(currentCharacterData);
+    }
+
 }

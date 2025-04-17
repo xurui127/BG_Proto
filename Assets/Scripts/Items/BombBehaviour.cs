@@ -8,8 +8,12 @@ public class BombBehaviour : ItemBehaviour
     {
         this.amount = amount;
     }
+
     internal override void OnInteract(CharacterData data)
     {
+        //TODO: Add Animation after
+        Destroy(this.gameObject);
+        if (data.FruitCount < amount) return; 
         data.FruitCount -= amount;
     }
 }

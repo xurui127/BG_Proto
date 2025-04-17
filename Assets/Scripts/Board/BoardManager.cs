@@ -103,7 +103,7 @@ public class BoardManager : MonoBehaviour
                 items.Remove(items[i]);
             }
         }
-        var tileIndex = gameManager.GetCurrentCharacterIndex();
+        var tileIndex = gameManager.GetCurrentCharacterTileIndex();
         var bomb = Instantiate(bombData.itemPrefab, tiles[tileIndex].position + trapPosOffset, Quaternion.identity);
         var itemBehavour = bomb.GetComponent<ItemBehaviour>();
         tileBehaviours[tileIndex].PlacedTrap();
@@ -254,7 +254,7 @@ public class BoardManager : MonoBehaviour
 
     internal int GetTargetStep()
     {
-        int currentCharacterIndex = gameManager.GetCurrentCharacterIndex();
+        int currentCharacterIndex = gameManager.GetCurrentCharacterTileIndex();
         int diceNumber = gameManager.GetDiceNumber();
         int potIndex = GetPotIndex();
         int tileCount = tileBehaviours.Count;
@@ -293,5 +293,15 @@ public class BoardManager : MonoBehaviour
         }
         Debug.LogWarning("Not find Character index!");
         return false;
+    }
+
+    internal bool CanPlaceTrap()
+    {
+        var characterIndex = gameManager.GetCurrentCharacterTileIndex();
+        if (tileBehaviours[characterIndex].isPlacedTrap)
+        {
+            return false;
+        }
+        return true;
     }
 }

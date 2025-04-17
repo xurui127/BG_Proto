@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -30,12 +29,12 @@ public class CardBehaviourHandler : MonoBehaviour
 
     private void Start()
     {
-        for(int i = 0; i < cardBehaviours.Count; i++)
+        for (int i = 0; i < cardBehaviours.Count; i++)
         {
             var amount = cardDataByName[cardData[i].name].value;
-            cardBehaviours[i].OnGameStart(amount); 
+            cardBehaviours[i].OnGameStart(amount);
         }
-       
+
     }
 
     internal void OnCardExecute(string cardName)
