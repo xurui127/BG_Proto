@@ -4,7 +4,7 @@ public abstract class AbstractItemAnimation : MonoBehaviour
 {
     internal abstract void GetCollectEffect(GameObject collectPrefab);
 
-    internal abstract void SetPlayGetItemAnimation();
+    internal abstract void TransiteToCollectState();
 
-    internal abstract void PlayCollectAnimation();
+    internal abstract void PlayCollectState();
 }

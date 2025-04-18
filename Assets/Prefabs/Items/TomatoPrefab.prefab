@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3270069534893529077}
   - component: {fileID: 8678259014596858030}
-  - component: {fileID: 2462113649529744439}
+  - component: {fileID: 3615102996374932268}
   m_Layer: 9
   m_Name: TomatoPrefab
   m_TagString: Untagged
@@ -46,8 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6a0045db2bc9a24f99ce3ce0050a9a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anim: {fileID: 2462113649529744439}
---- !u!114 &2462113649529744439
+  anim: {fileID: 3615102996374932268}
+--- !u!114 &3615102996374932268
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -56,12 +56,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 476171350670835362}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea7e3759763e6a04d94bc5249ad8465e, type: 3}
+  m_Script: {fileID: 11500000, guid: 07065e0c71865964fbb364b1ea4d595d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationSpeed: 150
-  floatAmplitude: 0.1
-  floatFrequency: 2
+  rotationSpeed: 60
+  floatAmplitude: 0.2
+  floatFrequency: 1
+  collectEffectPrefab: {fileID: 0}
 --- !u!1001 &8753168285160884180
 PrefabInstance:
   m_ObjectHideFlags: 0

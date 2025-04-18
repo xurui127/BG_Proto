@@ -1,4 +1,10 @@
 ﻿using UnityEngine;
+public enum ItemState
+{
+    Idle,
+    Collecting,
+    Finished,
+}
 
 public class ItemAnimation : AbstractItemAnimation
 {
@@ -12,10 +18,10 @@ public class ItemAnimation : AbstractItemAnimation
     protected float riseSpeed = 1.5f;
     protected float riseTimer = 0.4f;
 
-    [SerializeField]internal GameObject collectEffectPrefab;
+    protected ItemState currentState = ItemState.Idle;
+
+    [SerializeField] internal GameObject collectEffectPrefab;
     internal bool isRotating = true;
-    internal bool isCollected = false;
-    internal bool isAnimFinished = false;
 
 
     protected virtual void Start()
@@ -25,30 +31,33 @@ public class ItemAnimation : AbstractItemAnimation
 
     protected virtual void Update()
     {
-        if (isRotating)
+        switch (currentState)
         {
-            transform.Rotate(0, rotationSpeed * Time.deltaTime, 0);
-        }
-
-        if (!isCollected)
-        {
-            float offsetY = Mathf.Sin(Time.time * floatFrequency) * floatAmplitude;
-            transform.position = initialPos + new Vector3(0, offsetY, 0);
-        }
-        else
-        {
-            PlayCollectAnimation();
+            case ItemState.Idle:
+                PlayIdleState();
+                break;
+            case ItemState.Collecting:
+                PlayCollectState();
+                break;
         }
     }
+
     internal override void GetCollectEffect(GameObject collectPrefab) => collectEffectPrefab = collectPrefab;
-    
-    internal override void SetPlayGetItemAnimation()
+
+    internal override void TransiteToCollectState()
     {
-        isCollected = true;
         riseTimer = riseDuration;
+        currentState = ItemState.Collecting;
     }
 
-    internal override void PlayCollectAnimation()
+    protected virtual void PlayIdleState()
+    {
+        transform.Rotate(0, rotationSpeed * Time.deltaTime, 0);
+        float offsetY = Mathf.Sin(Time.time * floatFrequency) * floatAmplitude;
+        transform.position = initialPos + new Vector3(0, offsetY, 0);
+    }
+
+    internal override void PlayCollectState()
     {
         riseTimer -= Time.deltaTime;
         transform.position += Vector3.up * riseSpeed * Time.deltaTime;
@@ -60,8 +69,6 @@ public class ItemAnimation : AbstractItemAnimation
                 GameObject fx = Instantiate(collectEffectPrefab, transform.position, Quaternion.identity);
                 Destroy(fx, 2f);
             }
-
-            isAnimFinished = true;
             Destroy(gameObject);
         }
     }

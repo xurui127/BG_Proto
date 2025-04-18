@@ -12,12 +12,13 @@ public class TrapAnimation : ItemAnimation
     {
        base.Update();
     }
+
     internal override void GetCollectEffect(GameObject collectPrefab)
     {
         base.GetCollectEffect(collectPrefab);
     }
 
-    internal override void PlayCollectAnimation()
+    internal override void PlayCollectState()
     {
         if (collectEffectPrefab != null)
         {
@@ -25,13 +26,12 @@ public class TrapAnimation : ItemAnimation
             Destroy(fx, 2f);
         }
 
-        isAnimFinished = true;
         Destroy(gameObject);
     }
 
-    internal override void SetPlayGetItemAnimation()
+    internal override void TransiteToCollectState()
     {
-        base.SetPlayGetItemAnimation();
+        base.TransiteToCollectState();
     }
 
 

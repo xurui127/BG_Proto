@@ -11,7 +11,7 @@ public class BombBehaviour : ItemBehaviour
 
     internal override void OnInteract(CharacterData data)
     {
-        anim.SetPlayGetItemAnimation();
+        anim.TransiteToCollectState();
         if (data.FruitCount < amount) return; 
         data.FruitCount -= amount;
     }
