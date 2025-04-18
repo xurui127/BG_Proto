@@ -11,8 +11,7 @@ public class BombBehaviour : ItemBehaviour
 
     internal override void OnInteract(CharacterData data)
     {
-        //TODO: Add Animation after
-        Destroy(this.gameObject);
+        anim.SetPlayGetItemAnimation();
         if (data.FruitCount < amount) return; 
         data.FruitCount -= amount;
     }

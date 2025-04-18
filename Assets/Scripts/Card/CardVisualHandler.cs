@@ -19,6 +19,12 @@ public class CardVisualHandler : MonoBehaviour
     List<WorldCard> worldCards = new();
     readonly Dictionary<CardUI, WorldCard> cardPairs = new();
 
+    GameManager gameManager;
+
+    private void Start()
+    {
+        gameManager = GameManager.Instance;
+    }
     private void Update()
     {
         if (Screen.width != lastScreenSize.x || Screen.height != lastScreenSize.y)
@@ -206,10 +212,10 @@ public class CardVisualHandler : MonoBehaviour
         isCardFlyingOut = true;
     }
 
-    internal void AIPlayCard()
+    internal void AIPlayCard(CharacterData characterData)
     {
-        StartCoroutine(AIPlayCardCoroutine());
-        IEnumerator AIPlayCardCoroutine()
+        StartCoroutine(AIPlayCardCoroutine(characterData));
+        IEnumerator AIPlayCardCoroutine(CharacterData characterData)
         {
             isConectUIcard = true;
 
@@ -224,7 +230,19 @@ public class CardVisualHandler : MonoBehaviour
 
             if (activeCards.Count == 0) yield break;
 
+            var avilableCards = characterData.GetAvilableCards();
+
+            if (avilableCards.Count == 0) yield break;
+
+
             var randomIndex = Random.Range(0, activeCards.Count);
+
+            while(!gameManager.GetCanPlaceTrap() && characterData.GetTrapCards().Contains(randomIndex))
+            {
+                var index = Random.Range(0, avilableCards.Count);
+                randomIndex = avilableCards[index];
+            }
+
             var playCard = activeCards[randomIndex];
 
             var screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, Camera.main.nearClipPlane);

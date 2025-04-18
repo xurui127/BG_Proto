@@ -19,6 +19,6 @@ MonoBehaviour:
     type: 3}
   initEffect: {fileID: 8800761877633365762, guid: 178faec88c4139c4cb58920e53287086,
     type: 3}
-  collectEffect: {fileID: 3440308236262991693, guid: 706bb41b64dbdf74fa8bcf88e6c1ebc4,
+  collectEffect: {fileID: 8800761877633365762, guid: 233f16c684b68684ca02ccfd3e8e09ed,
     type: 3}
   value: 3

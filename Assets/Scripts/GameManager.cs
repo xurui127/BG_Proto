@@ -86,10 +86,10 @@ public class GameManager : MonoSingleton<GameManager>
     private void Update()
     {
         stateMachine.OnUpdate();
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            InitBomb();
-        }
+        //if (Input.GetKeyDown(KeyCode.Alpha2))
+        //{
+        //    InitBomb();
+        //}
     }
 
     private void InitCharacters()
@@ -245,6 +245,7 @@ public class GameManager : MonoSingleton<GameManager>
     {
         cardSystem.DrawCards(currentCharacterData);
         cardSystem.SetCardPlayToggle(IsPlayer());
+        if (!IsPlayer()) return;
         cardSystem.IsTrapCardEnabled(currentCharacterData);
     }
 
@@ -264,7 +265,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     public void UseRandomCard()
     {
-        cardSystem.AIPlayCard();
+        cardSystem.AIPlayCard(currentCharacterData);
     }
 
     private void RemoveCards(string id)
@@ -301,6 +302,8 @@ public class GameManager : MonoSingleton<GameManager>
         }
 
         currentTile.ResetTilePlacedFruit(currentTile.isPlacedFruit);
+        currentTile.ResetTilePlacedTrap(currentTile.isPlacedTrap && !isOwnerTrap);
+        boardManager.RemoveItem(currentItem);
     }
 
     internal void PlaceFruit()
@@ -349,9 +352,5 @@ public class GameManager : MonoSingleton<GameManager>
         RollSpecificDice(diceNumber);
     }
 
-    internal void PlaceBombTrap()
-    {
-        boardManager.InitBomb(currentCharacterData);
-    }
-
+    internal void PlaceBombTrap() => boardManager.InitBomb(currentCharacterData);
 }

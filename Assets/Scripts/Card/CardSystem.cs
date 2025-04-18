@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using NUnit.Framework;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Serialization;
 
 public class CardInstance
@@ -92,7 +94,7 @@ public class CardSystem : MonoBehaviour
 
     internal void PlayWorldCardFlyoutAnimation() => cardVisualHandler.WorldCardFlyOut();
 
-    internal void AIPlayCard() => cardVisualHandler.AIPlayCard();
+    internal void AIPlayCard(CharacterData characterData) => cardVisualHandler.AIPlayCard(characterData);
 
     internal void SetCardPlayToggle(bool isEnable)
     {
@@ -106,12 +108,11 @@ public class CardSystem : MonoBehaviour
     {
         if (gameManager.GetCanPlaceTrap()) return;
 
-        for (int i = 0; i < characterData.hand.Count; i++)
+        var trapList = characterData.GetTrapCards();
+        for (int i = 0; i < trapList.Count; i++)
         {
-            if (characterData.hand[i].sourceData.cardType.Equals(CardType.Trap))
-            {
-                cardUIS[i].SetCardPlayToggle(false);
-            }
+            cardUIS[trapList[i]].SetCardPlayToggle(false);
         }
     }
+
 }

@@ -106,9 +106,15 @@ public class BoardManager : MonoBehaviour
         var tileIndex = gameManager.GetCurrentCharacterTileIndex();
         var bomb = Instantiate(bombData.itemPrefab, tiles[tileIndex].position + trapPosOffset, Quaternion.identity);
         var itemBehavour = bomb.GetComponent<ItemBehaviour>();
+        var anim = bomb.GetComponent<ItemAnimation>();
+        if (anim != null)
+        {
+            anim.GetCollectEffect(bombData.collectEffect);
+        }
         tileBehaviours[tileIndex].PlacedTrap();
         tileBehaviours[tileIndex].SetCurrentBehaviour(itemBehavour);
         itemBehavour.RegesterItem(bombData.value);
+        InitBombTrapVFX(tileIndex);
         items.Add(new ItemInstance(data.index, tileIndex, itemBehavour));
     }
 
@@ -239,6 +245,18 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+    private void InitBombTrapVFX(int tileIndex)
+    {
+        StartCoroutine(InitBombCoroutine(tileIndex));
+        IEnumerator InitBombCoroutine(int tileIndex)
+        {
+            var bombPlacedVFX = bombData.initEffect;
+            var vfx = Instantiate(bombPlacedVFX, tiles[tileIndex].position + fruitPosOffset, Quaternion.identity);
+            yield return new WaitForSeconds(1f);
+            Destroy(vfx);
+        }
+    }
+
     internal int GetPotIndex()
     {
         for (int i = 0; i < tileBehaviours.Count; i++)
@@ -287,6 +305,8 @@ public class BoardManager : MonoBehaviour
 
     internal bool IsTrapInteract(int characterIndex)
     {
+        if (items.Count == 0) return false;
+
         foreach (var item in items)
         {
             return item.ownerIndex == characterIndex;
@@ -303,5 +323,16 @@ public class BoardManager : MonoBehaviour
             return false;
         }
         return true;
+    }
+
+    internal void RemoveItem(ItemBehaviour currentItem)
+    {
+        for(int i = 0; i < items.Count; i++)
+        {
+            if (items[i].itemBehaviour == currentItem)
+            {
+                items.Remove(items[i]);
+            }
+        }
     }
 }

@@ -56,7 +56,7 @@ public class ItemAnimation : MonoBehaviour
         }
     }
 
-    internal void SetPlayGetFruitAnimation()
+    internal void SetPlayGetItemAnimation()
     {
         isCollected = true;
         riseTimer = riseDuration;

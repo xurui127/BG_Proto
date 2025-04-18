@@ -55,6 +55,13 @@ public class TileBehaviour : MonoBehaviour
             isPlacedFruit = false;
         }
     }
+    internal void ResetTilePlacedTrap(bool isReset)
+    {
+        if (isReset)
+        {
+            isPlacedTrap = false;
+        }
+    }
 
     internal void ResetTilePlacedCharacter() => isPlacedCharacter = false;
 
