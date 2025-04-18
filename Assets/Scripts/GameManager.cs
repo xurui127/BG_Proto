@@ -1,5 +1,4 @@
 ﻿using Cinemachine;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -246,6 +245,11 @@ public class GameManager : MonoSingleton<GameManager>
         cardSystem.DrawCards(currentCharacterData);
         cardSystem.SetCardPlayToggle(IsPlayer());
         if (!IsPlayer()) return;
+        CheckTrapCardEnabled();
+    }
+
+    private void CheckTrapCardEnabled()
+    {
         cardSystem.IsTrapCardEnabled(currentCharacterData);
     }
 
@@ -352,5 +356,9 @@ public class GameManager : MonoSingleton<GameManager>
         RollSpecificDice(diceNumber);
     }
 
-    internal void PlaceBombTrap() => boardManager.InitBomb(currentCharacterData);
+    internal void PlaceBombTrap()
+    {
+        boardManager.InitBomb(currentCharacterData);
+        CheckTrapCardEnabled();
+    }
 }
