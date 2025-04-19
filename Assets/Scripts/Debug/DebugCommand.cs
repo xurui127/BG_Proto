@@ -38,6 +38,22 @@ public class GoalCommand : DebugCommand
     }
 }
 
+[DebugCommand("allfruit")]
+public class AllFruitsCommand : DebugCommand
+{
+    public override string OnCommand(string[] p)
+    {
+        var gm = GameObject.FindAnyObjectByType<GameManager>();
+        if (gm == null)
+        {
+            Debug.LogWarning("Debugger Can not find Game Manager!");
+        }
+        var count = 10;
+        gm.DebugAllAddFruit(count);
+        return $"Add All {count} Fruits ";
+
+    }
+}
 //force roll dice
 [DebugCommand("roll")]
 public class RollDiceCommand : DebugCommand

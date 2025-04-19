@@ -8,7 +8,7 @@ public class WaitForDiceResultState : AbstractState
     }
     public override void OnEnter()
     {
-        waitingTime = 1.5f;
+        waitingTime = 2f;
         stateMachine = GM.GetStateController();
     }
 
@@ -23,6 +23,6 @@ public class WaitForDiceResultState : AbstractState
 
     public override void OnExit()
     {
-        waitingTime = 1.5f;
+        waitingTime = 2f;
     }
 }

@@ -94,7 +94,7 @@ public class BoardManager : MonoBehaviour
 
     internal void InitBomb(CharacterData data)
     {
-        for(int i = 0; i < items.Count; i++)
+        for (int i = 0; i < items.Count; i++)
         {
             if (items[i].ownerIndex == data.index)
             {
@@ -303,15 +303,17 @@ public class BoardManager : MonoBehaviour
         return false;
     }
 
-    internal bool IsTrapInteract(int characterIndex)
+    internal bool IsTrapInteract(int characterIndex, int tileIndex)
     {
         if (items.Count == 0) return false;
 
         foreach (var item in items)
         {
-            return item.ownerIndex == characterIndex;
+            if (item.tileIndex == tileIndex && item.ownerIndex == characterIndex)
+            {
+                return true;
+            }
         }
-        Debug.LogWarning("Not find Character index!");
         return false;
     }
 
@@ -327,7 +329,7 @@ public class BoardManager : MonoBehaviour
 
     internal void RemoveItem(ItemBehaviour currentItem)
     {
-        for(int i = 0; i < items.Count; i++)
+        for (int i = 0; i < items.Count; i++)
         {
             if (items[i].itemBehaviour == currentItem)
             {

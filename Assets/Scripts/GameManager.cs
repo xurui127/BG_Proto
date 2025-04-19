@@ -18,7 +18,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     [HideInInspector] public List<Transform> pathTile;
 
-    const int maxFruitCount = 3;
+    const int maxFruitCount = 10;
     int currentFruitCount = 0;
 
     int characterCount = 0;
@@ -67,6 +67,7 @@ public class GameManager : MonoSingleton<GameManager>
         stateMachine.RegisterState(new MoveState(this));
         stateMachine.RegisterState(new WaitForDiceResultState(this));
         stateMachine.RegisterState(new RetrieveCardState(this));
+        stateMachine.RegisterState(new InteracteState(this));
         stateMachine.RegisterState(new EndTurnState(this));
 
 
@@ -79,16 +80,13 @@ public class GameManager : MonoSingleton<GameManager>
         UpdateCameraTarget(currentCharacterBehaviour.gameObject);
         InitFruits();
         InitPot();
+
         stateMachine.SetState<DrawCardState>();
     }
 
     private void Update()
     {
         stateMachine.OnUpdate();
-        //if (Input.GetKeyDown(KeyCode.Alpha2))
-        //{
-        //    InitBomb();
-        //}
     }
 
     private void InitCharacters()
@@ -96,8 +94,7 @@ public class GameManager : MonoSingleton<GameManager>
         for (int i = 0; i <= characterCount; i++)
         {
             int tileIndex = boardManager.GetAvailiableTiles()[i];
-            // For Character in same tile Test
-            //int tileIndex = 1;
+
             int capturedIndex = tileIndex;
 
             Quaternion rotation = boardManager.GetDirction(capturedIndex);
@@ -288,8 +285,20 @@ public class GameManager : MonoSingleton<GameManager>
     {
         var tileIndex = currentCharacterBehaviour.currentTileIndex;
         var currentTile = boardManager.GetCurrentTile(tileIndex);
+
+        if (currentTile == null)
+        {
+            Debug.LogWarning("currentTile is null");
+            return;
+        }
         var currentItem = currentTile.GetCurrentItemBehaviour();
-        var isOwnerTrap = boardManager.IsTrapInteract(currentCharacterData.index);
+        var isOwnerTrap = boardManager.IsTrapInteract(currentCharacterData.index, tileIndex);
+
+        Debug.Log($"TileIndex = {tileIndex}, Item = {currentItem}, isOwnerTrap = {isOwnerTrap}");
+        Debug.Log($"Tile Status: Fruit={currentTile.isPlacedFruit}, Pot={currentTile.isPlacedPot}, Trap={currentTile.isPlacedTrap}");
+
+        if (currentItem == null) return;
+
         if (currentTile.isPlacedFruit)
         {
             currentFruitCount--;
@@ -298,10 +307,11 @@ public class GameManager : MonoSingleton<GameManager>
         if (currentTile != null &&
             currentItem != null &&
            (currentTile.isPlacedFruit ||
-            currentTile.isPlacedPot ||
-            currentTile.isPlacedTrap) &&
-            !isOwnerTrap)
+            currentTile.isPlacedPot) ||
+            (currentTile.isPlacedTrap &&
+            !isOwnerTrap))
         {
+            Debug.Log("Triggering OnInteract!");
             currentItem.OnInteract(currentCharacterData);
         }
 
@@ -351,6 +361,13 @@ public class GameManager : MonoSingleton<GameManager>
         currentCharacterData.GoalCount += amount;
     }
 
+    internal void DebugAllAddFruit(int amount)
+    {
+        foreach (var character in allCharacterData)
+        {
+            character.FruitCount += amount;
+        }
+    }
     internal void DebugRollDice(int diceNumber)
     {
         RollSpecificDice(diceNumber);

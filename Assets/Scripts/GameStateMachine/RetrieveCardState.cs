@@ -12,11 +12,11 @@ public class RetrieveCardState : AbstractState
     public override void OnEnter()
     {
         GM.PlayWorldCardFlyoutAnimation();
-        GM.CheckIteractItems();
     }
 
     public override void OnExit()
     {
+       
         flyoutTimer = 0.5f;
     }
 
@@ -28,7 +28,7 @@ public class RetrieveCardState : AbstractState
         }
         else
         {
-            stateMachine.SetState<EndTurnState>();
+            stateMachine.SetState<InteracteState>();
         }
     }
 }
