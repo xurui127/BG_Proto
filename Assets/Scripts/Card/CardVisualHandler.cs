@@ -219,6 +219,7 @@ public class CardVisualHandler : MonoBehaviour
         IEnumerator AIPlayCardCoroutine(CharacterData characterData)
         {
             isConectUIcard = true;
+
             List<(int worldIndex, Transform cardTransform)> activeCards = new();
             for (int i = 0; i < worldCards.Count; i++)
             {
@@ -230,33 +231,37 @@ public class CardVisualHandler : MonoBehaviour
 
             if (activeCards.Count == 0)
             {
-                yield break; 
+                isConectUIcard = false;
+                yield break;
             }
 
             var availableCards = characterData.GetAvilableCards();
             if (availableCards.Count == 0)
             {
+                isConectUIcard = false;
                 yield break;
             }
 
-            int randomPick = Random.Range(0, activeCards.Count);
-            int worldIndex = activeCards[randomPick].worldIndex;
-            Transform playCard = activeCards[randomPick].cardTransform;
+            List<(int worldIndex, Transform cardTransform)> filteredCards = new();
 
-            if (!gameManager.GetCanPlaceTrap() && characterData.GetTrapCards().Contains(worldIndex))
+            if (!gameManager.GetCanPlaceTrap())
             {
-                List<(int worldIndex, Transform cardTransform)> filteredCards = activeCards
-                    .FindAll(pair => !characterData.GetTrapCards().Contains(pair.worldIndex));
-
-                if (filteredCards.Count == 0)
-                {
-                    yield break; 
-                }
-
-                randomPick = Random.Range(0, filteredCards.Count);
-                worldIndex = filteredCards[randomPick].worldIndex;
-                playCard = filteredCards[randomPick].cardTransform;
+                filteredCards = activeCards.FindAll(pair => !characterData.GetTrapCards().Contains(pair.worldIndex));
             }
+            else
+            {
+                filteredCards = activeCards;
+            }
+
+            if (filteredCards.Count == 0)
+            {
+                isConectUIcard = false;
+                yield break; 
+            }
+
+            int randomPick = Random.Range(0, filteredCards.Count);
+            int worldIndex = filteredCards[randomPick].worldIndex;
+            Transform playCard = filteredCards[randomPick].cardTransform;
 
             var screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, Camera.main.nearClipPlane);
             var targetWorldPosition = cardCam.ScreenToWorldPoint(screenCenter);
@@ -274,7 +279,6 @@ public class CardVisualHandler : MonoBehaviour
             yield return new WaitForSeconds(1f);
 
             playCard.gameObject.SetActive(false);
-
             uiCards[worldIndex].AIPlayCard();
 
             isConectUIcard = false;
