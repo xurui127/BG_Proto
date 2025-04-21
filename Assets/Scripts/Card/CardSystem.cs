@@ -95,6 +95,7 @@ public class CardSystem : MonoBehaviour
     internal void PlayWorldCardFlyoutAnimation() => cardVisualHandler.WorldCardFlyOut();
 
     internal void AIPlayCard(CharacterData characterData) => cardVisualHandler.AIPlayCard(characterData);
+    
 
     internal void SetCardPlayToggle(bool isEnable)
     {

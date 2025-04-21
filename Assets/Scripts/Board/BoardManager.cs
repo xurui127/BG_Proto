@@ -320,7 +320,7 @@ public class BoardManager : MonoBehaviour
     internal bool CanPlaceTrap()
     {
         var characterIndex = gameManager.GetCurrentCharacterTileIndex();
-        if (tileBehaviours[characterIndex].isPlacedTrap)
+        if (tileBehaviours[characterIndex].isPlacedTrap || tileBehaviours[characterIndex].isPlacedPot)
         {
             return false;
         }

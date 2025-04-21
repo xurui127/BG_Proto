@@ -23,7 +23,5 @@ public class PotBehaviour : ItemBehaviour
         {
             OpenEndPanelEvent?.Invoke(data.index == 0);
         }
-
-        Debug.Log("In");
     }
 }

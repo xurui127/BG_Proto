@@ -36,7 +36,7 @@ public class DecisionState : AbstractState
 
         if (waitingTime <= 0f)
         {
-            if (!GM.IsEmptyCard())
+            if (!GM.IsEmptyCard() && GM.GetCanPlaceTrap())
             {
                 if (action == 0 && !isWaitingForCardSelection)
                 {

@@ -288,15 +288,12 @@ public class GameManager : MonoSingleton<GameManager>
 
         if (currentTile == null)
         {
-            Debug.LogWarning("currentTile is null");
             return;
         }
         var currentItem = currentTile.GetCurrentItemBehaviour();
         var isOwnerTrap = boardManager.IsTrapInteract(currentCharacterData.index, tileIndex);
 
-        Debug.Log($"TileIndex = {tileIndex}, Item = {currentItem}, isOwnerTrap = {isOwnerTrap}");
-        Debug.Log($"Tile Status: Fruit={currentTile.isPlacedFruit}, Pot={currentTile.isPlacedPot}, Trap={currentTile.isPlacedTrap}");
-
+      
         if (currentItem == null) return;
 
         if (currentTile.isPlacedFruit)
@@ -311,7 +308,6 @@ public class GameManager : MonoSingleton<GameManager>
             (currentTile.isPlacedTrap &&
             !isOwnerTrap))
         {
-            Debug.Log("Triggering OnInteract!");
             currentItem.OnInteract(currentCharacterData);
         }
 
@@ -378,4 +374,5 @@ public class GameManager : MonoSingleton<GameManager>
         boardManager.InitBomb(currentCharacterData);
         CheckTrapCardEnabled();
     }
+
 }

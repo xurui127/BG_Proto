@@ -29,10 +29,23 @@ public class CardBehaviourHandler : MonoBehaviour
 
     private void Start()
     {
-        for (int i = 0; i < cardBehaviours.Count; i++)
+        //for (int i = 0; i < cardBehaviours.Count; i++)
+        //{
+        //    var amount = cardDataByName[cardData[i].name].value;
+        //    cardBehaviours[i].OnGameStart(amount);
+        //}
+
+        for (int i = 0; i < cardData.Length; i++)
         {
-            var amount = cardDataByName[cardData[i].name].value;
-            cardBehaviours[i].OnGameStart(amount);
+            if (cardBehaviourByName.TryGetValue(cardData[i].name, out var behaviour))
+            {
+                var amount = cardDataByName[cardData[i].name].value;
+                behaviour.OnGameStart(amount);
+            }
+            else
+            {
+                Debug.LogWarning($"No CardBehaviour found for card: {cardData[i].name}");
+            }
         }
 
     }

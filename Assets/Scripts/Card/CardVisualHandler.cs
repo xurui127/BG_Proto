@@ -212,7 +212,7 @@ public class CardVisualHandler : MonoBehaviour
         isCardFlyingOut = true;
     }
 
-    internal void AIPlayCard(CharacterData characterData)
+    internal bool AIPlayCard(CharacterData characterData)
     {
         StartCoroutine(AIPlayCardCoroutine(characterData));
 
@@ -220,54 +220,25 @@ public class CardVisualHandler : MonoBehaviour
         {
             isConectUIcard = true;
 
-            List<(int worldIndex, Transform cardTransform)> activeCards = new();
-            for (int i = 0; i < worldCards.Count; i++)
+            List<Transform> activeCards = new List<Transform>();
+            foreach (var card in worldCards)
             {
-                if (worldCards[i].gameObject.activeSelf)
+                if (card.gameObject.activeSelf)
                 {
-                    activeCards.Add((i, worldCards[i].transform));
+                    activeCards.Add(card.transform);
                 }
             }
 
-            if (activeCards.Count == 0)
-            {
-                isConectUIcard = false;
-                yield break;
-            }
+            if (activeCards.Count == 0) yield break;
 
-            var availableCards = characterData.GetAvilableCards();
-            if (availableCards.Count == 0)
-            {
-                isConectUIcard = false;
-                yield break;
-            }
-
-            List<(int worldIndex, Transform cardTransform)> filteredCards = new();
-
-            if (!gameManager.GetCanPlaceTrap())
-            {
-                filteredCards = activeCards.FindAll(pair => !characterData.GetTrapCards().Contains(pair.worldIndex));
-            }
-            else
-            {
-                filteredCards = activeCards;
-            }
-
-            if (filteredCards.Count == 0)
-            {
-                isConectUIcard = false;
-                yield break; 
-            }
-
-            int randomPick = Random.Range(0, filteredCards.Count);
-            int worldIndex = filteredCards[randomPick].worldIndex;
-            Transform playCard = filteredCards[randomPick].cardTransform;
+            var randomIndex = Random.Range(0, activeCards.Count);
+            var playCard = activeCards[randomIndex];
 
             var screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, Camera.main.nearClipPlane);
             var targetWorldPosition = cardCam.ScreenToWorldPoint(screenCenter);
             targetWorldPosition.z = playCard.position.z;
 
-            worldCards[worldIndex].OnPointerHovering();
+            worldCards[randomIndex].OnPointerHovering();
 
             while (Vector3.Distance(playCard.position, targetWorldPosition) > 0.1f)
             {
@@ -275,14 +246,17 @@ public class CardVisualHandler : MonoBehaviour
                 yield return null;
             }
 
-            FlipCardVisual(worldCards[worldIndex]);
+            FlipCardVisual(worldCards[randomIndex]);
             yield return new WaitForSeconds(1f);
 
+
             playCard.gameObject.SetActive(false);
-            uiCards[worldIndex].AIPlayCard();
+
+            uiCards[randomIndex].AIPlayCard();
 
             isConectUIcard = false;
         }
+        return true;
     }
 
     private void FlipCardVisual(WorldCard worldCard)
