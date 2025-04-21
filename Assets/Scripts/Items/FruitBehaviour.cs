@@ -12,6 +12,5 @@ public class FruitBehaviour : ItemBehaviour
     {
         anim.TransiteToCollectState();
         data.FruitCount += amount;
-        Debug.Log("In");
     }
 }

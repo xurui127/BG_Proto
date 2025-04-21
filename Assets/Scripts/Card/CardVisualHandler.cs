@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CardVisualHandler : MonoBehaviour
@@ -107,7 +106,6 @@ public class CardVisualHandler : MonoBehaviour
             {
                 bool isCardPastYOffset = Input.mousePosition.y > CardUI.yOffset;
 
-                // Disabling the card UI disables the event so the card doesn't play
                 uiCards[i].gameObject.SetActive(!isCardPastYOffset);
                 cadidatePos = GetWorldMousePos();
 

@@ -18,7 +18,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     [HideInInspector] public List<Transform> pathTile;
 
-    const int maxFruitCount = 10;
+    const int maxFruitCount =  3;
     int currentFruitCount = 0;
 
     int characterCount = 0;

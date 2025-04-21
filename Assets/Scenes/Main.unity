@@ -2574,6 +2574,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cards:
+  - {fileID: 11400000, guid: 6e20da7849c12464b82fcf55eb15ab1a, type: 2}
+  - {fileID: 11400000, guid: b7fd2eb5bfd176b4daca6023b8eea79f, type: 2}
+  - {fileID: 11400000, guid: 61f3ee83c396b464b904a01da661b400, type: 2}
   - {fileID: 11400000, guid: f73e8b2b6235ebe428ae3241c1b79be3, type: 2}
   cardPrefab: {fileID: 4035376181962469342, guid: 31e90c1176470ac4f9214f0ef3882ed6,
     type: 3}
@@ -2618,6 +2621,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardData:
+  - {fileID: 11400000, guid: 6e20da7849c12464b82fcf55eb15ab1a, type: 2}
+  - {fileID: 11400000, guid: b7fd2eb5bfd176b4daca6023b8eea79f, type: 2}
+  - {fileID: 11400000, guid: 61f3ee83c396b464b904a01da661b400, type: 2}
   - {fileID: 11400000, guid: f73e8b2b6235ebe428ae3241c1b79be3, type: 2}
 --- !u!1 &1056948211
 GameObject:

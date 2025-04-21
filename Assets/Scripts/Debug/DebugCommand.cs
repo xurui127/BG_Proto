@@ -21,7 +21,7 @@ public class FruitCommand : DebugCommand
         return $"Add {count} Fruit ";
     }
 }
-//Add Gold
+//Add Goal
 [DebugCommand("goal")]
 public class GoalCommand : DebugCommand
 {
@@ -38,6 +38,7 @@ public class GoalCommand : DebugCommand
     }
 }
 
+//Add fruit to all characters 
 [DebugCommand("allfruit")]
 public class AllFruitsCommand : DebugCommand
 {
@@ -54,7 +55,7 @@ public class AllFruitsCommand : DebugCommand
 
     }
 }
-//force roll dice
+//force roll dice -> roll <number>
 [DebugCommand("roll")]
 public class RollDiceCommand : DebugCommand
 {
